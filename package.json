@@ -1,0 +1,70 @@
+{
+    "name": "@nodecfdi/credentials",
+    "version": "1.1.0",
+    "description": "Librería para usar eFirma (fiel) y CSD (sellos) para el SAT",
+    "main": "dist/credentials.cjs.js",
+    "module": "dist/credentials.esm.js",
+    "browser": "dist/credentials.umd.js",
+    "types": "dist/credentials.d.ts",
+    "files": [
+        "dist"
+    ],
+    "homepage": "https://github.com/nodecfdi/credentials",
+    "repository": "https://github.com/nodecfdi/credentials",
+    "bugs": {
+        "url": "https://github.com/nodecfdi/credentials/issues"
+    },
+    "author": "OcelotlStudio <contacto@ocelotlstudio.com>",
+    "license": "MIT",
+    "keywords": [
+        "certificate",
+        "sat",
+        "csd",
+        "fiel",
+        "signing",
+        "firmar",
+        "factura",
+        "rfc",
+        "efirma",
+        "sellos"
+    ],
+    "scripts": {
+        "dev": "rollup -c -w",
+        "build": "rollup -c",
+        "generate": "rimraf build && rimraf dist && yarn build && yarn build:types && yarn docs && rimraf build",
+        "build:types": "tsc -p ./tsconfig.json --outDir build --declaration true && api-extractor run",
+        "lint": "eslint --ext .js,.ts .",
+        "test": "jest",
+        "docs": "typedoc src --out docs"
+    },
+    "devDependencies": {
+        "@microsoft/api-extractor": "^7.18.21",
+        "@rollup/plugin-commonjs": "^21.0.1",
+        "@rollup/plugin-node-resolve": "^13.0.6",
+        "@rollup/plugin-typescript": "^8.3.0",
+        "@types/jest": "^27.0.3",
+        "@types/jsrsasign": "^9.0.3",
+        "@types/luxon": "^2.0.9",
+        "@types/node": "^16.11.12",
+        "@typescript-eslint/eslint-plugin": "^5.6.0",
+        "@typescript-eslint/parser": "^5.6.0",
+        "eslint": "^8.4.1",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "jest": "^27.4.3",
+        "prettier": "^2.5.1",
+        "rollup": "^2.60.2",
+        "rollup-plugin-polyfill-node": "^0.8.0",
+        "ts-jest": "^27.1.1",
+        "ts-node": "^10.4.0",
+        "tslib": "^2.3.1",
+        "typedoc": "^0.22.10",
+        "typescript": "^4.5.2"
+    },
+    "dependencies": {
+        "@nodecfdi/utils-internal-baseconverter": "^1.1.0",
+        "jsrsasign": "^10.5.6",
+        "luxon": "^2.3.0",
+        "typescript-mix": "^3.1.3"
+    }
+}
