@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'fs';
+import { newline_toUnix } from 'jsrsasign';
 
 export class TestCase {
     public static filePath(filename: string): string {
@@ -9,6 +10,8 @@ export class TestCase {
         if (!existsSync(TestCase.filePath(filename))) {
             return '';
         }
-        return readFileSync(TestCase.filePath(filename), 'binary').replace(/\n$/, '');
+        let binaryString = readFileSync(TestCase.filePath(filename), 'binary');
+        binaryString = newline_toUnix(binaryString);
+        return binaryString.replace(/\n$/, '');
     }
 }
