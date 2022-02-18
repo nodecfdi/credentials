@@ -1,5 +1,5 @@
 import { TestCase } from '../test-case';
-import { Certificate } from "../../src";
+import { Certificate } from '../../src';
 import { DateTime } from 'luxon';
 
 describe('Certificate', () => {
@@ -15,7 +15,7 @@ describe('Certificate', () => {
         const certificate = createCertificateSello();
         const expected = TestCase.fileContents('CSD01_AAA010101AAA/certificate.cer.pem').trim();
 
-        expect(certificate.pem().trim()).toBe(expected);
+        expect(certificate.pem().trim()).toEqual(expected);
     });
 
     test('pem contents as one line', () => {
@@ -24,7 +24,7 @@ describe('Certificate', () => {
             'base64'
         );
 
-        expect(certificate.pemAsOneLine().trim()).toBe(expected);
+        expect(certificate.pemAsOneLine().trim()).toEqual(expected);
     });
 
     test('serial number', () => {

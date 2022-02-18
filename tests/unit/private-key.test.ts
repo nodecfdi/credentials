@@ -13,7 +13,7 @@ describe('PrivateKey', () => {
         const fileContents = TestCase.fileContents('FIEL_AAA010101AAA/private_key_protected.key.pem');
         const privateKey = new PrivateKey(fileContents, passPhrase);
 
-        expect(privateKey.pem()).toContain(fileContents);
+        expect(privateKey.pem().includes(fileContents)).toBeTruthy();
         expect(privateKey.pem().startsWith('-----BEGIN RSA PRIVATE KEY-----')).toBeTruthy();
         expect(privateKey.pem().endsWith('-----END RSA PRIVATE KEY-----')).toBeTruthy();
         expect(privateKey.passPhrase()).toEqual(passPhrase);
