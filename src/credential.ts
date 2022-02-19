@@ -79,11 +79,24 @@ export class Credential {
         return this._certificate.satType().isCsd();
     }
 
-    public sign(data: string, algorithm = SignatureAlgorithm.SHA256withRSA): string {
+    /**
+     * Sign string data by provider algorithm
+     *
+     * @param data
+     * @param algorithm
+     * @return Hexadecimal string signature
+     */
+    public sign(data: string, algorithm = SignatureAlgorithm.SHA256): string {
         return this._privateKey.sign(data, algorithm);
     }
 
-    public verify(data: string, signature: string, algorithm = SignatureAlgorithm.SHA256withRSA): boolean {
-        return this._certificate.publicKey().verify(data, signature, algorithm);
+    /**
+     * Verify string data is signed by current private key
+     *
+     * @param data Original string data
+     * @param signature Hexadecimal string signature
+     */
+    public verify(data: string, signature: string): boolean {
+        return this._certificate.publicKey().verify(data, signature);
     }
 }

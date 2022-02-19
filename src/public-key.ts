@@ -2,7 +2,6 @@ import { Key } from './internal/key';
 import { delegate } from 'typescript-mix';
 import { LocalFileOpenTrait } from './internal/local-file-open-trait';
 import { KEYUTIL, KJUR, RSAKey, BigInteger } from 'jsrsasign';
-import { SignatureAlgorithm } from './signature-algorithm';
 import { KeyType } from './internal/key-type-enum';
 
 export class PublicKey extends Key {
@@ -43,33 +42,11 @@ export class PublicKey extends Key {
      *
      * @param data
      * @param signature
-     * @param algorithm
      */
-    public verify(data: string, signature: string, algorithm = SignatureAlgorithm.SHA256withRSA): boolean {
-        return this.callOnPublicKey((publicKey: RSAKey | KJUR.crypto.DSA | KJUR.crypto.ECDSA): boolean => {
-            return this.signVerify(data, signature, publicKey, algorithm);
+    public verify(data: string, signature: string): boolean {
+        return this.callOnPublicKey((publicKey: unknown): boolean => {
+            return (publicKey as { verify(s: string, h: string): boolean }).verify(data, signature);
         });
-    }
-
-    /**
-     * This method is created to replace openssl_verify
-     *
-     * @param data
-     * @param signature
-     * @param publicKey
-     * @param algorithm
-     * @protected
-     */
-    protected signVerify(
-        data: string,
-        signature: string,
-        publicKey: RSAKey | KJUR.crypto.DSA | KJUR.crypto.ECDSA,
-        algorithm = SignatureAlgorithm.SHA256withRSA
-    ): boolean {
-        const validator = new KJUR.crypto.Signature({ alg: algorithm });
-        validator.init(publicKey);
-        validator.updateString(data);
-        return validator.verify(signature);
     }
 
     /**

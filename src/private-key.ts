@@ -110,14 +110,11 @@ export class PrivateKey extends Key {
         return this._publicKey;
     }
 
-    public sign(data: string, algorithm: SignatureAlgorithm = SignatureAlgorithm.SHA256withRSA): string {
-        return this.callOnPrivateKey((privateKey: RSAKey | KJUR.crypto.DSA | KJUR.crypto.ECDSA) => {
+    public sign(data: string, algorithm: SignatureAlgorithm = SignatureAlgorithm.SHA256): string {
+        return this.callOnPrivateKey((privateKey: unknown) => {
             let signature: string | null = null;
             try {
-                const sign = new KJUR.crypto.Signature({ alg: algorithm });
-                sign.init(privateKey);
-                sign.updateString(data);
-                signature = sign.sign();
+                signature = (privateKey as { sign(data: string, alg: string): string }).sign(data, algorithm);
             } catch (e) {
                 throw new Error('Cannot sign data: empty signature');
             }

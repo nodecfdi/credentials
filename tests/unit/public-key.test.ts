@@ -1,5 +1,5 @@
 import { TestCase } from '../test-case';
-import { PublicKey, PrivateKey, SignatureAlgorithm } from '../../src';
+import { PrivateKey, PublicKey } from '../../src';
 import { EOL } from 'os';
 
 describe('PublicKey', () => {
@@ -39,6 +39,5 @@ describe('PublicKey', () => {
 
         expect(publicKey.verify(sourceString, signature)).toBeTruthy();
         expect(publicKey.verify(`${sourceString}${EOL}`, signature)).toBeFalsy();
-        expect(publicKey.verify(sourceString, signature, SignatureAlgorithm.SHA512withRSA)).toBeFalsy();
     });
 });
