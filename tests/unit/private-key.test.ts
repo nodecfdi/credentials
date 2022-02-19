@@ -32,12 +32,12 @@ describe('PrivateKey', () => {
     test('sign', () => {
         const privateKey = createPrivateKey();
         const sourceString = 'the quick brown fox jumps over the lazy dog';
-        const signature = privateKey.sign(sourceString, SignatureAlgorithm.SHA512withRSA);
+        const signature = privateKey.sign(sourceString, SignatureAlgorithm.SHA512);
 
         expect(signature).not.toBe('');
 
         const publicKey = privateKey.publicKey();
-        expect(publicKey.verify(sourceString, signature, SignatureAlgorithm.SHA512withRSA)).toBeTruthy();
+        expect(publicKey.verify(sourceString, signature)).toBeTruthy();
     });
 
     test.each([
