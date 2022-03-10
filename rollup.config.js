@@ -13,10 +13,10 @@ export default [
             format: 'umd',
             globals: {
                 'typescript-mix': 'typescript-mix',
-                luxon: 'luxon',
-                jsrsasign: 'jsrsasign',
+                'luxon': 'luxon',
+                'jsrsasign': 'jsrsasign',
                 '@nodecfdi/utils-internal-baseconverter': 'utils-internal-baseconverter',
-                fs: 'fs',
+                'fs': 'fs',
             },
         },
         plugins: [resolve(), commonjs(), typescript({ tsconfig: './tsconfig.json' })],

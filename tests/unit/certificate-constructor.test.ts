@@ -1,5 +1,5 @@
 import { TestCase } from '../test-case';
-import { Certificate } from "../../src";
+import { Certificate } from '../../src';
 
 describe('Certificate constructor', () => {
     test('constructor with pem content', () => {

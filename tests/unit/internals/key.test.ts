@@ -1,4 +1,4 @@
-import { KeyType, Key } from "../../../src";
+import { KeyType, Key } from '../../../src';
 
 describe('Key', () => {
     test('accessors using fake key data', () => {

@@ -1,5 +1,5 @@
 import { TestCase } from '../test-case';
-import { PrivateKey } from "../../src";
+import { PrivateKey } from '../../src';
 
 describe('PrivateKey construct', () => {
     test('construct with valid content', () => {

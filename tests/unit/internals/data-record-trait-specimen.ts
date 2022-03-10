@@ -1,4 +1,4 @@
-import { DataRecordTrait } from "../../../src";
+import { DataRecordTrait } from '../../../src';
 import { DateTime } from 'luxon';
 
 /**

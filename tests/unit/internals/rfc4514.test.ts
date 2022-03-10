@@ -25,10 +25,10 @@ describe('Rfc4514', () => {
 
     test('escape record', () => {
         const subject = {
-            foo: 'foo bar',
+            'foo': 'foo bar',
             '#foo': '#foo bar',
             'foo ': 'foo bar ',
-            address: 'Street #1, Somewhere',
+            'address': 'Street #1, Somewhere',
         };
         const expected = [
             'foo=foo bar',
