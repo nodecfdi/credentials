@@ -142,4 +142,12 @@ describe('Certificate', () => {
 
         expect(certificate.signatureTypeLN()).not.toBe('');
     });
+
+    test('certificate with teletexstring', () => {
+        const certificate = new Certificate(TestCase.fileContents('00001000000413053762.cer'));
+
+        expect(certificate.rfc()).toBe('SMA0112284B2');
+        expect(certificate.legalName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
+        expect(certificate.branchName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
+    });
 });
