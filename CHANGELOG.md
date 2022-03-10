@@ -1,6 +1,11 @@
 # @nodecfdi/credentials ChangeLog
 
-## 1.2.0
+## 1.2.1
+- Updated dependencies
+- Added more rules to eslint and prettier (quality code)
+- Added test for certificate with TeletexStrings, and support to TeletexString
+
+# 1.2.0
 Add OpenSSL compatibility: sign and verify
 
 - Updated methods sign and verify on private key, public key and credential.
