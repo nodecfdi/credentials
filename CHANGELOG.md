@@ -1,5 +1,9 @@
 # @nodecfdi/credentials ChangeLog
 
+## 1.2.2
+- Updated dependencies
+- Revert changes on certificate thanks to `jsrsasign` added support native teletex string
+
 ## 1.2.1
 - Updated dependencies
 - Added more rules to eslint and prettier (quality code)
