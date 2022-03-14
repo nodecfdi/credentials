@@ -4,11 +4,10 @@ import { LocalFileOpenTrait } from './internal/local-file-open-trait';
 import { SerialNumber } from './serial-number';
 import { PublicKey } from './public-key';
 import { PemExtractor } from './pem-extractor';
-import { b64utos, KJUR, newline_toUnix, stob64, X509, zulutodate, hextorstr } from 'jsrsasign';
+import { b64utos, KJUR, newline_toUnix, stob64, X509, zulutodate } from 'jsrsasign';
 import { DateTime } from 'luxon';
 import { SatType, SatTypeEnum } from './internal/sat-type-enum';
 import { Rfc4514 } from './internal/rfc4514';
-import jsr from 'jsrsasign';
 
 interface Certificate extends DataRecordTrait {}
 
@@ -50,82 +49,10 @@ class Certificate {
         }
         this._pem = pem;
         this.dataRecord = (parsed as unknown as { getParam(): Record<string, unknown> }).getParam();
-        if (
-            this.subjectData('2.5.4.41') === null ||
-            this.subjectData('CN') === null ||
-            this.subjectData('OU') === null
-        ) {
-            const dnarraytostr = (
-                aDN: Array<Array<{ type: string | null; value: string | null; ds: string | null }>>
-            ): string => {
-                const atvtostr = (pATV: { type: string | null; value: string | null; ds: string | null }): string => {
-                    return pATV.type + '=' + pATV.value;
-                };
-
-                const rdnarraytostr = (
-                    aRDN: Array<{ type: string | null; value: string | null; ds: string | null }>
-                ): string => {
-                    return aRDN.map((x) => atvtostr(x).replace(/\+/, '\\+')).join('+');
-                };
-
-                return '/' + aDN.map((x) => rdnarraytostr(x).replace(/\//, '\\/')).join('/');
-            };
-
-            const subject = this.dataRecord['subject'] as {
-                array: Array<Array<{ type: string | null; value: string | null; ds: string | null }>>;
-                str: string;
-            };
-            subject.array = this.extractSubjectWithTeletexString(parsed);
-            subject.str = dnarraytostr(subject.array);
-        }
         this._rfc = `${this.subjectData('uniqueIdentifier')} `.split(' ')[0];
         this._legalName = this.subjectData('2.5.4.41');
         this.dataRecord.hash = KJUR.crypto.Util.hashHex(parsed.hex, 'sha1');
         this.dataRecord.signatureTypeLN = parsed.getSignatureAlgorithmName();
-    }
-
-    protected extractSubjectWithTeletexString(
-        parsed: X509
-    ): { type: string | null; value: string | null; ds: string | null }[][] {
-        const asn1Hex = (
-            jsr as unknown as {
-                ASN1HEX: {
-                    getChildIdx(h: string, idx: number): number[];
-                    getTLV(s: string, idx: number): string;
-                    getVbyList(
-                        h: string,
-                        currentIndex: number,
-                        nthList: number[],
-                        checkingTag?: string,
-                        removeUnusedBits?: boolean
-                    ): string | null;
-                };
-            }
-        ).ASN1HEX;
-        const result: { type: string | null; value: string | null; ds: string | null }[][] = [];
-        const a = asn1Hex.getChildIdx(parsed.getSubjectHex(), 0);
-        for (let i = 0; i < a.length; i++) {
-            const resultInternalArr: { type: string | null; value: string | null; ds: string | null }[] = [];
-            const h = asn1Hex.getTLV(parsed.getSubjectHex(), a[i]);
-            const aInternal = asn1Hex.getChildIdx(h, 0);
-            for (let j = 0; j < aInternal.length; j++) {
-                const hInternal = asn1Hex.getTLV(h, aInternal[j]);
-                const resultInternal: { type: string | null; value: string | null; ds: string | null } = {
-                    type: null,
-                    value: null,
-                    ds: null,
-                };
-                const ar = asn1Hex.getChildIdx(hInternal, 0);
-                const hOID = asn1Hex.getVbyList(hInternal, ar[0], [], '06');
-                const hValue = asn1Hex.getVbyList(hInternal, ar[1], []);
-                const oid = KJUR.asn1.ASN1Util.oidHexToInt(hOID || '');
-                resultInternal.type = KJUR.asn1.x509.OID.oid2atype(oid);
-                resultInternal.value = hextorstr(hValue || '');
-                resultInternalArr.push(resultInternal);
-            }
-            result.push(resultInternalArr);
-        }
-        return result;
     }
 
     /**
