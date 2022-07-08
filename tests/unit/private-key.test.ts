@@ -1,10 +1,13 @@
 import { TestCase } from '../test-case';
-import { PrivateKey, Certificate, SignatureAlgorithm } from '../../src';
+import { PrivateKey } from '~/private-key';
+import { SignatureAlgorithm } from '~/signature-algorithm';
+import { Certificate } from '~/certificate';
 
 describe('PrivateKey', () => {
     const createPrivateKey = (): PrivateKey => {
         const password = TestCase.fileContents('FIEL_AAA010101AAA/password.txt').trim();
         const filename = TestCase.filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
+
         return PrivateKey.openFile(filename, password);
     };
 
@@ -37,13 +40,25 @@ describe('PrivateKey', () => {
         expect(signature).not.toBe('');
 
         const publicKey = privateKey.publicKey();
-        expect(publicKey.verify(sourceString, signature)).toBeTruthy();
+        expect(publicKey.verify(sourceString, signature, SignatureAlgorithm.SHA512)).toBeTruthy();
+    });
+
+    test('sing dont set signature', () => {
+        const privateKey = createPrivateKey();
+        const sourceString = '';
+
+        const t = (): string => {
+            return privateKey.sign(sourceString, 'sha1' as SignatureAlgorithm);
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Cannot sign data: empty signature');
     });
 
     test.each([
         ['paired certificate', 'FIEL_AAA010101AAA/certificate.cer', true],
-        ['other certificate', 'CSD01_AAA010101AAA/certificate.cer', false],
-    ])('belongs to %s', (name: string, filename: string, expectBelongsTo: boolean) => {
+        ['other certificate', 'CSD01_AAA010101AAA/certificate.cer', false]
+    ])('belongs to %s', (_name: string, filename: string, expectBelongsTo: boolean) => {
         const certificate = Certificate.openFile(TestCase.filePath(filename));
         const privateKey = createPrivateKey();
         expect(privateKey.belongsTo(certificate)).toBe(expectBelongsTo);

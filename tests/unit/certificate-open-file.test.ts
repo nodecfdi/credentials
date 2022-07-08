@@ -1,5 +1,5 @@
 import { TestCase } from '../test-case';
-import { Certificate } from '../../src';
+import { Certificate } from '~/certificate';
 
 describe('Certificate open file', () => {
     test('open file with pem contents', () => {
