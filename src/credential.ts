@@ -12,7 +12,7 @@ export class Credential {
      *
      * @param certificate - Certificate Instance
      * @param privateKey - PrivateKey instance
-     * @throws {@link Error} Exception Certificate does not belong to private key
+     * @throws Exception Certificate does not belong to private key
      */
     constructor(certificate: Certificate, privateKey: PrivateKey) {
         if (!privateKey.belongsTo(certificate)) {

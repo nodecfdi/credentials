@@ -71,7 +71,7 @@ export class PublicKey extends Mixin(LocalFileOpenTrait, Key) {
      * @param callableFunction - Function to call and inject content
      * @param _publicKeyContents - PublicKey content
      *
-     * @throws {@link Error} when Cannot open public key
+     * @throws Error when Cannot open public key
      */
     private static callOnPublicKeyWithContents<T>(callableFunction: (pbk: RSAKey) => T, _publicKeyContents: string): T {
         let pubKey: RSAKey | KJUR.crypto.DSA | KJUR.crypto.ECDSA | undefined = undefined;

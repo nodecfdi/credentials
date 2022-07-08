@@ -99,6 +99,13 @@ export class PrivateKey extends Mixin(Key, LocalFileOpenTrait) {
         return this._publicKey;
     }
 
+    /**
+     * Sign string data by provider algorithm
+     *
+     * @param data - input data
+     * @param algorithm - algorithm to be used
+     * @returns Hexadecimal string signature
+     */
     public sign(data: string, algorithm: SignatureAlgorithm = SignatureAlgorithm.SHA256): string {
         return this.callOnPrivateKey((privateKey) => {
             try {
