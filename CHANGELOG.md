@@ -1,5 +1,22 @@
 # @nodecfdi/credentials ChangeLog
 
+## 1.3.0
+
+### Minor Changes
+
+- Feature added specific algorithm on sign and verify from credential, private key and public key.
+- Added example for browser usage.
+- Resolve dependencies for Browser and NodeJS usage.
+
+### CI
+
+- Added workflow build for use pnpm and updated source files for better coverage.
+- Added Sonarcloud for better quality code.
+
+### Build
+
+- Changed from rollup to microbundle for generation of library.
+
 ## 1.2.2
 
 - Updated dependencies
