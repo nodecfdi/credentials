@@ -1,22 +1,18 @@
+import { Mixin } from 'ts-mixer';
+import { b64utos, KJUR, newline_toUnix, stob64, X509, zulutodate } from 'jsrsasign';
+import { DateTime } from 'luxon';
+
 import { DataRecordTrait } from './internal/data-record-trait';
-import { delegate, use } from 'typescript-mix';
 import { LocalFileOpenTrait } from './internal/local-file-open-trait';
 import { SerialNumber } from './serial-number';
 import { PublicKey } from './public-key';
 import { PemExtractor } from './pem-extractor';
-import { b64utos, KJUR, newline_toUnix, stob64, X509, zulutodate } from 'jsrsasign';
-import { DateTime } from 'luxon';
 import { SatType, SatTypeEnum } from './internal/sat-type-enum';
 import { Rfc4514 } from './internal/rfc4514';
 
 interface Certificate extends DataRecordTrait {}
 
-class Certificate {
-    @use(DataRecordTrait) private this: unknown;
-
-    @delegate(LocalFileOpenTrait.localFileOpen)
-    private static localFileOpen: (filename: string) => string;
-
+class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
     /** string PEM contents including headers */
     private readonly _pem: string;
 
@@ -33,6 +29,7 @@ class Certificate {
     private _publicKey?: PublicKey;
 
     constructor(contents: string) {
+        super();
         if ('' === contents) {
             throw new SyntaxError('Create certificate from empty contents');
         }
@@ -58,17 +55,18 @@ class Certificate {
     /**
      * Convert X.509 DER base64 or X.509 DER to X509 PEM
      *
-     * @param contents
+     * @param contents - DER Content
      */
     public static convertDerToPem(contents: string): string {
         // effectively compare that all the content is base64, if it isn't then encode it
         if (contents !== stob64(b64utos(contents) ?? '')) {
             contents = stob64(contents);
         }
+
         return [
             '-----BEGIN CERTIFICATE-----\n',
             `${(contents.match(/.{1,64}/g) || []).join('\n')}\n`,
-            '-----END CERTIFICATE-----',
+            '-----END CERTIFICATE-----'
         ].join('');
     }
 
@@ -76,7 +74,9 @@ class Certificate {
      * Create a Certificate object by opening a local file
      * The content file can be a certificate format X.509 PEM, X.509 DER or X.509 DER base64
      *
-     * @param filename
+     * @param filename - file name to be read
+     *
+     * This function only works in Node.js.
      */
     public static openFile(filename: string): Certificate {
         return new Certificate(Certificate.localFileOpen(filename));
@@ -90,6 +90,7 @@ class Certificate {
         const normaliceEnds = newline_toUnix(this.pem());
         const allLines = normaliceEnds.split(/\n/);
         const filterLines = allLines.filter((s) => /^((?!-).)*$/.test(s));
+
         return filterLines.join('');
     }
 
@@ -142,6 +143,7 @@ class Certificate {
             const serialObj = this.extractObjectStrings('serial');
             this._serialNumber = this.createSerialNumber(serialObj.hex, serialObj.str);
         }
+
         return this._serialNumber;
     }
 
@@ -174,6 +176,7 @@ class Certificate {
             // The public key can be created from PUBLIC KEY or CERTIFICATE
             this._publicKey = new PublicKey(this.pem());
         }
+
         return this._publicKey;
     }
 
@@ -181,6 +184,7 @@ class Certificate {
         if ('' == this.branchName()) {
             return new SatTypeEnum(SatType.FIEL);
         }
+
         return new SatTypeEnum(SatType.CSD);
     }
 
@@ -188,6 +192,7 @@ class Certificate {
         if (!datetime) {
             datetime = DateTime.now();
         }
+
         return (
             datetime.toMillis() >= this.validFromDateTime().toMillis() &&
             datetime.toMillis() <= this.validToDateTime().toMillis()
@@ -203,6 +208,7 @@ class Certificate {
             if (decimal.substring(0, 2).toLowerCase() === '0x'.toLowerCase()) {
                 return SerialNumber.createFromHexadecimal(decimal.slice(2));
             }
+
             return SerialNumber.createFromDecimal(decimal);
         }
         throw new Error('Certificate does not contain a serial number');
@@ -216,6 +222,7 @@ class Certificate {
                 issuer[rdn.type] = rdn.value;
             });
         });
+
         return new Rfc4514().escapeRecord(issuer);
     }
 
@@ -229,6 +236,7 @@ class Certificate {
         if (RDN) {
             return (RDN.find((rdn) => rdn.type === target) || { value: '' }).value;
         }
+
         return '';
     }
 }

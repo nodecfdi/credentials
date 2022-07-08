@@ -34,6 +34,7 @@ export class PemExtractor {
         if ('' !== extracted) {
             return extracted;
         }
+
         // PKCS#8 encrypted private key
         return this.extractBase64('ENCRYPTED PRIVATE KEY');
     }
@@ -42,12 +43,14 @@ export class PemExtractor {
         type = type.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + '/' + '-]', 'g'), '\\$&');
         const pattern = `^-----BEGIN ${type}-----\r?\n([A-Za-z0-9+/=]+\r?\n)+-----END ${type}-----\r?\n?$`;
         const matches = this.getContents().match(new RegExp(pattern, 'm'));
+
         return this.normalizeLineEndings(`${matches ? matches[0] : ''}`);
     }
 
     protected extractRsaProtected(): string {
         const pattern = `^-----BEGIN RSA PRIVATE KEY-----\r?\nProc-Type: .+\r?\nDEK-Info: .+\r?\n\r?\n([A-Za-z0-9+/=]+\r?\n)+-----END RSA PRIVATE KEY-----\r?\n?$`;
         const matches = this.getContents().match(new RegExp(pattern, 'm'));
+
         return this.normalizeLineEndings(`${matches ? matches[0] : ''}`);
     }
 

@@ -1,9 +1,14 @@
 export class Rfc4514 {
     public static LEAD_CHARS = [' ', '#'];
+
     public static LEAD_REPLACEMENTS = ['\\20', '\\22'];
+
     public static TRAIL_CHARS = [' '];
+
     public static TRAIL_REPLACEMENTS = ['\\20'];
+
     public static INNER_CHARS = [/\\/g, /"/g, /\+/g, /,/g, /;/g, /</g, /=/g, />/g];
+
     public static INNER_REPLACEMENTS = ['\\5C', '\\22', '\\2b', '\\2c', '\\3b', '\\3c', '\\3d', '\\3e'];
 
     public escape(subject: string): string {
@@ -14,6 +19,7 @@ export class Rfc4514 {
             search.forEach((from, index) => {
                 fixedTarget = fixedTarget.replace(from, replace[index]);
             });
+
             return fixedTarget;
         };
         const firstChar = subject.substring(0, 1);

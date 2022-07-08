@@ -1,7 +1,9 @@
 export enum SignatureAlgorithm {
-    SHA1 = 'sha1',
-    SHA256 = 'sha256',
-    SHA512 = 'sha512',
-    MD5 = 'md5',
-    RIPED160 = 'ripemd160',
+    MD5 = 'MD5withRSA',
+    SHA1 = 'SHA1withRSA',
+    SHA224 = 'SHA224withRSA',
+    SHA256 = 'SHA256withRSA',
+    SHA384 = 'SHA384withRSA',
+    SHA512 = 'SHA512withRSA',
+    RIPED160 = 'RIPEMD160withRSA'
 }
