@@ -12,6 +12,7 @@ export class TestCase {
         }
         let binaryString = readFileSync(TestCase.filePath(filename), 'binary');
         binaryString = newline_toUnix(binaryString);
+
         return binaryString.replace(/\n$/, '');
     }
 }

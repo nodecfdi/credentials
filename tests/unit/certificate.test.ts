@@ -1,6 +1,7 @@
-import { TestCase } from '../test-case';
-import { Certificate } from '../../src';
 import { DateTime } from 'luxon';
+import { TestCase } from '../test-case';
+import { Certificate } from '~/certificate';
+import { SerialNumber } from '~/serial-number';
 
 describe('Certificate', () => {
     const createCertificate = (): Certificate => {
@@ -64,6 +65,10 @@ describe('Certificate', () => {
         expect(createCertificate().legalName()).toBe('ACCEM SERVICIOS EMPRESARIALES SC');
     });
 
+    test('sat type efirma', () => {
+        expect(createCertificate().satType().isFiel()).toBeTruthy();
+    });
+
     test('sat type sello', () => {
         expect(createCertificateSello().satType().isCsd()).toBeTruthy();
     });
@@ -86,7 +91,7 @@ describe('Certificate', () => {
             'ST=Distrito Federal',
             'L=Coyoacán',
             'uniqueIdentifier=SAT970701NN3',
-            '1.2.840.113549.1.9.2=Responsable: ACDMA',
+            '1.2.840.113549.1.9.2=Responsable: ACDMA'
         ];
         expect(certificate.issuerAsRfc4514().split(',')).toStrictEqual(expected);
     });
@@ -149,5 +154,30 @@ describe('Certificate', () => {
         expect(certificate.rfc()).toBe('SMA0112284B2');
         expect(certificate.legalName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
         expect(certificate.branchName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
+    });
+
+    const certificateCreateSerialNumber = (hexadecimal: string, decimal: string): SerialNumber => {
+        const certificate = Object.create(Certificate.prototype);
+        const serialNumber = certificate.createSerialNumber(hexadecimal, decimal);
+
+        return serialNumber as SerialNumber;
+    };
+
+    test('create serial number', () => {
+        let serialNumber = certificateCreateSerialNumber('0x3330', '');
+        expect(serialNumber.hexadecimal()).toBe('3330');
+
+        serialNumber = certificateCreateSerialNumber('', '0x3330');
+        expect(serialNumber.hexadecimal()).toBe('3330');
+
+        serialNumber = certificateCreateSerialNumber('', '13104');
+        expect(serialNumber.hexadecimal()).toBe('3330');
+
+        const t = (): SerialNumber => {
+            return certificateCreateSerialNumber('', '');
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Certificate does not contain a serial number');
     });
 });

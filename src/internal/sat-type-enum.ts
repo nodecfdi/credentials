@@ -1,14 +1,15 @@
 enum SatType {
     FIEL = 'FIEL',
-    CSD = 'CSD',
+    CSD = 'CSD'
 }
 
 class SatTypeEnum {
     private readonly type: string;
 
     constructor(type: string) {
-        if (/^-?\d+$/.test(type)) {
-            throw new SyntaxError('Index Not Found');
+        /* istanbul ignore next */
+        if (!(type in SatType)) {
+            throw new Error('Index Not Found');
         }
         this.type = type;
     }

@@ -1,15 +1,15 @@
 enum KeyType {
     RSA = 'RSA',
     DSA = 'DSA',
-    ECDSA = 'ECDSA',
+    ECDSA = 'ECDSA'
 }
 
 class KeyTypeEnum {
     private readonly type: string;
 
     constructor(type: string) {
-        if (/^-?\d+$/.test(type)) {
-            throw new SyntaxError('Index Not Found');
+        if (!(type in KeyType)) {
+            throw new Error('Index Not Found');
         }
         this.type = type;
     }
@@ -18,10 +18,12 @@ class KeyTypeEnum {
         return this.type === KeyType.RSA;
     }
 
+    /* istanbul ignore next */
     public isDSA(): boolean {
         return this.type === KeyType.DSA;
     }
 
+    /* istanbul ignore next */
     public isECDSA(): boolean {
         return this.type === KeyType.ECDSA;
     }

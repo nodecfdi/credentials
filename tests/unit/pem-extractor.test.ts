@@ -1,5 +1,5 @@
 import { EOL } from 'os';
-import { PemExtractor } from '../../src/pem-extractor';
+import { PemExtractor } from '~/pem-extractor';
 import { TestCase } from '../test-case';
 
 describe('PemExtractor', () => {
@@ -14,8 +14,8 @@ describe('PemExtractor', () => {
 
     test.each([
         ['CRLF', '\r\n'],
-        ['LF', '\n'],
-    ])('extractor with fake content %s', (name: string, eol: string) => {
+        ['LF', '\n']
+    ])('extractor with fake content %s', (_name: string, eol: string) => {
         const content = [
             '-----BEGIN OTHER SECTION-----',
             'OTHER SECTION',
@@ -28,7 +28,7 @@ describe('PemExtractor', () => {
             '-----END PUBLIC KEY-----',
             '-----BEGIN PRIVATE KEY-----',
             'FOO+PRIVATE+KEY',
-            '-----END PRIVATE KEY-----',
+            '-----END PRIVATE KEY-----'
         ].join(eol);
         const extractor = new PemExtractor(content);
 
@@ -75,7 +75,7 @@ describe('PemExtractor', () => {
         const contents = [
             '-----BEGIN RSA PRIVATE KEY-----',
             'FOO+RSA+PRIVATE+KEY',
-            '-----END RSA PRIVATE KEY-----',
+            '-----END RSA PRIVATE KEY-----'
         ].join(EOL);
         const extractor = new PemExtractor(contents);
 

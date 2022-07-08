@@ -1,5 +1,5 @@
 import { TestCase } from '../test-case';
-import { PrivateKey } from '../../src';
+import { PrivateKey } from '~/private-key';
 
 describe('PrivateKey construct', () => {
     test('construct with valid content', () => {
@@ -27,43 +27,39 @@ describe('PrivateKey construct', () => {
     test('open file with invalid password', () => {
         const filename = TestCase.filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
 
-        expect.hasAssertions();
-        try {
-            PrivateKey.openFile(filename, '');
-        } catch (e) {
-            expect(e).toBeInstanceOf(Error);
-            expect(e).toHaveProperty('message', 'Cannot open private key');
-        }
+        const t = (): PrivateKey => {
+            return PrivateKey.openFile(filename, '');
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Cannot open private key');
     });
 
     test('construct with empty content', () => {
-        expect.hasAssertions();
-        try {
-            new PrivateKey('', '');
-        } catch (e) {
-            expect(e).toBeInstanceOf(SyntaxError);
-            expect(e).toHaveProperty('message', 'Private key is empty');
-        }
+        const t = (): PrivateKey => {
+            return new PrivateKey('', '');
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Private key is empty');
     });
 
     test('construct with invalid content', () => {
-        expect.hasAssertions();
-        try {
-            new PrivateKey('invalid content', '');
-        } catch (e) {
-            expect(e).toBeInstanceOf(Error);
-            expect(e).toHaveProperty('message', 'Cannot open private key: malformed plain PKCS8 private key(code:001)');
-        }
+        const t = (): PrivateKey => {
+            return new PrivateKey('invalid content', '');
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Cannot open private key: malformed plain PKCS8 private key(code:001)');
     });
 
     test('construct with invalid but base64 content', () => {
-        expect.hasAssertions();
-        try {
-            new PrivateKey('INVALID+CONTENT', '');
-        } catch (e) {
-            expect(e).toBeInstanceOf(Error);
-            expect(e).toHaveProperty('message', 'Cannot open private key: malformed plain PKCS8 private key(code:001)');
-        }
+        const t = (): PrivateKey => {
+            return new PrivateKey('INVALID+CONTENT', '');
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Cannot open private key: malformed plain PKCS8 private key(code:001)');
     });
 
     test('construct with pkcs8Encrypted', () => {

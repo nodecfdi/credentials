@@ -2,9 +2,6 @@ import { DateTime } from 'luxon';
 
 export type ScalarType = string | number | boolean;
 
-/**
- * @mixin
- */
 export abstract class DataRecordTrait {
     /** content of X509_parse or pkey_get_details */
     protected dataRecord!: Record<string, unknown>;
@@ -14,6 +11,7 @@ export abstract class DataRecordTrait {
         if (/boolean|number|string/.test(typeof value)) {
             return value as ScalarType;
         }
+
         return defaultValue;
     }
 
@@ -26,16 +24,16 @@ export abstract class DataRecordTrait {
         if (!Number.isNaN(Number(value))) {
             return Math.floor(Number(value));
         }
+
         return 0;
     }
-
-
 
     protected extractObject(key: string): Record<string, unknown> {
         const data = this.dataRecord[key] ?? null;
         if (!data || typeof data !== 'object') {
             return {};
         }
+
         return data as Record<string, unknown>;
     }
 

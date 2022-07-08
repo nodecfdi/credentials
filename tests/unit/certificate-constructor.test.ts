@@ -1,5 +1,5 @@
 import { TestCase } from '../test-case';
-import { Certificate } from '../../src';
+import { Certificate } from '~/certificate';
 
 describe('Certificate constructor', () => {
     test('constructor with pem content', () => {
@@ -17,22 +17,20 @@ describe('Certificate constructor', () => {
     });
 
     test('constructor with empty content', () => {
-        expect.hasAssertions();
-        try {
-            new Certificate('');
-        } catch (e) {
-            expect(e).toBeInstanceOf(SyntaxError);
-            expect(e).toHaveProperty('message', 'Create certificate from empty contents');
-        }
+        const t = (): Certificate => {
+            return new Certificate('');
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Create certificate from empty contents');
     });
 
     test('constructor with invalid content', () => {
-        expect.hasAssertions();
-        try {
-            new Certificate('x');
-        } catch (e) {
-            expect(e).toBeInstanceOf(SyntaxError);
-            expect(e).toHaveProperty('message', 'Cannot parse X509 certificate from contents');
-        }
+        const t = (): Certificate => {
+            return new Certificate('x');
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Cannot parse X509 certificate from contents');
     });
 });

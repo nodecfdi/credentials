@@ -1,7 +1,8 @@
-import { delegate } from 'typescript-mix';
-import { LocalFileOpenTrait } from '../../../src/internal/local-file-open-trait';
+import { Mixin } from 'ts-mixer';
+import { LocalFileOpenTrait } from '~/internal/local-file-open-trait';
 
-export class LocalFileOpenTraitSpecimen {
-    @delegate(LocalFileOpenTrait.localFileOpen)
-    public localFileOpen!: (filename: string) => string;
+export class LocalFileOpenTraitSpecimen extends Mixin(LocalFileOpenTrait) {
+    public localFileOpen(filename: string): string {
+        return LocalFileOpenTrait.localFileOpen(filename);
+    }
 }

@@ -1,17 +1,12 @@
+import { Mixin } from 'ts-mixer';
 import { DataRecordTrait } from './data-record-trait';
-import { use } from 'typescript-mix';
 import { KeyType, KeyTypeEnum } from './key-type-enum';
 
-interface Key extends DataRecordTrait {}
-
-/**
- * @mixes DataRecordTrait
- */
-class Key {
-    @use(DataRecordTrait) private this: unknown;
+class Key extends Mixin(DataRecordTrait) {
     private typeKey?: KeyTypeEnum;
 
     constructor(dataRecord: Record<string, unknown>) {
+        super();
         this.dataRecord = dataRecord;
     }
 
@@ -31,6 +26,7 @@ class Key {
         if (!this.typeKey) {
             this.typeKey = new KeyTypeEnum(this.extractString('type') || KeyType.RSA);
         }
+
         return this.typeKey;
     }
 

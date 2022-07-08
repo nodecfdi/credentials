@@ -1,6 +1,8 @@
-import { TestCase } from '../test-case';
-import { PrivateKey, PublicKey } from '../../src';
 import { EOL } from 'os';
+import { TestCase } from '../test-case';
+import { PublicKey } from '~/public-key';
+import { PrivateKey } from '~/private-key';
+import { SignatureAlgorithm } from '~/signature-algorithm';
 
 describe('PublicKey', () => {
     test('create public key from certificate', () => {
@@ -19,13 +21,12 @@ describe('PublicKey', () => {
     test('create public key with invalid data', () => {
         const contents = 'invalid data';
 
-        expect.hasAssertions();
-        try {
-            new PublicKey(contents);
-        } catch (e) {
-            expect(e).toBeInstanceOf(Error);
-            expect(e).toHaveProperty('message', 'Cannot open public key: not supported argument');
-        }
+        const t = (): PublicKey => {
+            return new PublicKey(contents);
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Cannot open public key');
     });
 
     test('verify', () => {
@@ -39,5 +40,17 @@ describe('PublicKey', () => {
 
         expect(publicKey.verify(sourceString, signature)).toBeTruthy();
         expect(publicKey.verify(`${sourceString}${EOL}`, signature)).toBeFalsy();
+        expect(publicKey.verify(sourceString, signature, SignatureAlgorithm.SHA512)).toBeFalsy();
+    });
+
+    test('verify with error', () => {
+        const publicKey = PublicKey.openFile(TestCase.filePath('CSD01_AAA010101AAA/public_key.pem'));
+
+        const t = (): boolean => {
+            return publicKey.verify('', '', 'sha512' as SignatureAlgorithm);
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Verify error');
     });
 });

@@ -1,4 +1,5 @@
-import { KeyType, Key } from '../../../src';
+import { Key } from '~/internal/key';
+import { KeyType } from '~/internal/key-type-enum';
 
 describe('Key', () => {
     test('accessors using fake key data', () => {
@@ -7,8 +8,8 @@ describe('Key', () => {
             key: 'x-key',
             type: KeyType.RSA,
             RSA: {
-                x: 'foo',
-            },
+                x: 'foo'
+            }
         };
         const key = new Key(data);
         expect(key.parsed()).toStrictEqual(data);

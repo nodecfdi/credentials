@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+    <head>
+        <title>NodeCfdi - Credentials</title>
+        <style>
+            #certificate-form {
+                margin-bottom: 15px;
+                padding: 5px 10px;
+                border: 2px solid #ccc;
+                border-radius: 2px;
+                box-sizing: border-box;
+                min-width: 0;
+                max-width: 100%;
+                display: block;
+            }
+            .mt {
+                margin-top: 10px;
+            }
+            #input-raw {
+                margin-bottom: 15px;
+                padding: 5px 10px;
+                border: 2px solid #ccc;
+                border-radius: 2px;
+                box-sizing: border-box;
+                min-width: 0;
+                max-width: 100%;
+                display: block;
+            }
+            #input-raw label h5 {
+                margin: 0;
+                margin-bottom: 10px;
+                padding: 0;
+                font-size: 100%;
+            }
+            #input-raw textarea {
+                background-color: #f2f2f2;
+                width: 100%;
+                min-height: 100px;
+                box-shadow: inset 0 0 5px #ccc;
+                padding: 5px;
+                border: 1px solid #999;
+                box-sizing: border-box;
+                border-radius: 2px;
+            }
+            .button-style {
+                background: #adcce5;
+                border: 2px solid #3a88e5;
+                font-size: 21px;
+                border-radius: 5px;
+                color: #124c7b;
+                box-shadow: 0 0 2px #343434;
+                padding: 5px 10px;
+                margin: 0;
+                cursor: pointer;
+            }
+            #output-certificate-info {
+                margin: 15px 0 0 0;
+                padding: 5px 10px;
+                border: 2px solid #ccc;
+                border-radius: 2px;
+                box-sizing: border-box;
+                min-width: 0;
+                max-width: 100%;
+                display: flex;
+                flex-direction: row;
+            }
+            #output-certificate-info label h5 {
+                margin: 0;
+                margin-bottom: 10px;
+                padding: 0;
+                font-size: 100%;
+            }
+            #output-certificate-info textarea {
+                background-color: #f2f2f2;
+                width: 100%;
+                min-height: 100px;
+                box-shadow: inset 0 0 5px #ccc;
+                padding: 5px;
+                border: 1px solid #999;
+                box-sizing: border-box;
+                border-radius: 2px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>CREDENTIALS</h1>
+        <form id="info-credentials" name="inf-credentials">
+            <div>
+                <fieldset id="certificate-form">
+                    <legend>INPUT</legend>
+                    <div class="mt">
+                        Certificado: <input id="cert" name="cert-file" type="file" accept=".cer" tabindex="1" />
+                    </div>
+                    <div class="mt">Key: <input id="key" name="key-file" type="file" accept=".key" tabindex="2" /></div>
+                    <div class="mt">Password: <input id="pass" name="password" type="password" tabindex="3" /></div>
+                </fieldset>
+                <fieldset id="input-raw">
+                    <legend>INPUT TEXT</legend>
+                    <label>
+                        <h5>Text to Sign</h5>
+                        <textarea name="text" id="text-raw"></textarea>
+                    </label>
+                </fieldset>
+                <div style="display: inline">
+                    <button id="certificate-button" class="button-style" value="1" name="process" type="submit">
+                        Info Certificate
+                    </button>
+                    <button id="sign-button" class="button-style" value="2" name="sign" type="submit">Sign Text</button>
+                </div>
+                <fieldset id="output-certificate-info">
+                    <legend>OUTPUT</legend>
+                    <div style="flex-grow: 1; padding: 5px">
+                        <label>
+                            <h5>Certificate Information</h5>
+                            <textarea readonly name="cert-info" id="certificate-output"></textarea>
+                        </label>
+                    </div>
+                    <div style="flex-grow: 1; padding: 5px">
+                        <label>
+                            <h5>Signed text on Hexadecimal string</h5>
+                            <textarea readonly name="sign-info" id="sign-output"></textarea>
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+        </form>
+        <script
+            type="text/javascript"
+            src="https://unpkg.com/@nodecfdi/base-converter@0.1.0/dist/prod/base-converter.umd.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.25/jsrsasign-all-min.js"
+        ></script>
+        <script type="text/javascript">
+            window.jsrsasign = {
+                b64utos: window.b64utos,
+                KJUR: window.KJUR,
+                newline_toUnix: window.newline_toUnix,
+                stob64: window.stob64,
+                X509: window.X509,
+                zulutodate: window.zulutodate,
+                BigInteger: window.BigInteger,
+                KEYUTIL: window.KEYUTIL,
+                RSAKey: window.RSAKey
+            };
+        </script>
+        <script
+            type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/luxon@2.4.0/build/global/luxon.min.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="https://unpkg.com/@nodecfdi/credentials@1.3.0/dist/prod/credentials.umd.js"
+        ></script>
+        <script type="text/javascript" defer="defer">
+            const { Credential, Certificate } = window.credentials;
+
+            async function readFileAsync(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = function (evt) {
+                        resolve(reader.result);
+                    };
+                    reader.onerror = reject;
+                    reader.readAsBinaryString(file);
+                });
+            }
+
+            async function sign() {
+                const certFile = document.getElementById('cert').files[0];
+                const keyFile = document.getElementById('key').files[0];
+                const password = document.getElementById('pass').value;
+                const textRaw = document.getElementById('text-raw').value;
+                const outputText = document.getElementById('sign-output');
+
+                outputText.value = '';
+                if (!certFile) {
+                    alert('Certificado requerido');
+                    return;
+                }
+
+                if (!keyFile) {
+                    alert('Llave requerida');
+                    return;
+                }
+
+                try {
+                    const certContent = await readFileAsync(certFile);
+                    const keyContent = await readFileAsync(keyFile);
+
+                    const credential = Credential.create(certContent, keyContent, password);
+                    outputText.value = credential.sign(textRaw);
+                } catch (e) {
+                    console.log(e);
+                    alert(e.message);
+                }
+            }
+
+            async function process() {
+                const certFile = document.getElementById('cert').files[0];
+                const keyFile = document.getElementById('key').files[0];
+                const password = document.getElementById('pass').value;
+                const output = document.getElementById('certificate-output');
+                output.value = '';
+
+                if (!certFile) {
+                    alert('Certificado requerido');
+                    return;
+                }
+
+                if (!keyFile) {
+                    alert('Llave requerida');
+                    return;
+                }
+
+                try {
+                    const certContent = await readFileAsync(certFile);
+                    const keyContent = await readFileAsync(keyFile);
+
+                    const credential = Credential.create(certContent, keyContent, password);
+                    const certificate = credential.certificate();
+                    output.value = certificate.issuerAsRfc4514();
+                } catch (e) {
+                    console.log(e);
+                    alert(e.message);
+                }
+            }
+
+            function initializeForm() {
+                const form = document.getElementById('info-credentials');
+                if (!form) {
+                    return;
+                }
+                form.addEventListener('submit', function (event) {
+                    const value = event.submitter.value;
+                    event.preventDefault();
+                    if (value === 1) {
+                        void process();
+                    } else {
+                        void sign();
+                    }
+                    return false;
+                });
+            }
+
+            initializeForm();
+        </script>
+    </body>
+</html>

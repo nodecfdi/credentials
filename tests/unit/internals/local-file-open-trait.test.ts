@@ -24,63 +24,58 @@ describe('LocalFileOpenTrait', () => {
     });
 
     test('open empty file', () => {
-        expect.hasAssertions();
-        try {
-            specimen.localFileOpen('');
-        } catch (e) {
-            expect(e).toBeInstanceOf(SyntaxError);
-            expect(e).toHaveProperty('message', 'The file to open is empty');
-        }
+        const t = (): string => {
+            return specimen.localFileOpen('');
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('The file to open is empty');
     });
 
     test('open with double scheme on path', () => {
         const filename = 'file://http://example.com/index.htm';
 
-        expect.hasAssertions();
-        try {
-            specimen.localFileOpen(filename);
-        } catch (e) {
-            expect(e).toBeInstanceOf(SyntaxError);
-            expect(e).toHaveProperty('message', 'Invalid scheme to open file');
-        }
+        const t = (): string => {
+            return specimen.localFileOpen(filename);
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Invalid scheme to open file');
     });
 
     test('open with directory', () => {
         const filename = __dirname;
 
-        expect.hasAssertions();
-        try {
-            specimen.localFileOpen(filename);
-        } catch (e) {
-            expect(e).toBeInstanceOf(Error);
-            expect(e).toHaveProperty('message', 'File content is empty');
-        }
+        const t = (): string => {
+            return specimen.localFileOpen(filename);
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('File content is empty');
     });
 
     test('open with non existent path', () => {
         const filename = `${__dirname}/nonexistent`;
 
-        expect.hasAssertions();
-        try {
-            specimen.localFileOpen(filename);
-        } catch (e) {
-            expect(e).toBeInstanceOf(Error);
-            expect(e).toHaveProperty('message', 'Unable to locate the file to open');
-        }
+        const t = (): string => {
+            return specimen.localFileOpen(filename);
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Unable to locate the file to open');
     });
 
     test.each([
         ['c:/certs/file.txt'],
         ['file://c:/certs/file.txt'],
         ['c:\\certs\\file.txt'],
-        ['file://c:\\certs\\file.txt'],
-    ])('open with windows path', (filename) => {
-        expect.hasAssertions();
-        try {
-            specimen.localFileOpen(filename);
-        } catch (e) {
-            expect(e).toBeInstanceOf(Error);
-            expect(e).toHaveProperty('message', 'Unable to locate the file to open');
-        }
+        ['file://c:\\certs\\file.txt']
+    ])('open with windows path %s', (filename) => {
+        const t = (): string => {
+            return specimen.localFileOpen(filename);
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Unable to locate the file to open');
     });
 });

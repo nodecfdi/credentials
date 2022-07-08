@@ -1,5 +1,7 @@
 import { TestCase } from '../test-case';
-import { Certificate, PrivateKey, Credential } from '../../src';
+import { Certificate } from '~/certificate';
+import { PrivateKey } from '~/private-key';
+import { Credential } from '~/credential';
 
 describe('Credential', () => {
     test('create with matching values', () => {
@@ -15,13 +17,12 @@ describe('Credential', () => {
         const certificate = Certificate.openFile(TestCase.filePath('CSD01_AAA010101AAA/certificate.cer'));
         const privateKey = PrivateKey.openFile(TestCase.filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
 
-        expect.hasAssertions();
-        try {
-            new Credential(certificate, privateKey);
-        } catch (e) {
-            expect(e).toBeInstanceOf(SyntaxError);
-            expect(e).toHaveProperty('message', 'Certificate does not belong to private key');
-        }
+        const t = (): Credential => {
+            return new Credential(certificate, privateKey);
+        };
+
+        expect(t).toThrow(Error);
+        expect(t).toThrow('Certificate does not belong to private key');
     });
 
     test('create with files', () => {

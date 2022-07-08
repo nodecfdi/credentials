@@ -9,7 +9,7 @@ describe('DataRecordTrait', () => {
             string: 'bar',
             int: 1,
             date: 1547388916,
-            object: { foo: 'bar', bar: 'foo', num: 1 },
+            object: { foo: 'bar', bar: 'foo', num: 1 }
         });
     });
 
@@ -42,19 +42,32 @@ describe('DataRecordTrait', () => {
         expect(specimen.extractObject('object')).toStrictEqual({
             foo: 'bar',
             bar: 'foo',
-            num: 1,
+            num: 1
         });
         expect(specimen.extractObject('date')).toStrictEqual({});
         expect(specimen.extractObject('nothing')).toStrictEqual({});
     });
 
     test('extract object has string', () => {
-        expect(specimen.extractObjectString('object')).toStrictEqual({
+        expect(specimen.extractObjectStrings('object')).toStrictEqual({
             foo: 'bar',
             bar: 'foo',
-            num: '1',
+            num: '1'
         });
-        expect(specimen.extractObjectString('date')).toStrictEqual({});
-        expect(specimen.extractObjectString('nothing')).toStrictEqual({});
+        expect(specimen.extractObjectStrings('date')).toStrictEqual({});
+        expect(specimen.extractObjectStrings('nothing')).toStrictEqual({});
+    });
+
+    test('extract object omit not scalar or object values', () => {
+        specimen = new DataRecordTraitSpecimen({
+            object: { foo: 'bar', bar: 'foo', num: 1, empty: undefined }
+        });
+        expect(specimen.extractObjectStrings('object')).toStrictEqual({
+            foo: 'bar',
+            bar: 'foo',
+            num: '1'
+        });
+        expect(specimen.extractObjectStrings('date')).toStrictEqual({});
+        expect(specimen.extractObjectStrings('nothing')).toStrictEqual({});
     });
 });

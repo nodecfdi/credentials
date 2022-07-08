@@ -1,32 +1,29 @@
-import { DataRecordTrait } from '../../../src';
+import { DataRecordTrait } from '~/internal/data-record-trait';
 import { DateTime } from 'luxon';
 
-/**
- * @mixes DataRecordTrait
- */
 class DataRecordTraitSpecimen extends DataRecordTrait {
     constructor(dataRecord: Record<string, unknown>) {
         super();
         this.dataRecord = dataRecord;
     }
 
-    public extractString(key: string): string {
+    public override extractString(key: string): string {
         return super.extractString(key);
     }
 
-    public extractInteger(key: string): number {
+    public override extractInteger(key: string): number {
         return super.extractInteger(key);
     }
 
-    public extractDateTime(key: string): DateTime {
+    public override extractDateTime(key: string): DateTime {
         return super.extractDateTime(key);
     }
 
-    public extractObject(key: string): Record<string, unknown> {
+    public override extractObject(key: string): Record<string, unknown> {
         return super.extractObject(key);
     }
 
-    public extractObjectString(key: string): Record<string, string> {
+    public override extractObjectStrings(key: string): Record<string, string> {
         return super.extractObjectStrings(key);
     }
 }
