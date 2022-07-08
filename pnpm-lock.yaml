@@ -34,7 +34,7 @@ specifiers:
   prettier: ^2.7.1
   shx: ^0.3.4
   ts-mixer: ^6.0.1
-  typedoc: ^0.23.5
+  typedoc: ^0.23.6
   typedoc-theme-hierarchy: ^2.0.5
   typescript: ^4.7.4
   zx: ^7.0.7
@@ -75,8 +75,8 @@ devDependencies:
   microbundle: 0.15.0
   prettier: 2.7.1
   shx: 0.3.4
-  typedoc: 0.23.5_typescript@4.7.4
-  typedoc-theme-hierarchy: 2.0.5_typedoc@0.23.5
+  typedoc: 0.23.6_typescript@4.7.4
+  typedoc-theme-hierarchy: 2.0.5_typedoc@0.23.6
   typescript: 4.7.4
   zx: 7.0.7
 
@@ -7382,17 +7382,17 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /typedoc-theme-hierarchy/2.0.5_typedoc@0.23.5:
+  /typedoc-theme-hierarchy/2.0.5_typedoc@0.23.6:
     resolution: {integrity: sha512-vqv9fwhFkDkf3vFuHJRNX8ZaNhCrHJRe7ZtMaaZ5MPXBL6PXsqD/5/0D+QHxkRoOUaSc8Zk86ZhWcecqfXclLA==}
     peerDependencies:
       typedoc: ^0.23.5
     dependencies:
       fs-extra: 10.1.0
-      typedoc: 0.23.5_typescript@4.7.4
+      typedoc: 0.23.6_typescript@4.7.4
     dev: true
 
-  /typedoc/0.23.5_typescript@4.7.4:
-    resolution: {integrity: sha512-5ydWUOe4E9Z3a/r33cC5X5CJPLnFDKIondHYtdnEnO0sa/s8f+Nrfe+LBGOk/UTkV2IPYyL1Gm1PtUKIihklyw==}
+  /typedoc/0.23.6_typescript@4.7.4:
+    resolution: {integrity: sha512-YkL7zq6Tjnze7tlPcXQd527VPpcz30cvvzVTar6jJtiHt1DPWgH8c64x2s2xsGQ+SafQpAc90jYyrB6+rXLW1g==}
     engines: {node: '>= 14.14'}
     hasBin: true
     peerDependencies:
