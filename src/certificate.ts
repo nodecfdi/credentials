@@ -10,8 +10,6 @@ import { PemExtractor } from './pem-extractor';
 import { SatType, SatTypeEnum } from './internal/sat-type-enum';
 import { Rfc4514 } from './internal/rfc4514';
 
-interface Certificate extends DataRecordTrait {}
-
 class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
     /** string PEM contents including headers */
     private readonly _pem: string;
@@ -42,7 +40,7 @@ class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
         try {
             parsed.readCertPEM(pem);
         } catch (e) {
-            throw new SyntaxError('Cannot parse X509 certificate from contents');
+            throw new Error(`Cannot parse X509 certificate from contents ${(e as Error).message}`);
         }
         this._pem = pem;
         this.dataRecord = (parsed as unknown as { getParam(): Record<string, unknown> }).getParam();
@@ -59,7 +57,7 @@ class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
      */
     public static convertDerToPem(contents: string): string {
         // effectively compare that all the content is base64, if it isn't then encode it
-        if (contents !== stob64(b64utos(contents) ?? '')) {
+        if (contents !== stob64(b64utos(contents))) {
             contents = stob64(contents);
         }
 

@@ -16,7 +16,7 @@ export class Credential {
      */
     constructor(certificate: Certificate, privateKey: PrivateKey) {
         if (!privateKey.belongsTo(certificate)) {
-            throw new SyntaxError('Certificate does not belong to private key');
+            throw new Error('Certificate does not belong to private key');
         }
         this._certificate = certificate;
         this._privateKey = privateKey;
