@@ -10,7 +10,7 @@ specifiers:
   '@nodecfdi/base-converter': ^0.1.0
   '@types/jest': ^28.1.4
   '@types/jsrsasign': ^10.5.1
-  '@types/luxon': ^2.3.2
+  '@types/luxon': ^3.0.0
   '@types/node': ^18.0.3
   '@typescript-eslint/eslint-plugin': ^5.30.5
   '@typescript-eslint/parser': ^5.30.5
@@ -29,7 +29,7 @@ specifiers:
   jest-watch-typeahead: ^2.0.0
   jsrsasign: ^10.5.25
   lint-staged: ^13.0.3
-  luxon: ^2.4.0
+  luxon: ^3.0.0
   microbundle: ^0.15.0
   prettier: ^2.7.1
   shx: ^0.3.4
@@ -42,7 +42,7 @@ specifiers:
 dependencies:
   '@nodecfdi/base-converter': 0.1.0
   jsrsasign: 10.5.25
-  luxon: 2.4.0
+  luxon: 3.0.1
   ts-mixer: 6.0.1
 
 devDependencies:
@@ -54,7 +54,7 @@ devDependencies:
   '@commitlint/config-conventional': 17.0.3
   '@types/jest': 28.1.4
   '@types/jsrsasign': 10.5.1
-  '@types/luxon': 2.3.2
+  '@types/luxon': 3.0.0
   '@types/node': 18.0.3
   '@typescript-eslint/eslint-plugin': 5.30.5_6zdoc3rn4mpiddqwhppni2mnnm
   '@typescript-eslint/parser': 5.30.5_4x5o4skxv6sl53vpwefgt23khm
@@ -2334,8 +2334,8 @@ packages:
     resolution: {integrity: sha512-QqM03IXHY6SX835mWdx7Vp8ZOxw/hcnMjGjapUQf+pgFPRyGdjg3jxFsr4p+rolKcdRhptm3mtVQNk4OMhCQcA==}
     dev: true
 
-  /@types/luxon/2.3.2:
-    resolution: {integrity: sha512-WOehptuhKIXukSUUkRgGbj2c997Uv/iUgYgII8U7XLJqq9W2oF0kQ6frEznRQbdurioz+L/cdaIm4GutTQfgmA==}
+  /@types/luxon/3.0.0:
+    resolution: {integrity: sha512-Lx+EZoJxUKw4dp8uei9XiUVNlgkYmax5+ovqt6Xf3LzJOnWhlfJw/jLBmqfGVwOP/pDr4HT8bI1WtxK0IChMLw==}
     dev: true
 
   /@types/minimist/1.2.2:
@@ -5377,8 +5377,8 @@ packages:
     resolution: {integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==}
     dev: true
 
-  /luxon/2.4.0:
-    resolution: {integrity: sha512-w+NAwWOUL5hO0SgwOHsMBAmZ15SoknmQXhSO0hIbJCAmPKSsGeK8MlmhYh2w6Iib38IxN2M+/ooXWLbeis7GuA==}
+  /luxon/3.0.1:
+    resolution: {integrity: sha512-hF3kv0e5gwHQZKz4wtm4c+inDtyc7elkanAsBq+fundaCdUBNJB1dHEGUZIM6SfSBUlbVFduPwEtNjFK8wLtcw==}
     engines: {node: '>=12'}
     dev: false
 

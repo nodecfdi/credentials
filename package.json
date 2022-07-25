@@ -60,7 +60,7 @@
         "@commitlint/config-conventional": "^17.0.3",
         "@types/jest": "^28.1.4",
         "@types/jsrsasign": "^10.5.1",
-        "@types/luxon": "^2.3.2",
+        "@types/luxon": "^3.0.0",
         "@types/node": "^18.0.3",
         "@typescript-eslint/eslint-plugin": "^5.30.5",
         "@typescript-eslint/parser": "^5.30.5",
@@ -89,7 +89,7 @@
     "dependencies": {
         "@nodecfdi/base-converter": "^0.1.0",
         "jsrsasign": "^10.5.25",
-        "luxon": "^2.4.0",
+        "luxon": "^3.0.0",
         "ts-mixer": "^6.0.1"
     },
     "engines": {
