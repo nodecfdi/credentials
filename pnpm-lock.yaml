@@ -35,7 +35,7 @@ specifiers:
   shx: ^0.3.4
   ts-mixer: ^6.0.1
   typedoc: ^0.23.6
-  typedoc-theme-hierarchy: ^2.0.5
+  typedoc-theme-hierarchy: ^3.0.0
   typescript: ^4.7.4
   zx: ^7.0.7
 
@@ -76,7 +76,7 @@ devDependencies:
   prettier: 2.7.1
   shx: 0.3.4
   typedoc: 0.23.6_typescript@4.7.4
-  typedoc-theme-hierarchy: 2.0.5_typedoc@0.23.6
+  typedoc-theme-hierarchy: 3.0.0_typedoc@0.23.6
   typescript: 4.7.4
   zx: 7.0.7
 
@@ -7394,10 +7394,10 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /typedoc-theme-hierarchy/2.0.5_typedoc@0.23.6:
-    resolution: {integrity: sha512-vqv9fwhFkDkf3vFuHJRNX8ZaNhCrHJRe7ZtMaaZ5MPXBL6PXsqD/5/0D+QHxkRoOUaSc8Zk86ZhWcecqfXclLA==}
+  /typedoc-theme-hierarchy/3.0.0_typedoc@0.23.6:
+    resolution: {integrity: sha512-f8zWRVYJ6hAIyUorTNnUtrzGo4BMApC7d2PSaUR9OG9gLUaNZTosB9EkfIsWxj7nyqG909kobeVxTa20FU9f/g==}
     peerDependencies:
-      typedoc: ^0.23.5
+      typedoc: ^0.23.6
     dependencies:
       fs-extra: 10.1.0
       typedoc: 0.23.6_typescript@4.7.4
