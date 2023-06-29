@@ -1,46 +1,57 @@
-export class LocalFileOpenTrait {
-    /**
-     * Read file and return file contents as binary string
-     *
-     * @param filename - file name to be read
-     * @returns binary string of file contents
-     *
-     * This function only works in Node.js.
-     */
-    public static localFileOpen(filename: string): string {
-        /* istanbul ignore next */
-        if (typeof window !== 'undefined' && typeof window.document !== undefined) {
-            console.warn('Método no disponible en browser');
-            throw new Error('Método no disponible en browser');
-        }
+import { Trait } from '@ddd-ts/traits';
 
-        if ('file://' == filename.substring(0, 7)) {
-            filename = filename.substring(7);
-        }
+export const LocalFileOpenTrait = Trait(
+    (base) =>
+        class extends base {
+            /**
+             * Read file and return file contents as binary string
+             *
+             * @param filename - file name to be read
+             * @returns binary string of file contents
+             *
+             * This function only works in Node.js.
+             */
+            public static localFileOpen(filename: string): string {
+                /* istanbul ignore next */
+                if (typeof window !== 'undefined' && window.document !== undefined) {
+                    console.warn('Método no disponible en browser');
+                    throw new Error('Método no disponible en browser');
+                }
 
-        if ('' == filename) {
-            throw new Error('The file to open is empty');
-        }
+                if (filename.startsWith('file://')) {
+                    filename = filename.slice(7);
+                }
 
-        if (/(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-/]))?/.test(filename)) {
-            throw new Error('Invalid scheme to open file');
-        }
+                if (filename === '') {
+                    throw new Error('The file to open is empty');
+                }
 
-        let path = '';
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const fs = require('fs');
-        try {
-            path = fs.realpathSync(filename);
-        } catch (e) {
-            throw new Error('Unable to locate the file to open');
-        }
-        let contents = '';
-        try {
-            contents = fs.readFileSync(path, 'binary');
-        } catch (e) {
-            throw new Error('File content is empty');
-        }
+                if (/(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-/]))?/.test(filename)) {
+                    throw new Error('Invalid scheme to open file');
+                }
 
-        return contents;
-    }
-}
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const fs: {
+                    realpathSync: (filename: string) => string;
+                    readFileSync: (path: string, type: string) => string;
+                    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, unicorn/prefer-module
+                } = require('node:fs');
+
+                let path = '';
+                try {
+                    path = fs.realpathSync(filename);
+                } catch {
+                    throw new Error('Unable to locate the file to open');
+                }
+
+                let contents = '';
+                try {
+                    contents = fs.readFileSync(path, 'binary');
+                } catch {
+                    throw new Error('File content is empty');
+                }
+
+                return contents;
+            }
+        }
+);

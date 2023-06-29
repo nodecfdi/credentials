@@ -1,18 +1,22 @@
-import { existsSync, readFileSync } from 'fs';
-import { newline_toUnix } from 'jsrsasign';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-export class TestCase {
-    public static filePath(filename: string): string {
-        return `${__dirname}/_files/${filename}`;
-    }
+export const useTestCase = () => {
+    const filePath = (filename: string): string => {
+        return join(dirname(fileURLToPath(import.meta.url)), '_files', filename);
+    };
 
-    public static fileContents(filename: string): string {
-        if (!existsSync(TestCase.filePath(filename))) {
+    const fileContents = (filename: string): string => {
+        if (!existsSync(filePath(filename))) {
             return '';
         }
-        let binaryString = readFileSync(TestCase.filePath(filename), 'binary');
-        binaryString = newline_toUnix(binaryString);
 
-        return binaryString.replace(/\n$/, '');
-    }
-}
+        return readFileSync(filePath(filename), 'binary');
+    };
+
+    return {
+        filePath,
+        fileContents,
+    };
+};

@@ -1,7 +1,7 @@
 enum KeyType {
     RSA = 'RSA',
     DSA = 'DSA',
-    ECDSA = 'ECDSA'
+    ECDSA = 'ECDSA',
 }
 
 class KeyTypeEnum {
@@ -11,6 +11,7 @@ class KeyTypeEnum {
         if (!(type in KeyType)) {
             throw new Error('Index Not Found');
         }
+
         this.type = type;
     }
 
@@ -33,4 +34,4 @@ class KeyTypeEnum {
     }
 }
 
-export { KeyTypeEnum, KeyType };
+export { KeyType, KeyTypeEnum };

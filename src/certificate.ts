@@ -1,70 +1,30 @@
-import { Mixin } from 'ts-mixer';
-import { b64utos, KJUR, newline_toUnix, stob64, X509, zulutodate } from 'jsrsasign';
+import { Derive } from '@ddd-ts/traits';
 import { DateTime } from 'luxon';
+import { pki, util } from 'node-forge';
+import { DataArrayTrait } from './internal/data-array-trait.js';
+import { LocalFileOpenTrait } from './internal/local-file-open-trait.js';
+import { Rfc4514 } from './internal/rfc4514.js';
+import { SatType, SatTypeEnum } from './internal/sat-type-enum.js';
+import { PemExtractor } from './pem-extractor.js';
+import { PublicKey } from './public-key.js';
+import { SerialNumber } from './serial-number.js';
 
-import { DataRecordTrait } from './internal/data-record-trait';
-import { LocalFileOpenTrait } from './internal/local-file-open-trait';
-import { SerialNumber } from './serial-number';
-import { PublicKey } from './public-key';
-import { PemExtractor } from './pem-extractor';
-import { SatType, SatTypeEnum } from './internal/sat-type-enum';
-import { Rfc4514 } from './internal/rfc4514';
-
-class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
-    /** string PEM contents including headers */
-    private readonly _pem: string;
-
-    /** string RFC as parsed from subject/uniqueIdentifier */
-    private readonly _rfc: string;
-
-    /** string Legal name as parsed from subject/uniqueIdentifier */
-    private readonly _legalName: string;
-
-    /** Parsed serial number */
-    private _serialNumber?: SerialNumber;
-
-    /** Parsed public key */
-    private _publicKey?: PublicKey;
-
-    constructor(contents: string) {
-        super();
-        if ('' === contents) {
-            throw new SyntaxError('Create certificate from empty contents');
-        }
-        let pem = new PemExtractor(contents).extractCertificate();
-        if ('' == pem) {
-            pem = Certificate.convertDerToPem(contents);
-        }
-
-        const parsed = new X509();
-        try {
-            parsed.readCertPEM(pem);
-        } catch (e) {
-            throw new Error(`Cannot parse X509 certificate from contents ${(e as Error).message}`);
-        }
-        this._pem = pem;
-        this.dataRecord = (parsed as unknown as { getParam(): Record<string, unknown> }).getParam();
-        this._rfc = `${this.subjectData('uniqueIdentifier')} `.split(' ')[0];
-        this._legalName = this.subjectData('2.5.4.41');
-        this.dataRecord.hash = KJUR.crypto.Util.hashHex(parsed.hex, 'sha1');
-        this.dataRecord.signatureTypeLN = parsed.getSignatureAlgorithmName();
-    }
-
+class Certificate extends Derive(DataArrayTrait, LocalFileOpenTrait) {
     /**
      * Convert X.509 DER base64 or X.509 DER to X509 PEM
      *
      * @param contents - DER Content
      */
     public static convertDerToPem(contents: string): string {
-        // effectively compare that all the content is base64, if it isn't then encode it
-        if (contents !== stob64(b64utos(contents))) {
-            contents = stob64(contents);
+        // Effectively compare that all the content is base64, if it isn't then encode it
+        if (contents !== util.encode64(util.decode64(contents))) {
+            contents = util.encode64(contents);
         }
 
         return [
             '-----BEGIN CERTIFICATE-----\n',
-            `${(contents.match(/.{1,64}/g) || []).join('\n')}\n`,
-            '-----END CERTIFICATE-----'
+            `${(contents.match(/.{1,64}/g) ?? []).join('\n')}\n`,
+            '-----END CERTIFICATE-----',
         ].join('');
     }
 
@@ -80,12 +40,60 @@ class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
         return new Certificate(Certificate.localFileOpen(filename));
     }
 
+    /** String PEM contents including headers */
+    private readonly _pem: string;
+
+    /** String RFC as parsed from subject/uniqueIdentifier */
+    private readonly _rfc: string;
+
+    /** String Legal name as parsed from subject/uniqueIdentifier */
+    private readonly _legalName: string;
+
+    /** Parsed serial number */
+    private _serialNumber?: SerialNumber;
+
+    /** Parsed public key */
+    private _publicKey?: PublicKey;
+
+    constructor(contents: string) {
+        super({});
+        if (contents === '') {
+            throw new SyntaxError('Create certificate from empty contents');
+        }
+
+        let pem = new PemExtractor(contents).extractCertificate();
+        if (pem === '') {
+            pem = Certificate.convertDerToPem(contents);
+        }
+
+        let parsed: pki.Certificate;
+        try {
+            parsed = pki.certificateFromPem(pem);
+        } catch (error) {
+            throw new Error(`Cannot parse X509 certificate from contents ${(error as Error).message}`);
+        }
+
+        this._pem = pem;
+        this._dataArray = {
+            version: parsed.version,
+            serialNumber: parsed.serialNumber,
+            subject: parsed.subject,
+            issuer: parsed.issuer,
+            extensions: parsed.extensions,
+            validity: parsed.validity,
+        };
+        this._rfc = util.decodeUtf8(`${this.subjectData({ type: '2.5.4.45' }).value as string}`.split(' ')[0]);
+        this._legalName = this.subjectData({ type: '2.5.4.41' }).value as string;
+        this._dataArray.hash = parsed.issuer.hash;
+        this._dataArray.signatureTypeLN = parsed.signature;
+    }
+
     public pem(): string {
         return this._pem;
     }
 
     public pemAsOneLine(): string {
-        const normaliceEnds = newline_toUnix(this.pem());
+        const normaliceEnds = this.pem().replace(/\r\n/g, '\n');
         const allLines = normaliceEnds.split(/\n/);
         const filterLines = allLines.filter((s) => /^((?!-).)*$/.test(s));
 
@@ -93,7 +101,7 @@ class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
     }
 
     public parsed(): Record<string, unknown> {
-        return this.dataRecord;
+        return this._dataArray;
     }
 
     public rfc(): string {
@@ -105,31 +113,31 @@ class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
     }
 
     public branchName(): string {
-        return this.subjectData('OU');
+        return (this.subjectData({ shortName: 'OU' })?.value as string) ?? '';
     }
 
     public name(): string {
-        return `${this.extractObject('subject').str}`;
+        return util.decodeUtf8(`/CN=${(this.subjectData({ shortName: 'CN' })?.value as string) ?? ''}`);
     }
 
-    public subject(): Array<Array<{ type: string; value: string; ds?: string }>> {
-        return this.extractObject('subject').array as Array<Array<{ type: string; value: string; ds?: string }>>;
+    public subject(): pki.Certificate['subject'] {
+        return this.extractArray('subject') as pki.Certificate['subject'];
     }
 
-    public subjectData(key: string): string {
-        return this.findValueOnX500Array(this.subject(), key);
+    public subjectData(key: string | pki.CertificateFieldOptions): pki.CertificateField {
+        return this.subject().getField(key) as pki.CertificateField;
     }
 
     public hash(): string {
         return this.extractString('hash');
     }
 
-    public issuer(): Array<Array<{ type: string; value: string; ds?: string }>> {
-        return this.extractObject('issuer').array as Array<Array<{ type: string; value: string; ds?: string }>>;
+    public issuer(): pki.Certificate['issuer'] {
+        return this.extractArray('issuer') as pki.Certificate['issuer'];
     }
 
-    public issuerData(key: string): string {
-        return this.findValueOnX500Array(this.issuer(), key);
+    public issuerData(key: string | pki.CertificateFieldOptions): pki.CertificateField {
+        return this.issuer().getField(key) as pki.CertificateField;
     }
 
     public version(): string {
@@ -138,27 +146,31 @@ class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
 
     public serialNumber(): SerialNumber {
         if (!this._serialNumber) {
-            const serialObj = this.extractObjectStrings('serial');
-            this._serialNumber = this.createSerialNumber(serialObj.hex, serialObj.str);
+            const serial = this.extractString('serialNumber');
+            this._serialNumber = this.createSerialNumber(serial, '');
         }
 
         return this._serialNumber;
     }
 
-    public validFrom(): string {
-        return this.extractString('notbefore');
+    public validity(): pki.Certificate['validity'] {
+        return this.extractArray('validity') as pki.Certificate['validity'];
     }
 
-    public validTo(): string {
-        return this.extractString('notafter');
+    public validFrom(): Date {
+        return this.validity().notBefore;
+    }
+
+    public validTo(): Date {
+        return this.validity().notAfter;
     }
 
     public validFromDateTime(): DateTime {
-        return DateTime.fromJSDate(zulutodate(this.validFrom()));
+        return DateTime.fromJSDate(this.validFrom());
     }
 
     public validToDateTime(): DateTime {
-        return DateTime.fromJSDate(zulutodate(this.validTo()));
+        return DateTime.fromJSDate(this.validTo());
     }
 
     public signatureTypeLN(): string {
@@ -166,7 +178,7 @@ class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
     }
 
     public extensions(): Array<Record<string, unknown>> {
-        return this.dataRecord.ext as Array<Record<string, unknown>>;
+        return this._dataArray.ext as Array<Record<string, unknown>>;
     }
 
     public publicKey(): PublicKey {
@@ -179,14 +191,14 @@ class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
     }
 
     public satType(): SatTypeEnum {
-        if ('' == this.branchName()) {
+        if (this.branchName() === '') {
             return new SatTypeEnum(SatType.FIEL);
         }
 
         return new SatTypeEnum(SatType.CSD);
     }
 
-    public validOn(datetime: DateTime | null = null): boolean {
+    public validOn(datetime?: DateTime): boolean {
         if (!datetime) {
             datetime = DateTime.now();
         }
@@ -197,45 +209,35 @@ class Certificate extends Mixin(LocalFileOpenTrait, DataRecordTrait) {
         );
     }
 
+    public issuerAsRfc4514(): string {
+        const issuer: Record<string, string> = {};
+        const rawIssuer = this.issuer();
+        for (const line of Object.values(rawIssuer.attributes)) {
+            if (!line.shortName && !line.type) {
+                continue;
+            }
+
+            issuer[line.shortName ?? line.type!] = util.decodeUtf8(line.value as string);
+        }
+
+        return new Rfc4514().escapeRecord(issuer);
+    }
+
     protected createSerialNumber(hexadecimal: string, decimal: string): SerialNumber {
-        if ('' !== hexadecimal) {
+        if (hexadecimal !== '') {
             return SerialNumber.createFromHexadecimal(hexadecimal);
         }
-        if ('' !== decimal) {
-            // in some cases openssl report serialNumberHex on serialNumber
-            if (decimal.substring(0, 2).toLowerCase() === '0x'.toLowerCase()) {
+
+        if (decimal !== '') {
+            // In some cases openssl report serialNumberHex on serialNumber
+            if (decimal.slice(0, 2).toLowerCase() === '0x'.toLowerCase()) {
                 return SerialNumber.createFromHexadecimal(decimal.slice(2));
             }
 
             return SerialNumber.createFromDecimal(decimal);
         }
+
         throw new Error('Certificate does not contain a serial number');
-    }
-
-    public issuerAsRfc4514(): string {
-        const issuer: Record<string, string> = {};
-        const rawIssuer = this.issuer();
-        rawIssuer.forEach((line) => {
-            line.forEach((rdn) => {
-                issuer[rdn.type] = rdn.value;
-            });
-        });
-
-        return new Rfc4514().escapeRecord(issuer);
-    }
-
-    private findValueOnX500Array(
-        subjectArray: Array<Array<{ type: string; value: string; ds?: string }>>,
-        target: string
-    ): string {
-        const RDN = subjectArray.find((x) => {
-            return x.find((rdn) => rdn.type === target);
-        });
-        if (RDN) {
-            return (RDN.find((rdn) => rdn.type === target) || { value: '' }).value;
-        }
-
-        return '';
     }
 }
 

@@ -1,34 +1,36 @@
+import { Buffer } from 'node:buffer';
 import { DateTime } from 'luxon';
-import { TestCase } from '../test-case';
-import { Certificate } from '~/certificate';
-import { SerialNumber } from '~/serial-number';
+import { type pki } from 'node-forge';
+import { Certificate } from 'src/certificate';
+import { type SerialNumber } from 'src/serial-number';
+import { useTestCase } from '../test-case.js';
 
 describe('Certificate', () => {
+    const { fileContents } = useTestCase();
+
     const createCertificate = (): Certificate => {
-        return new Certificate(TestCase.fileContents('FIEL_AAA010101AAA/certificate.cer'));
+        return new Certificate(fileContents('FIEL_AAA010101AAA/certificate.cer'));
     };
 
     const createCertificateSello = (): Certificate => {
-        return new Certificate(TestCase.fileContents('CSD01_AAA010101AAA/certificate.cer'));
+        return new Certificate(fileContents('CSD01_AAA010101AAA/certificate.cer'));
     };
 
-    test('pem contents', () => {
+    test('pem_contents_only', () => {
         const certificate = createCertificateSello();
-        const expected = TestCase.fileContents('CSD01_AAA010101AAA/certificate.cer.pem').trim();
+        const expected = fileContents('CSD01_AAA010101AAA/certificate.cer.pem').trim();
 
         expect(certificate.pem().trim()).toEqual(expected);
     });
 
-    test('pem contents as one line', () => {
+    test('pem_contents_as_one_line', () => {
         const certificate = createCertificateSello();
-        const expected = Buffer.from(TestCase.fileContents('CSD01_AAA010101AAA/certificate.cer'), 'binary').toString(
-            'base64'
-        );
+        const expected = Buffer.from(fileContents('CSD01_AAA010101AAA/certificate.cer'), 'binary').toString('base64');
 
         expect(certificate.pemAsOneLine().trim()).toEqual(expected);
     });
 
-    test('serial number', () => {
+    test('serial_number', () => {
         const certificate = createCertificate();
         const serial = certificate.serialNumber();
 
@@ -36,7 +38,7 @@ describe('Certificate', () => {
         expect(certificate.serialNumber()).toBe(serial);
     });
 
-    test('valid dates', () => {
+    test('valid_dates', () => {
         const validSince = DateTime.fromISO('2017-05-16T23:29:17Z');
         const validUntil = DateTime.fromISO('2021-05-15T23:29:17Z');
         const certificate = createCertificate();
@@ -49,7 +51,7 @@ describe('Certificate', () => {
         expect(certificate.validOn(validUntil.plus({ second: 1 }))).toBeFalsy();
     });
 
-    test('valid on without date', () => {
+    test('valid_on_without_date', () => {
         const certificate = createCertificate();
         const now = DateTime.now();
         const expected = now.toMillis() <= certificate.validToDateTime().toMillis();
@@ -57,46 +59,47 @@ describe('Certificate', () => {
         expect(certificate.validOn()).toBe(expected);
     });
 
-    test('rfc', () => {
+    test('rfc_only', () => {
         expect(createCertificate().rfc()).toBe('AAA010101AAA');
     });
 
-    test('legal name', () => {
+    test('legal_name', () => {
         expect(createCertificate().legalName()).toBe('ACCEM SERVICIOS EMPRESARIALES SC');
     });
 
-    test('sat type efirma', () => {
+    test('sat_type_efirma', () => {
         expect(createCertificate().satType().isFiel()).toBeTruthy();
     });
 
-    test('sat type sello', () => {
+    test('sat_type_sello', () => {
         expect(createCertificateSello().satType().isCsd()).toBeTruthy();
     });
 
-    test('issuer data', () => {
+    test('issuer_data', () => {
         const certificate = createCertificate();
-        expect(certificate.issuerData('uniqueIdentifier')).toBe('SAT970701NN3');
+        expect(certificate.issuerData({ type: '2.5.4.45' }).value).toBe('SAT970701NN3');
     });
 
-    test('issuer as rfc 4514', () => {
+    test('issuer_as_rfc_4514', () => {
         const certificate = createCertificate();
         const expected = [
             'CN=A.C. 2 de pruebas(4096)',
             'O=Servicio de Administración Tributaria',
             'OU=Administración de Seguridad de la Información',
             'E=asisnet@pruebas.sat.gob.mx',
-            'STREET=Av. Hidalgo 77\\2c Col. Guerrero', // see how it was encoded
-            'postalCode=06300',
+            '2.5.4.9=Av. Hidalgo 77\\2c Col. Guerrero', // See how it was encoded
+            '2.5.4.17=06300',
             'C=MX',
             'ST=Distrito Federal',
             'L=Coyoacán',
-            'uniqueIdentifier=SAT970701NN3',
-            '1.2.840.113549.1.9.2=Responsable: ACDMA'
+            '2.5.4.45=SAT970701NN3',
+            '1.2.840.113549.1.9.2=Responsable: ACDMA',
         ];
+
         expect(certificate.issuerAsRfc4514().split(',')).toStrictEqual(expected);
     });
 
-    test('public key', () => {
+    test('public_key', () => {
         const certificate = createCertificate();
         const first = certificate.publicKey();
 
@@ -108,7 +111,9 @@ describe('Certificate', () => {
         const parsed = certificate.parsed();
 
         expect(parsed).toHaveProperty('subject');
-        expect(certificate.name()).toBe((parsed.subject as { str: string }).str);
+        expect(certificate.name()).toContain(
+            (parsed.subject as pki.Certificate['subject']).getField({ shortName: 'CN' }).value
+        );
     });
 
     test('name', () => {
@@ -120,23 +125,23 @@ describe('Certificate', () => {
     test('hash', () => {
         const certificate = createCertificate();
 
-        expect(certificate.hash()).toBe('3d2d560e90dcc3f75c46f30c2850cf9fb0640ccb');
+        expect(certificate.hash()).toBe('d2f2c823204e31bdbbd3acfe5eb133ca912fe16c');
     });
 
     test('version', () => {
         const certificate = createCertificate();
 
-        expect(certificate.version()).toBe('3');
+        expect(certificate.version()).toBe('2');
     });
 
-    test('valid from to', () => {
+    test('valid_from_to', () => {
         const certificate = createCertificate();
 
-        expect(certificate.validFrom()).toMatch(/\d+z/gi);
-        expect(certificate.validTo()).toMatch(/\d+z/gi);
+        expect(certificate.validFrom()).toBeInstanceOf(Date);
+        expect(certificate.validTo()).toBeInstanceOf(Date);
     });
 
-    test('extensions is not empty', () => {
+    test('extensions_is_not_empty', () => {
         const certificate = createCertificate();
 
         expect(certificate.extensions()).not.toBe({});
@@ -148,8 +153,8 @@ describe('Certificate', () => {
         expect(certificate.signatureTypeLN()).not.toBe('');
     });
 
-    test('certificate with teletexstring', () => {
-        const certificate = new Certificate(TestCase.fileContents('00001000000413053762.cer'));
+    test('certificate_with_teletexstring', () => {
+        const certificate = new Certificate(fileContents('00001000000413053762.cer'));
 
         expect(certificate.rfc()).toBe('SMA0112284B2');
         expect(certificate.legalName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
@@ -157,13 +162,15 @@ describe('Certificate', () => {
     });
 
     const certificateCreateSerialNumber = (hexadecimal: string, decimal: string): SerialNumber => {
-        const certificate = Object.create(Certificate.prototype);
+        const certificate = Object.create(Certificate.prototype) as Certificate & {
+            createSerialNumber: (hexadecimal: string, decimal: string) => SerialNumber;
+        };
         const serialNumber = certificate.createSerialNumber(hexadecimal, decimal);
 
-        return serialNumber as SerialNumber;
+        return serialNumber;
     };
 
-    test('create serial number', () => {
+    test('create_serial_number', () => {
         let serialNumber = certificateCreateSerialNumber('0x3330', '');
         expect(serialNumber.hexadecimal()).toBe('3330');
 

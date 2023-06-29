@@ -1,6 +1,6 @@
 enum SatType {
     FIEL = 'FIEL',
-    CSD = 'CSD'
+    CSD = 'CSD',
 }
 
 class SatTypeEnum {
@@ -11,6 +11,7 @@ class SatTypeEnum {
         if (!(type in SatType)) {
             throw new Error('Index Not Found');
         }
+
         this.type = type;
     }
 

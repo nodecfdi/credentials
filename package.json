@@ -1,6 +1,6 @@
 {
     "name": "@nodecfdi/credentials",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "Librería para usar eFirma (fiel) y CSD (sellos) para el SAT",
     "keywords": [
         "certificate",
@@ -18,33 +18,28 @@
     "author": "OcelotlStudio <contacto@ocelotlstudio.com>",
     "license": "MIT",
     "type": "module",
-    "main": "./dist/prod/credentials.cjs",
-    "module": "./dist/prod/credentials.modern.js",
-    "unpkg": "./dist/prod/credentials.umd.js",
-    "exports": {
-        "require": "./dist/prod/credentials.cjs",
-        "development": "./dist/dev/credentials.modern.js",
-        "default": "./dist/prod/credentials.modern.js"
-    },
-    "types": "dist/types/index.d.ts",
+    "main": "./dist/credentials.js",
+    "module": "./dist/credentials.mjs",
+    "unpkg": "./dist/credentials.global.js",
+    "browser": "./dist/credentials.global.js",
+    "types": "dist/index.d.ts",
     "files": [
         "dist"
     ],
     "scripts": {
-        "lint": "eslint --fix \"src/**/\"",
-        "lint:check": "eslint \"src/**/\"",
-        "lint:ci": "pnpm lint:check",
-        "test": "jest --verbose --coverage",
-        "test:watch": "jest --watch",
-        "test:ci": "jest --runInBand --ci",
-        "test:ci:coverage": "jest --runInBand --ci --coverage --coverageDirectory=coverage",
-        "build:prod": "cross-env NODE_ENV=production microbundle --tsconfig ./tsconfig.json  --format modern,cjs,umd --external @nodecfdi/base-converter,jsrsasign,luxon --output dist/prod/credentials.js",
-        "build:dev": "cross-env NODE_ENV=development microbundle --define process.env.NODE_ENV=development --tsconfig ./tsconfig.json --generateTypes false --format modern --output dist/dev/credentials.js",
-        "build": "rm -rf ./dist && pnpm build:dev && pnpm build:prod",
-        "gen:docs": "rm -rf ./docs && typedoc --options typedoc.cjs",
-        "prepublishOnly": "pnpm build",
-        "prepare": "husky install",
-        "release": "pnpm run prepublishOnly && pnpm changeset publish"
+        "prepare": "is-ci || husky install",
+        "format": "prettier --write --ignore-unknown '**/*'",
+        "format:check": "prettier --check --ignore-unknown '**/*'",
+        "lint": "xo --fix",
+        "lint:check": "xo",
+        "test": "vitest",
+        "test:run": "vitest run",
+        "test:coverage": "vitest run --coverage",
+        "build": "pnpm prebuild && tsup && pnpm gen:types",
+        "prebuild": "rimraf dist",
+        "gen:docs": "rimraf docs && typedoc --options typedoc.json",
+        "gen:types": "api-extractor run --local",
+        "release": "pnpm run build && pnpm changeset publish"
     },
     "repository": "https://github.com/nodecfdi/credentials",
     "bugs": {
@@ -52,48 +47,49 @@
     },
     "homepage": "https://github.com/nodecfdi/credentials",
     "devDependencies": {
-        "@babel/core": "^7.18.6",
-        "@babel/preset-env": "^7.18.6",
-        "@babel/preset-typescript": "^7.18.6",
-        "@changesets/cli": "^2.23.1",
-        "@commitlint/cli": "^17.0.3",
-        "@commitlint/config-conventional": "^17.0.3",
-        "@types/jest": "^28.1.4",
-        "@types/jsrsasign": "^10.5.1",
-        "@types/luxon": "^2.3.2",
-        "@types/node": "^18.0.3",
-        "@typescript-eslint/eslint-plugin": "^5.30.5",
-        "@typescript-eslint/parser": "^5.30.5",
-        "babel-plugin-dev-expression": "^0.2.3",
-        "babel-plugin-transform-define": "^2.0.1",
-        "cross-env": "^7.0.3",
-        "eslint": "^8.19.0",
-        "eslint-config-prettier": "^8.5.0",
-        "eslint-plugin-jest": "^26.5.3",
-        "eslint-plugin-prettier": "^4.2.1",
-        "eslint-plugin-promise": "^6.0.0",
-        "eslint-plugin-tsdoc": "^0.2.16",
-        "husky": "^8.0.1",
-        "jest": "^28.1.2",
-        "jest-mock-console": "^2.0.0",
-        "jest-watch-typeahead": "^2.0.0",
-        "lint-staged": "^13.0.3",
-        "microbundle": "^0.15.0",
-        "prettier": "^2.7.1",
-        "shx": "^0.3.4",
-        "typedoc": "^0.23.6",
-        "typedoc-theme-hierarchy": "^3.0.0",
-        "typescript": "^4.7.4",
-        "zx": "^7.0.7"
+        "@changesets/cli": "^2.26.2",
+        "@commitlint/cli": "^17.6.6",
+        "@microsoft/api-extractor": "^7.36.0",
+        "@nrsk/config-conventional": "^1.0.0",
+        "@types/is-ci": "^3.0.0",
+        "@types/luxon": "^3.3.0",
+        "@types/node": "^20.3.2",
+        "@vitest/coverage-istanbul": "^0.32.2",
+        "husky": "^8.0.3",
+        "is-ci": "^3.0.1",
+        "lint-staged": "^13.2.2",
+        "prettier": "^2.8.8",
+        "rimraf": "^5.0.1",
+        "tsup": "^7.1.0",
+        "typedoc": "^0.24.8",
+        "typedoc-theme-hierarchy": "^4.0.0",
+        "typescript": "^5.1.3",
+        "vite": "^4.3.9",
+        "vitest": "^0.32.2",
+        "xo": "^0.54.2"
     },
     "dependencies": {
-        "@nodecfdi/base-converter": "^0.1.0",
-        "jsrsasign": "^10.5.25",
-        "luxon": "^2.4.0",
-        "ts-mixer": "^6.0.1"
+        "@ddd-ts/traits": "0.0.3-18",
+        "@nodecfdi/base-converter": "^0.1.3",
+        "@types/node-forge": "^1.3.2",
+        "luxon": "^3.3.0",
+        "node-forge": "^1.3.1"
+    },
+    "commitlint": {
+        "extends": [
+            "@nrsk/config-conventional"
+        ]
+    },
+    "lint-staged": {
+        "*.{js,ts,json}": [
+            "prettier --write"
+        ],
+        "*.{js,ts}": [
+            "xo --fix"
+        ]
     },
     "engines": {
-        "node": ">= 12.0.0"
+        "node": ">=14.16.0"
     },
     "browserslist": [
         "defaults",

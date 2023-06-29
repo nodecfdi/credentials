@@ -1,27 +1,7 @@
-import { Certificate } from './certificate';
-import { PrivateKey } from './private-key';
-import { SignatureAlgorithm } from './signature-algorithm';
+import { Certificate } from './certificate.js';
+import { PrivateKey } from './private-key.js';
 
 export class Credential {
-    private readonly _certificate: Certificate;
-
-    private readonly _privateKey: PrivateKey;
-
-    /**
-     * Credential constructor
-     *
-     * @param certificate - Certificate Instance
-     * @param privateKey - PrivateKey instance
-     * @throws Exception Certificate does not belong to private key
-     */
-    constructor(certificate: Certificate, privateKey: PrivateKey) {
-        if (!privateKey.belongsTo(certificate)) {
-            throw new Error('Certificate does not belong to private key');
-        }
-        this._certificate = certificate;
-        this._privateKey = privateKey;
-    }
-
     /**
      * Create a Credential object based on string contents
      *
@@ -59,6 +39,26 @@ export class Credential {
         return new Credential(certificate, privateKey);
     }
 
+    private readonly _certificate: Certificate;
+
+    private readonly _privateKey: PrivateKey;
+
+    /**
+     * Credential constructor
+     *
+     * @param certificate - Certificate Instance
+     * @param privateKey - PrivateKey instance
+     * @throws Exception Certificate does not belong to private key
+     */
+    constructor(certificate: Certificate, privateKey: PrivateKey) {
+        if (!privateKey.belongsTo(certificate)) {
+            throw new Error('Certificate does not belong to private key');
+        }
+
+        this._certificate = certificate;
+        this._privateKey = privateKey;
+    }
+
     public certificate(): Certificate {
         return this._certificate;
     }
@@ -90,7 +90,7 @@ export class Credential {
      * @param algorithm - algorithm to be used
      * @returns Hexadecimal string signature
      */
-    public sign(data: string, algorithm = SignatureAlgorithm.SHA256): string {
+    public sign(data: string, algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256'): string {
         return this._privateKey.sign(data, algorithm);
     }
 
@@ -101,7 +101,11 @@ export class Credential {
      * @param signature - Hexadecimal string signature
      * @param algorithm - Algorithm to be used
      */
-    public verify(data: string, signature: string, algorithm = SignatureAlgorithm.SHA256): boolean {
+    public verify(
+        data: string,
+        signature: string,
+        algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256'
+    ): boolean {
         return this._certificate.publicKey().verify(data, signature, algorithm);
     }
 }

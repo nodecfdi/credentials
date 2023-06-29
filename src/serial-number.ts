@@ -6,22 +6,6 @@ import { BaseConverter } from '@nodecfdi/base-converter';
  * It is not intended to use in general.
  */
 export class SerialNumber {
-    /** Hexadecimal string representation */
-    private readonly _hexadecimal: string;
-
-    constructor(hexadecimal: string) {
-        if (hexadecimal === '') {
-            throw new Error('The hexadecimal string is empty');
-        }
-        if ('0x'.toLowerCase() === hexadecimal.substring(0, 2).toLowerCase()) {
-            hexadecimal = hexadecimal.substring(2);
-        }
-        if (!/^[0-9a-f]*$/.test(hexadecimal)) {
-            throw new Error('The hexadecimal string contains invalid characters');
-        }
-        this._hexadecimal = hexadecimal;
-    }
-
     public static createFromHexadecimal(hexadecimal: string): SerialNumber {
         return new SerialNumber(hexadecimal);
     }
@@ -33,15 +17,34 @@ export class SerialNumber {
     }
 
     public static createFromBytes(input: string): SerialNumber {
-        const hexadecimal = (input.match(/./g) || [])
+        const hexadecimal = (input.match(/./g) ?? [])
             .map((value) => {
-                const fixedNumber = value.charCodeAt(0);
+                const fixedNumber = value.codePointAt(0)!;
 
-                return parseInt(`${fixedNumber}`, 10).toString(16);
+                return Number.parseInt(`${fixedNumber}`, 10).toString(16);
             })
             .join('');
 
         return new SerialNumber(hexadecimal);
+    }
+
+    /** Hexadecimal string representation */
+    private readonly _hexadecimal: string;
+
+    constructor(hexadecimal: string) {
+        if (hexadecimal === '') {
+            throw new Error('The hexadecimal string is empty');
+        }
+
+        if ('0x'.toLowerCase() === hexadecimal.slice(0, 2).toLowerCase()) {
+            hexadecimal = hexadecimal.slice(2);
+        }
+
+        if (!/^[\da-f]*$/.test(hexadecimal)) {
+            throw new Error('The hexadecimal string contains invalid characters');
+        }
+
+        this._hexadecimal = hexadecimal;
     }
 
     public hexadecimal(): string {
@@ -49,12 +52,12 @@ export class SerialNumber {
     }
 
     public bytes(): string {
-        return (this._hexadecimal.match(/.{1,2}/g) || [])
+        return (this._hexadecimal.match(/.{1,2}/g) ?? [])
             .map((value) => {
-                const fixedValue = value.replace(/[^a-f0-9]/gi, '');
-                const fixedNumber = parseInt(fixedValue, 16);
+                const fixedValue = value.replace(/[^a-f\d]/gi, '');
+                const fixedNumber = Number.parseInt(fixedValue, 16);
 
-                return String.fromCharCode(fixedNumber);
+                return String.fromCodePoint(fixedNumber);
             })
             .join('');
     }

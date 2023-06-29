@@ -1,24 +1,25 @@
-import { EOL } from 'os';
-import { TestCase } from '../test-case';
-import { PublicKey } from '~/public-key';
-import { PrivateKey } from '~/private-key';
-import { SignatureAlgorithm } from '~/signature-algorithm';
+import { EOL } from 'node:os';
+import { PrivateKey } from 'src/private-key';
+import { PublicKey } from 'src/public-key';
+import { useTestCase } from '../test-case.js';
 
 describe('PublicKey', () => {
-    test('create public key from certificate', () => {
-        const contents = TestCase.fileContents('FIEL_AAA010101AAA/certificate.cer.pem');
+    const { fileContents, filePath } = useTestCase();
+
+    test('create_public_key_from_certificate', () => {
+        const contents = fileContents('FIEL_AAA010101AAA/certificate.cer.pem');
         const publicKey = new PublicKey(contents);
 
         expect(publicKey.numberOfBits()).toBeGreaterThan(0);
     });
 
-    test('open file', () => {
-        const publicKey = PublicKey.openFile(TestCase.filePath('CSD01_AAA010101AAA/public_key.pem'));
+    test('open_file', () => {
+        const publicKey = PublicKey.openFile(filePath('CSD01_AAA010101AAA/public_key.pem'));
 
         expect(publicKey.numberOfBits()).toBeGreaterThan(0);
     });
 
-    test('create public key with invalid data', () => {
+    test('create_public_key_with_invalid_data', () => {
         const contents = 'invalid data';
 
         const t = (): PublicKey => {
@@ -30,24 +31,24 @@ describe('PublicKey', () => {
     });
 
     test('verify', () => {
-        const privateKey = PrivateKey.openFile(TestCase.filePath('CSD01_AAA010101AAA/private_key.key.pem'), '');
+        const privateKey = PrivateKey.openFile(filePath('CSD01_AAA010101AAA/private_key.key.pem'), '');
         const sourceString = 'The quick brown fox jumps over the lazy dog';
         const signature = privateKey.sign(sourceString);
 
         expect(signature).not.toBe('');
 
-        const publicKey = PublicKey.openFile(TestCase.filePath('CSD01_AAA010101AAA/public_key.pem'));
+        const publicKey = PublicKey.openFile(filePath('CSD01_AAA010101AAA/public_key.pem'));
 
         expect(publicKey.verify(sourceString, signature)).toBeTruthy();
         expect(publicKey.verify(`${sourceString}${EOL}`, signature)).toBeFalsy();
-        expect(publicKey.verify(sourceString, signature, SignatureAlgorithm.SHA512)).toBeFalsy();
+        expect(publicKey.verify(sourceString, signature, 'sha512/224')).toBeFalsy();
     });
 
-    test('verify with error', () => {
-        const publicKey = PublicKey.openFile(TestCase.filePath('CSD01_AAA010101AAA/public_key.pem'));
+    test('verify_with_error', () => {
+        const publicKey = PublicKey.openFile(filePath('CSD01_AAA010101AAA/public_key.pem'));
 
         const t = (): boolean => {
-            return publicKey.verify('', '', 'sha512' as SignatureAlgorithm);
+            return publicKey.verify('', '', 'sha256');
         };
 
         expect(t).toThrow(Error);
