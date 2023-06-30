@@ -88,6 +88,82 @@ console.log(certificado.serialNumber().bytes()); // número de serie del certifi
 
 Para ver un ejemplo en browser checa la carpeta examples.
 
+## Acerca de los archivos de certificado y llave privada
+
+Los archivos de certificado vienen en formato `X.509 DER` y los de llave privada en formato `PKCS#8 DER`.
+
+### Crear un objeto de certificado `Certificate`
+
+El objeto `Certificate` no se creará si contiene datos no válidos.
+
+El SAT entrega el certificado en formato `X.509 DER`, por lo que internamente se puede convertir a `X.509 PEM`.
+También es frecuente usar el formato `X.509 DER base64`, por ejemplo, en el atributo `Comprobante@Certificado`
+o en las firmas XML, por este motivo, los formatos soportados para crear un objeto `Certificate` son
+`X.509 DER`, `X.509 DER base64` y `X.509 PEM`.
+
+- Para abrir usando un archivo local: `const certificate = Certificate.openFile(filename);`
+- Para abrir usando una cadena de caracteres: `const certificate = new Certificate(content);`
+  - Si `content` es un certificado en formato `X.509 PEM` con cabeceras ese se utiliza.
+  - Si `content` está totalmente en `base64`, se interpreta como `X.509 DER base64` y se formatea a `X.509 PEM`
+  - En otro caso, se interpreta como formato `X.509 DER`, por lo que se formatea a `X.509 PEM`.
+
+### Crear un objeto de llave privada `PrivateKey`
+
+El objeto `PrivateKey` no se creará si contiene datos no válidos.
+
+En SAT entrega la llave en formato `PKCS#8 DER`, por lo que internamente se puede convertir a `PKCS#8 PEM`
+(con la misma contraseña).
+
+Una vez abierta la llave también se puede cambiar o eliminar la contraseña, creando así un nuevo objeto `PrivateKey`.
+
+- Para abrir usando un archivo local: `const key = PrivateKey.openFile(filename, passPhrase);`
+- Para abrir usando una cadena de caracteres: `const key = new PrivateKey(content, passPhrase);`
+  - Si `content` es una llave privada en formato `PEM` (`PKCS#8` o `PKCS#5`) se utiliza.
+  - En otro caso, se interpreta como formato `PKCS#8 DER`, por lo que se formatea a `PKCS#8 PEM`.
+
+Notas de tratamiento de archivos `DER`:
+
+- Al convertir `PKCS#8 DER` a `PKCS#8 PEM` se determina si es una llave encriptada si se estableció
+  una contraseña, si no se estableció se tratará como una llave plana (no encriptada).
+- No se sabe reconocer de forma automática si se trata de un archivo `PKCS#5 DER` por lo que este
+  tipo de llave se deben convertir *manualmente* antes de intentar abrirlos, su cabecera es `RSA PRIVATE KEY`.
+- A diferencia de los certificados que pueden interpretar un formato `DER base64`, la lectura de llave
+  privada no hace esta distinción, si desea trabajar con un formato sin caracteres especiales use `PEM`.
+
+Para entender más de los formatos de llaves privadas se puede consultar la siguiente liga:
+<https://github.com/kjur/jsrsasign/wiki/Tutorial-for-PKCS5-and-PKCS8-PEM-private-key-formats-differences>
+
+## Leer y exportar archivos PFX
+
+Esta librería soporta obtener el objeto `Credential` desde un archivo PFX (PKCS #12) y vicerversa.
+
+Para exportar el archivo PFX en NodeJS:
+
+```ts
+import { Credential, PfxExporter } from '@nodecfdi/credentials';
+
+const credential = Credential.openFiles('certificate/certificado.cer', 'certificate/private-key.key', 'password');
+const pfxExporter = new PfxExporter(credential);
+
+// Crea el binary string usando la contraseña dada
+const pfxContents = pfxExporter.export('pfx-passphrase');
+
+// Crea un base64String usando la contraseña dada
+const pfxContentsb64 = pfxExporter.exportToBase64('pfx-passphrase');
+```
+
+Para leer el archivo PFX y obtener un objeto `Credential`:
+
+```ts
+import { PfxReader } from '@nodecfdi/credentials';
+
+// Crea un objeto Credential dado el contenido de un archivo pfx
+const credential = PfxReader.createCredentialFromContents('contenido-del-archivo', 'pfx-passphrase');
+
+// Crea un objeto Credential dada la ruta de un archivo pfx
+const credential = PfxReader.createCredentialsFromFile('pfxFilePath', 'pfx-passphrase');
+```
+
 ## Soporte
 
 Puedes obtener soporte abriendo un ticket en Github.
