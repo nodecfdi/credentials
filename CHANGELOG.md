@@ -1,5 +1,24 @@
 # @nodecfdi/credentials ChangeLog
 
+## 2.0.0
+
+### Major Changes - PFX and Refactor to node-forge
+
+- Added support to pfx and pkcs12.
+- Refactor certificate handler lib from `jsrsasign` to `node-forge` for add support to pkcs12.
+- Updated example for browser usage with latest credentials release.
+- Changed microbundle to tsup for generation of library.
+- Fix declarations types for target import or require.
+- Remove unused code and library imports.
+- Added test for browser environment.
+- Update dependencies.
+- Update CI workflow for fix pipeline to latest github changes.
+
+#### Breaking Change
+
+- Change sign method output from hexadecimal string to binary string like a `phpcfdi/credentials`.
+- Drop support to node versions < 16
+
 ## 1.3.0
 
 ### Minor Changes
