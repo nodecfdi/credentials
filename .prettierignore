@@ -6,6 +6,5 @@ docs
 coverage/
 dist/
 .pnpm-store
-.github/
 pnpm-lock.yaml
 **/*.md
