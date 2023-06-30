@@ -23,6 +23,18 @@
     "unpkg": "./dist/credentials.global.js",
     "browser": "./dist/credentials.global.js",
     "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/credentials.js"
+            },
+            "require": {
+                "types": "./dist/index.d.cts",
+                "default": "./dist/credentials.cjs"
+            }
+        }
+    },
     "files": [
         "dist"
     ],
