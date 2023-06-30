@@ -4,12 +4,10 @@ on:
         branches:
             - main
             - dev
-
     pull_request:
         branches:
             - main
             - dev
-
     schedule:
         - cron: '0 16 * * 0' # sunday 16:00
 
