@@ -1,5 +1,11 @@
 node_modules
-coverage
-dist
-docs
 examples
+docs
+
+# Ignore artifacts:
+coverage/
+dist/
+.pnpm-store
+.github/
+pnpm-lock.yaml
+**/*.md

@@ -42,7 +42,7 @@ npm i @nodecfdi/credentials --save
 o
 
 ```shell
-yarn add @nodecfdi/credentials 
+yarn add @nodecfdi/credentials
 ```
 
 ## Ejemplo básico de uso
