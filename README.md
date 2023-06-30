@@ -35,14 +35,30 @@ Esta librería ha sido inspirada por la versión para php <https://github.com/ph
 
 ## Instalación
 
-```shell
+### NPM
+
+```bash
 npm i @nodecfdi/credentials --save
 ```
 
-o
+### YARN
 
-```shell
+```bash
 yarn add @nodecfdi/credentials
+```
+
+### PNPM
+
+```bash
+pnpm add @nodecfdi/credentials
+```
+
+### CDN - Browser
+
+Usa la versión mas reciente publicada cambiando `<latest-version>` por la última versión. Por ejemplo ...credentials@2.0.0/dist...
+
+```html
+<script src="https://unpkg.com/@nodecfdi/credentials@<latest-version>/dist/credentials.global.js"></script>
 ```
 
 ## Ejemplo básico de uso
@@ -113,7 +129,7 @@ The `@nodecfdi/credentials` library is copyright © [NodeCfdi](https://github.co
 [badge-discord]: https://img.shields.io/discord/459860554090283019?logo=discord
 [badge-release]: https://img.shields.io/npm/v/@nodecfdi/credentials.svg?logo=npm
 [badge-license]: https://img.shields.io/github/license/nodecfdi/credentials.svg?logo=open-source-initiative
-[badge-build]: https://img.shields.io/github/workflow/status/nodecfdi/credentials/build/main?logo=github-actions
+[badge-build]: https://img.shields.io/github/actions/workflow/status/nodecfdi/credentials/build.yml?branch=main&logo=github-actions
 [badge-reliability]: https://sonarcloud.io/api/project_badges/measure?project=nodecfdi_credentials&metric=reliability_rating
 [badge-maintainability]: https://sonarcloud.io/api/project_badges/measure?project=nodecfdi_credentials&metric=sqale_rating
 [badge-coverage]: https://img.shields.io/sonar/coverage/nodecfdi_credentials/main?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io

@@ -88,7 +88,7 @@ export class Credential {
      *
      * @param data - input data
      * @param algorithm - algorithm to be used
-     * @returns Hexadecimal string signature
+     * @returns binary string signature
      */
     public sign(data: string, algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256'): string {
         return this._privateKey.sign(data, algorithm);
@@ -98,7 +98,7 @@ export class Credential {
      * Verify string data is signed by current private key
      *
      * @param data - Original string data
-     * @param signature - Hexadecimal string signature
+     * @param signature - binary string signature
      * @param algorithm - Algorithm to be used
      */
     public verify(

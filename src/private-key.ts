@@ -100,7 +100,7 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
      *
      * @param data - input data
      * @param algorithm - algorithm to be used
-     * @returns Hexadecimal string signature
+     * @returns binary string signature
      */
     public sign(data: string, algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256'): string {
         if (data.length === 0) {
