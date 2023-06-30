@@ -27,7 +27,7 @@ jobs:
             - name: Install dependencies
               uses: pnpm/action-setup@v2
               with:
-                  version: 7
+                  version: 8
                   run_install: true
 
             - name: Create code coverage
@@ -91,7 +91,7 @@ jobs:
             - name: Install dependencies
               uses: pnpm/action-setup@v2
               with:
-                  version: 7
+                  version: 8
                   run_install: true
 
             - name: Obtain code coverage
