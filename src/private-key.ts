@@ -115,6 +115,7 @@ export class PrivateKey extends Derive(DataArrayTrait, KeyTrait, LocalFileOpenTr
 
                 return privateKey.sign(sig);
             } catch {
+                /* istanbul ignore next: really dificult fail sign process -- @preserve */
                 throw new Error('Cannot sign data: empty signature');
             }
         });

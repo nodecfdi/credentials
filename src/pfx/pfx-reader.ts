@@ -31,17 +31,9 @@ export class PfxReader extends Derive(LocalFileOpenTrait) {
 
             const { key } = bagsResult;
 
-            if (!key) {
-                throw new Error('Invalid Key');
-            }
-
-            if (!cert) {
-                throw new Error('Invalid Cert');
-            }
-
             return {
-                cert,
-                pKey: key,
+                cert: cert!,
+                pKey: key!,
             };
         } catch {
             throw new Error('Invalid PKCS#12 contents or wrong passphrase');

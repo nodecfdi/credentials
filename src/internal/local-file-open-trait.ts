@@ -12,9 +12,7 @@ export const LocalFileOpenTrait = Trait(
              * This function only works in Node.js.
              */
             public static localFileOpen(filename: string): string {
-                /* istanbul ignore next */
                 if (typeof window !== 'undefined' && window.document !== undefined) {
-                    console.warn('Método no disponible en browser');
                     throw new Error('Método no disponible en browser');
                 }
 

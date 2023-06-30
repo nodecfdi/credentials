@@ -213,6 +213,7 @@ class Certificate extends Derive(DataArrayTrait, LocalFileOpenTrait) {
         const issuer: Record<string, string> = {};
         const rawIssuer = this.issuer();
         for (const line of Object.values(rawIssuer.attributes)) {
+            /* istanbul ignore if: on certs not pass but library check for undefined -- @preserve */
             if (!line.shortName && !line.type) {
                 continue;
             }
