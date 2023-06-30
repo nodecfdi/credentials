@@ -76,7 +76,6 @@ export class PrivateKey extends Derive(DataArrayTrait, KeyTrait, LocalFileOpenTr
             data.key = pki.publicKeyToPem(pubKey);
             data[KeyType.RSA] = privateKey;
             data.type = KeyType.RSA;
-
             return data;
         });
     }
