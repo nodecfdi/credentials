@@ -1,17 +1,17 @@
-import { Key } from '~/internal/key';
-import { KeyType } from '~/internal/key-type-enum';
+import { KeyType } from 'src/internal/key-type-enum';
+import { KeySpecimen } from './key-specimen.js';
 
 describe('Key', () => {
-    test('accessors using fake key data', () => {
+    test('accessors_using_fake_key_data', () => {
         const data = {
             bits: 512,
             key: 'x-key',
             type: KeyType.RSA,
             RSA: {
-                x: 'foo'
-            }
+                x: 'foo',
+            },
         };
-        const key = new Key(data);
+        const key = new KeySpecimen(data);
         expect(key.parsed()).toStrictEqual(data);
         expect(key.numberOfBits()).toBe(512);
         expect(key.publicKeyContents()).toBe('x-key');
@@ -20,8 +20,8 @@ describe('Key', () => {
         expect(key.typeData()).toStrictEqual({ x: 'foo' });
     });
 
-    test('using empty array', () => {
-        const key = new Key({});
+    test('using_empty_array', () => {
+        const key = new KeySpecimen({});
         expect(key.numberOfBits()).toBe(0);
         expect(key.publicKeyContents()).toBe('');
         expect(key.type.isRSA()).toBeTruthy();
@@ -29,8 +29,8 @@ describe('Key', () => {
         expect(key.typeData()).toStrictEqual({});
     });
 
-    test('using invalid type', () => {
-        const key = new Key({ type: -1 });
+    test('using_invalid_type', () => {
+        const key = new KeySpecimen({ type: -1 });
         expect(() => key.type).toThrow('Index Not Found');
     });
 });

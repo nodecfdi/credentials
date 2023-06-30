@@ -83,7 +83,7 @@
         </style>
     </head>
     <body>
-        <h1>CREDENTIALS</h1>
+        <h1>@nodecfdi/credentials</h1>
         <form id="info-credentials" name="inf-credentials">
             <div>
                 <fieldset id="certificate-form">
@@ -117,7 +117,7 @@
                     </div>
                     <div style="flex-grow: 1; padding: 5px">
                         <label>
-                            <h5>Signed text on Hexadecimal string</h5>
+                            <h5>Signed text on Base64 string</h5>
                             <textarea readonly name="sign-info" id="sign-output"></textarea>
                         </label>
                     </div>
@@ -126,32 +126,7 @@
         </form>
         <script
             type="text/javascript"
-            src="https://unpkg.com/@nodecfdi/base-converter@0.1.0/dist/prod/base-converter.umd.js"
-        ></script>
-        <script
-            type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.25/jsrsasign-all-min.js"
-        ></script>
-        <script type="text/javascript">
-            window.jsrsasign = {
-                b64utos: window.b64utos,
-                KJUR: window.KJUR,
-                newline_toUnix: window.newline_toUnix,
-                stob64: window.stob64,
-                X509: window.X509,
-                zulutodate: window.zulutodate,
-                BigInteger: window.BigInteger,
-                KEYUTIL: window.KEYUTIL,
-                RSAKey: window.RSAKey
-            };
-        </script>
-        <script
-            type="text/javascript"
-            src="https://cdn.jsdelivr.net/npm/luxon@2.4.0/build/global/luxon.min.js"
-        ></script>
-        <script
-            type="text/javascript"
-            src="https://unpkg.com/@nodecfdi/credentials@1.3.0/dist/prod/credentials.umd.js"
+            src="https://unpkg.com/@nodecfdi/credentials@2.0.0/dist/credentials.global.js"
         ></script>
         <script type="text/javascript" defer="defer">
             const { Credential, Certificate } = window.credentials;
@@ -190,7 +165,7 @@
                     const keyContent = await readFileAsync(keyFile);
 
                     const credential = Credential.create(certContent, keyContent, password);
-                    outputText.value = credential.sign(textRaw);
+                    outputText.value = btoa(credential.sign(textRaw));
                 } catch (e) {
                     console.log(e);
                     alert(e.message);
@@ -235,10 +210,10 @@
                 form.addEventListener('submit', function (event) {
                     const value = event.submitter.value;
                     event.preventDefault();
-                    if (value === 1) {
-                        void process();
+                    if (value === 1 || value === '1') {
+                        process();
                     } else {
-                        void sign();
+                        sign();
                     }
                     return false;
                 });

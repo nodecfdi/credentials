@@ -1,59 +1,13 @@
-import { BigInteger, KEYUTIL, KJUR, RSAKey, stob64, X509 } from 'jsrsasign';
+import { md, pki, util } from 'node-forge';
 import { Mixin } from 'ts-mixer';
+import { type Certificate } from './certificate.js';
+import { KeyTrait } from './internal/key-trait.js';
+import { KeyType } from './internal/key-type-enum.js';
+import { LocalFileOpenTrait } from './internal/local-file-open-trait.js';
+import { PemExtractor } from './pem-extractor.js';
+import { PublicKey } from './public-key.js';
 
-import { Key } from './internal/key';
-import { LocalFileOpenTrait } from './internal/local-file-open-trait';
-import { PublicKey } from './public-key';
-import { SignatureAlgorithm } from './signature-algorithm';
-import { PemExtractor } from './pem-extractor';
-import { KeyType } from './internal/key-type-enum';
-import { Certificate } from './certificate';
-
-export class PrivateKey extends Mixin(Key, LocalFileOpenTrait) {
-    /** string PEM contents of private key  */
-    private readonly _pem: string;
-
-    /** string password of private key */
-    private readonly _passPhrase: string;
-
-    /** public key extracted from private key **/
-    private _publicKey?: PublicKey;
-
-    /**
-     * Private key constructor
-     *
-     * @param source - can be a PKCS#8 DER, PKCS#8 PEM or PKCS#5 PEM
-     * @param passPhrase - if empty asume unencrypted/plain private key
-     */
-    constructor(source: string, passPhrase: string) {
-        super({});
-        if ('' === source) {
-            throw new SyntaxError('Private key is empty');
-        }
-        const pemExtractor = new PemExtractor(source);
-        let pem = pemExtractor.extractPrivateKey();
-        if ('' == pem) {
-            // it could be a DER content, convert to PEM
-            const convertSourceIsEncrypted = '' !== passPhrase;
-            pem = PrivateKey.convertDerToPem(source, convertSourceIsEncrypted);
-        }
-        this._pem = pem;
-        this._passPhrase = passPhrase;
-        this.dataRecord = this.callOnPrivateKey((privateKey): Record<string, unknown> => {
-            const data: Record<string, unknown> = {};
-            const privKeyJWK = KEYUTIL.getJWKFromKey(privateKey);
-            const { e, kty, n } = privKeyJWK;
-            const pubKey = KEYUTIL.getKey({ e, kty, n });
-
-            data['bits'] = (privateKey as unknown as { n: BigInteger }).n.bitLength();
-            data['key'] = KEYUTIL.getPEM(pubKey);
-            data[KeyType.RSA] = privateKey;
-            data['type'] = KeyType.RSA;
-
-            return data;
-        });
-    }
-
+export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
     /**
      * Convert PKCS#8 DER to PKCS#8 PEM
      *
@@ -65,8 +19,8 @@ export class PrivateKey extends Mixin(Key, LocalFileOpenTrait) {
 
         return [
             `-----BEGIN ${privateKeyName}-----\n`,
-            `${(stob64(contents).match(/.{1,64}/g) || []).join('\n')}\n`,
-            `-----END ${privateKeyName}-----`
+            `${(util.encode64(contents).match(/.{1,64}/g) ?? []).join('\n')}\n`,
+            `-----END ${privateKeyName}-----`,
         ].join('');
     }
 
@@ -81,6 +35,48 @@ export class PrivateKey extends Mixin(Key, LocalFileOpenTrait) {
      */
     public static openFile(filename: string, passPhrase: string): PrivateKey {
         return new PrivateKey(PrivateKey.localFileOpen(filename), passPhrase);
+    }
+
+    /** String PEM contents of private key  */
+    private readonly _pem: string;
+
+    /** String password of private key */
+    private readonly _passPhrase: string;
+
+    /** Public key extracted from private key **/
+    private _publicKey?: PublicKey;
+
+    /**
+     * Private key constructor
+     *
+     * @param source - can be a PKCS#8 DER, PKCS#8 PEM or PKCS#5 PEM
+     * @param passPhrase - if empty asume unencrypted/plain private key
+     */
+    constructor(source: string, passPhrase: string) {
+        super();
+        if (source === '') {
+            throw new SyntaxError('Private key is empty');
+        }
+
+        const pemExtractor = new PemExtractor(source);
+        let pem = pemExtractor.extractPrivateKey();
+        if (pem === '') {
+            // It could be a DER content, convert to PEM
+            const convertSourceIsEncrypted = passPhrase !== '';
+            pem = PrivateKey.convertDerToPem(source, convertSourceIsEncrypted);
+        }
+
+        this._pem = pem;
+        this._passPhrase = passPhrase;
+        this._dataArray = this.callOnPrivateKey((privateKey): Record<string, unknown> => {
+            const data: Record<string, unknown> = {};
+            const pubKey = pki.setRsaPublicKey(privateKey.n, privateKey.e);
+            data.bits = privateKey.n.bitLength();
+            data.key = pki.publicKeyToPem(pubKey);
+            data[KeyType.RSA] = privateKey;
+            data.type = KeyType.RSA;
+            return data;
+        });
     }
 
     public pem(): string {
@@ -104,17 +100,21 @@ export class PrivateKey extends Mixin(Key, LocalFileOpenTrait) {
      *
      * @param data - input data
      * @param algorithm - algorithm to be used
-     * @returns Hexadecimal string signature
+     * @returns binary string signature
      */
-    public sign(data: string, algorithm: SignatureAlgorithm = SignatureAlgorithm.SHA256): string {
+    public sign(data: string, algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256'): string {
+        if (data.length === 0) {
+            throw new Error('Cannot sign data: empty signature');
+        }
+
         return this.callOnPrivateKey((privateKey) => {
             try {
-                const sig = new KJUR.crypto.Signature({ alg: algorithm });
-                sig.init(privateKey);
-                sig.updateString(data);
+                const sig = md[algorithm].create();
+                sig.update(data);
 
-                return sig.sign();
-            } catch (e) {
+                return privateKey.sign(sig);
+            } catch {
+                /* istanbul ignore next: really dificult fail sign process -- @preserve */
                 throw new Error('Cannot sign data: empty signature');
             }
         });
@@ -125,25 +125,23 @@ export class PrivateKey extends Mixin(Key, LocalFileOpenTrait) {
     }
 
     public belongsToPEMCertificate(certificate: string): boolean {
-        const pubKey = KEYUTIL.getKey(this.publicKeyContents()); // or certificate
-        const x = new X509();
-        x.readCertPEM(certificate);
-        const certPubKey = x.getPublicKey();
+        const pubKey = pki.publicKeyFromPem(this.publicKeyContents()); // Or certificate
+        const x = pki.certificateFromPem(certificate);
+        const certPubKey = x.publicKey;
 
         return JSON.stringify(certPubKey) === JSON.stringify(pubKey);
     }
 
-    public callOnPrivateKey<T>(callableFunction: (prv: RSAKey) => T): T {
-        let privateKey: RSAKey | KJUR.crypto.DSA | KJUR.crypto.ECDSA | undefined = undefined;
+    public callOnPrivateKey<T>(callableFunction: (prv: pki.rsa.PrivateKey) => T): T {
+        let privateKey: pki.rsa.PrivateKey;
         try {
-            privateKey = KEYUTIL.getKey(this._pem, this._passPhrase);
-        } catch (e) {
-            throw new Error(`Cannot open private key: ${(e as Error).message}`);
+            privateKey = pki.decryptRsaPrivateKey(this._pem, this._passPhrase);
+        } catch (error) {
+            throw new Error(`Cannot open private key: ${(error as Error).message}`);
         }
 
-        /* istanbul ignore next */
-        if (!privateKey || privateKey instanceof KJUR.crypto.ECDSA || privateKey instanceof KJUR.crypto.DSA) {
-            throw new Error(`Cannot open private key: type not supported only RSAKey is accepted`);
+        if (!privateKey) {
+            throw new Error(`Cannot open private key: invalid pem or password`);
         }
 
         return callableFunction(privateKey);

@@ -8,11 +8,6 @@
         {
             "updateTypes": ["minor", "patch", "pin", "digest"],
             "automerge": true
-        },
-        {
-            "packagePatterns": ["^eslint"],
-            "groupName": "eslint packages",
-            "addLabels": ["eslint"]
         }
     ]
 }

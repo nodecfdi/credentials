@@ -1,64 +1,68 @@
-import { TestCase } from '../../test-case';
-import { LocalFileOpenTraitSpecimen } from './local-file-open-trait-specimen';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { useTestCase } from '../../test-case.js';
+import { LocalFileOpenTraitSpecimen } from './local-file-open-trait-specimen.js';
 
 describe('LocalFileOpenTrait', () => {
     let specimen: LocalFileOpenTraitSpecimen;
+    const { filePath } = useTestCase();
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
     beforeAll(() => {
         specimen = new LocalFileOpenTraitSpecimen();
     });
 
-    test('open with flat path', () => {
-        const filename = TestCase.filePath('FIEL_AAA010101AAA/password.txt');
-        const content = specimen.localFileOpen(filename);
+    test('open_with_flat_path', () => {
+        const filename = filePath('FIEL_AAA010101AAA/password.txt');
+        const content = specimen.localFileOpen2(filename);
 
-        expect(content).toEqual(readFileSync(filename).toString('utf-8'));
+        expect(content).toEqual(readFileSync(filename).toString('utf8'));
     });
 
-    test('open with file scheme on path', () => {
-        const filename = `file://${TestCase.filePath('FIEL_AAA010101AAA/password.txt')}`;
-        const content = specimen.localFileOpen(filename);
+    test('open_with_file_scheme_on_path', () => {
+        const filename = `file://${filePath('FIEL_AAA010101AAA/password.txt')}`;
+        const content = specimen.localFileOpen2(filename);
 
-        expect(content).toEqual(readFileSync(filename.replace('file://', '')).toString('utf-8'));
+        expect(content).toEqual(readFileSync(filename.replace('file://', '')).toString('utf8'));
     });
 
-    test('open empty file', () => {
+    test('open_empty_file', () => {
         const t = (): string => {
-            return specimen.localFileOpen('');
+            return specimen.localFileOpen2('');
         };
 
         expect(t).toThrow(Error);
         expect(t).toThrow('The file to open is empty');
     });
 
-    test('open with double scheme on path', () => {
+    test('open_with_double_scheme_on_path', () => {
         const filename = 'file://http://example.com/index.htm';
 
         const t = (): string => {
-            return specimen.localFileOpen(filename);
+            return specimen.localFileOpen2(filename);
         };
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Invalid scheme to open file');
     });
 
-    test('open with directory', () => {
+    test('open_with_directory', () => {
         const filename = __dirname;
 
         const t = (): string => {
-            return specimen.localFileOpen(filename);
+            return specimen.localFileOpen2(filename);
         };
 
         expect(t).toThrow(Error);
         expect(t).toThrow('File content is empty');
     });
 
-    test('open with non existent path', () => {
+    test('open_with_non_existent_path', () => {
         const filename = `${__dirname}/nonexistent`;
 
         const t = (): string => {
-            return specimen.localFileOpen(filename);
+            return specimen.localFileOpen2(filename);
         };
 
         expect(t).toThrow(Error);
@@ -69,10 +73,10 @@ describe('LocalFileOpenTrait', () => {
         ['c:/certs/file.txt'],
         ['file://c:/certs/file.txt'],
         ['c:\\certs\\file.txt'],
-        ['file://c:\\certs\\file.txt']
-    ])('open with windows path %s', (filename) => {
+        ['file://c:\\certs\\file.txt'],
+    ])('open_with_windows_path_%s', (filename) => {
         const t = (): string => {
-            return specimen.localFileOpen(filename);
+            return specimen.localFileOpen2(filename);
         };
 
         expect(t).toThrow(Error);

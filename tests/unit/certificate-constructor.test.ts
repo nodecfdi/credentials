@@ -1,22 +1,24 @@
-import { TestCase } from '../test-case';
-import { Certificate } from '~/certificate';
+import { Certificate } from 'src/certificate';
+import { useTestCase } from '../test-case.js';
 
-describe('Certificate constructor', () => {
-    test('constructor with pem content', () => {
-        const pem = TestCase.fileContents('FIEL_AAA010101AAA/certificate.cer.pem');
+describe('Certificate_constructor', () => {
+    const { fileContents } = useTestCase();
+
+    test('constructor_with_pem_content', () => {
+        const pem = fileContents('FIEL_AAA010101AAA/certificate.cer.pem');
         const certificate = new Certificate(pem);
 
         expect(certificate.serialNumber().bytes()).toBe('30001000000300023685');
     });
 
-    test('constructor with der content', () => {
-        const contents = TestCase.fileContents('FIEL_AAA010101AAA/certificate.cer');
+    test('constructor_with_der_content', () => {
+        const contents = fileContents('FIEL_AAA010101AAA/certificate.cer');
         const certificate = new Certificate(contents);
 
         expect(certificate.serialNumber().bytes()).toBe('30001000000300023685');
     });
 
-    test('constructor with empty content', () => {
+    test('constructor_with_empty_content', () => {
         const t = (): Certificate => {
             return new Certificate('');
         };
@@ -25,7 +27,7 @@ describe('Certificate constructor', () => {
         expect(t).toThrow('Create certificate from empty contents');
     });
 
-    test('constructor with invalid content', () => {
+    test('constructor_with_invalid_content', () => {
         const t = (): Certificate => {
             return new Certificate('x');
         };

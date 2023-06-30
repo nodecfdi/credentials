@@ -1,4 +1,5 @@
-export class LocalFileOpenTrait {
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+export abstract class LocalFileOpenTrait {
     /**
      * Read file and return file contents as binary string
      *
@@ -8,17 +9,15 @@ export class LocalFileOpenTrait {
      * This function only works in Node.js.
      */
     public static localFileOpen(filename: string): string {
-        /* istanbul ignore next */
-        if (typeof window !== 'undefined' && typeof window.document !== undefined) {
-            console.warn('Método no disponible en browser');
+        if (typeof window !== 'undefined' && window.document !== undefined) {
             throw new Error('Método no disponible en browser');
         }
 
-        if ('file://' == filename.substring(0, 7)) {
-            filename = filename.substring(7);
+        if (filename.startsWith('file://')) {
+            filename = filename.slice(7);
         }
 
-        if ('' == filename) {
+        if (filename === '') {
             throw new Error('The file to open is empty');
         }
 
@@ -26,18 +25,24 @@ export class LocalFileOpenTrait {
             throw new Error('Invalid scheme to open file');
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const fs: {
+            realpathSync: (filename: string) => string;
+            readFileSync: (path: string, type: string) => string;
+            // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, unicorn/prefer-module
+        } = require('node:fs');
+
         let path = '';
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const fs = require('fs');
         try {
             path = fs.realpathSync(filename);
-        } catch (e) {
+        } catch {
             throw new Error('Unable to locate the file to open');
         }
+
         let contents = '';
         try {
             contents = fs.readFileSync(path, 'binary');
-        } catch (e) {
+        } catch {
             throw new Error('File content is empty');
         }
 

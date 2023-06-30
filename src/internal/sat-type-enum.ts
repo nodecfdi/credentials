@@ -1,16 +1,17 @@
-enum SatType {
+export enum SatType {
     FIEL = 'FIEL',
-    CSD = 'CSD'
+    CSD = 'CSD',
 }
 
-class SatTypeEnum {
+export class SatTypeEnum {
     private readonly type: string;
 
     constructor(type: string) {
-        /* istanbul ignore next */
+        /* istanbul ignore if -- @preserve */
         if (!(type in SatType)) {
             throw new Error('Index Not Found');
         }
+
         this.type = type;
     }
 
@@ -22,5 +23,3 @@ class SatTypeEnum {
         return this.type === SatType.CSD;
     }
 }
-
-export { SatType, SatTypeEnum };

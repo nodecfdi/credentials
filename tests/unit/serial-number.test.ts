@@ -1,19 +1,19 @@
-import { SerialNumber } from '~/serial-number';
+import { SerialNumber } from 'src/serial-number';
 
 describe('SerialNumber', () => {
-    const SERIAL_HEXADECIMAL = '3330303031303030303030333030303233373038';
-    const SERIAL_BYTES = '30001000000300023708';
-    const SERIAL_DECIMAL = '292233162870206001759766198425879490508935868472';
+    const SerialHexadecimal = '3330303031303030303030333030303233373038';
+    const SerialBytes = '30001000000300023708';
+    const SerialDecimal = '292233162870206001759766198425879490508935868472';
 
-    test.each([[''], ['0X'], ['0x']])('create from hexadecimal', (prefix) => {
-        const value = `${prefix}${SERIAL_HEXADECIMAL}`;
+    test.each([[''], ['0X'], ['0x']])('create_from_hexadecimal_%s', (prefix) => {
+        const value = `${prefix}${SerialHexadecimal}`;
         const serial = SerialNumber.createFromHexadecimal(value);
-        expect(serial.hexadecimal()).toBe(SERIAL_HEXADECIMAL);
-        expect(serial.decimal()).toBe(SERIAL_DECIMAL);
-        expect(serial.bytes()).toBe(SERIAL_BYTES);
+        expect(serial.hexadecimal()).toBe(SerialHexadecimal);
+        expect(serial.decimal()).toBe(SerialDecimal);
+        expect(serial.bytes()).toBe(SerialBytes);
     });
 
-    test('create hexadecimal empty', () => {
+    test('create_hexadecimal_empty', () => {
         const t = (): SerialNumber => {
             return SerialNumber.createFromHexadecimal('');
         };
@@ -22,7 +22,7 @@ describe('SerialNumber', () => {
         expect(t).toThrow('is empty');
     });
 
-    test('create hexadecimal invalid chars', () => {
+    test('create_hexadecimal_invalid_chars', () => {
         const t = (): SerialNumber => {
             return SerialNumber.createFromHexadecimal('0x001122x3');
         };
@@ -31,7 +31,7 @@ describe('SerialNumber', () => {
         expect(t).toThrow('contains invalid characters');
     });
 
-    test('create hexadecimal double prefix', () => {
+    test('create_hexadecimal_double_prefix', () => {
         const t = (): SerialNumber => {
             return SerialNumber.createFromHexadecimal('0x0xFF');
         };
@@ -40,13 +40,13 @@ describe('SerialNumber', () => {
         expect(t).toThrow('contains invalid characters');
     });
 
-    test('create from decimal', () => {
-        const serial = SerialNumber.createFromDecimal(SERIAL_DECIMAL);
-        expect(serial.bytes()).toBe(SERIAL_BYTES);
+    test('create_from_decimal', () => {
+        const serial = SerialNumber.createFromDecimal(SerialDecimal);
+        expect(serial.bytes()).toBe(SerialBytes);
     });
 
-    test('create from bytes', () => {
-        const serial = SerialNumber.createFromBytes(SERIAL_BYTES);
-        expect(serial.hexadecimal()).toBe(SERIAL_HEXADECIMAL);
+    test('create_from_bytes', () => {
+        const serial = SerialNumber.createFromBytes(SerialBytes);
+        expect(serial.hexadecimal()).toBe(SerialHexadecimal);
     });
 });

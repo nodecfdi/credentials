@@ -18,20 +18,22 @@ export class PemExtractor {
     }
 
     public extractPrivateKey(): string {
-        // see https://github.com/kjur/jsrsasign/wiki/Tutorial-for-PKCS5-and-PKCS8-PEM-private-key-formats-differences
+        // See https://github.com/kjur/jsrsasign/wiki/Tutorial-for-PKCS5-and-PKCS8-PEM-private-key-formats-differences
         // PKCS#8 plain private key
         let extracted = this.extractBase64('PRIVATE KEY');
-        if ('' !== extracted) {
+        if (extracted !== '') {
             return extracted;
         }
+
         // PKCS#5 plain private key
         extracted = this.extractBase64('RSA PRIVATE KEY');
-        if ('' !== extracted) {
+        if (extracted !== '') {
             return extracted;
         }
+
         // PKCS#5 encrypted private key
         extracted = this.extractRsaProtected();
-        if ('' !== extracted) {
+        if (extracted !== '') {
             return extracted;
         }
 
@@ -40,16 +42,17 @@ export class PemExtractor {
     }
 
     protected extractBase64(type: string): string {
-        type = type.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + '/' + '-]', 'g'), '\\$&');
+        type = type.replace(/[.\\+*?[^\]$(){}=!<>|:/-]/g, '\\$&');
+
         const pattern = `^-----BEGIN ${type}-----\r?\n([A-Za-z0-9+/=]+\r?\n)+-----END ${type}-----\r?\n?$`;
-        const matches = this.getContents().match(new RegExp(pattern, 'm'));
+        const matches = new RegExp(pattern, 'm').exec(this.getContents());
 
         return this.normalizeLineEndings(`${matches ? matches[0] : ''}`);
     }
 
     protected extractRsaProtected(): string {
         const pattern = `^-----BEGIN RSA PRIVATE KEY-----\r?\nProc-Type: .+\r?\nDEK-Info: .+\r?\n\r?\n([A-Za-z0-9+/=]+\r?\n)+-----END RSA PRIVATE KEY-----\r?\n?$`;
-        const matches = this.getContents().match(new RegExp(pattern, 'm'));
+        const matches = new RegExp(pattern, 'm').exec(this.getContents());
 
         return this.normalizeLineEndings(`${matches ? matches[0] : ''}`);
     }
