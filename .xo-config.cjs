@@ -4,13 +4,14 @@
 const xoConfig = {
     space: true,
     prettier: true,
+    ignores: ['dist', 'docs', 'examples', 'coverage'],
     rules: {
         'new-cap': [
             'error',
             {
                 newIsCap: true,
                 capIsNew: true,
-                capIsNewExceptions: ['Derive', 'Subtrait', 'Trait'],
+                capIsNewExceptions: ['Mixin'],
             },
         ],
         '@typescript-eslint/naming-convention': [

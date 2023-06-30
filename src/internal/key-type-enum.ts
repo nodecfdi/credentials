@@ -1,10 +1,10 @@
-enum KeyType {
+export enum KeyType {
     RSA = 'RSA',
     DSA = 'DSA',
     ECDSA = 'ECDSA',
 }
 
-class KeyTypeEnum {
+export class KeyTypeEnum {
     private readonly type: string;
 
     constructor(type: string) {
@@ -33,5 +33,3 @@ class KeyTypeEnum {
         return this.type;
     }
 }
-
-export { KeyType, KeyTypeEnum };

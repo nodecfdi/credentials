@@ -1,10 +1,10 @@
-import { Derive } from '@ddd-ts/traits';
 import { type DateTime } from 'luxon';
 import { DataArrayTrait } from 'src/internal/data-array-trait';
+import { Mixin } from 'ts-mixer';
 
-export class DataArrayTraitSpecimen extends Derive(DataArrayTrait) {
+export class DataArrayTraitSpecimen extends Mixin(DataArrayTrait) {
     constructor(dataArray: Record<string, unknown>) {
-        super({});
+        super();
         this._dataArray = dataArray;
     }
 

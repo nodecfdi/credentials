@@ -1,14 +1,13 @@
-import { Derive } from '@ddd-ts/traits';
 import { md, pki, util } from 'node-forge';
+import { Mixin } from 'ts-mixer';
 import { type Certificate } from './certificate.js';
-import { DataArrayTrait } from './internal/data-array-trait.js';
 import { KeyTrait } from './internal/key-trait.js';
 import { KeyType } from './internal/key-type-enum.js';
 import { LocalFileOpenTrait } from './internal/local-file-open-trait.js';
 import { PemExtractor } from './pem-extractor.js';
 import { PublicKey } from './public-key.js';
 
-export class PrivateKey extends Derive(DataArrayTrait, KeyTrait, LocalFileOpenTrait) {
+export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
     /**
      * Convert PKCS#8 DER to PKCS#8 PEM
      *
@@ -54,7 +53,7 @@ export class PrivateKey extends Derive(DataArrayTrait, KeyTrait, LocalFileOpenTr
      * @param passPhrase - if empty asume unencrypted/plain private key
      */
     constructor(source: string, passPhrase: string) {
-        super({});
+        super();
         if (source === '') {
             throw new SyntaxError('Private key is empty');
         }

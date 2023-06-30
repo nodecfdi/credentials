@@ -1,15 +1,15 @@
-import { Derive } from '@ddd-ts/traits';
 import { asn1, pkcs12, pki, util } from 'node-forge';
+import { Mixin } from 'ts-mixer';
 import { type Credential } from '../credential.js';
 import { LocalFileOpenTrait } from '../internal/local-file-open-trait.js';
 
 export type AlgorithmPfx = 'aes128' | 'aes192' | 'aes256' | '3des';
 
-export class PfxExporter extends Derive(LocalFileOpenTrait) {
+export class PfxExporter extends Mixin(LocalFileOpenTrait) {
     private readonly _credential: Credential;
 
     constructor(credential: Credential) {
-        super({});
+        super();
         this._credential = credential;
     }
 

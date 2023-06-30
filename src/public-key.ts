@@ -1,11 +1,10 @@
-import { Derive } from '@ddd-ts/traits';
 import { md, pki } from 'node-forge';
-import { DataArrayTrait } from './internal/data-array-trait.js';
+import { Mixin } from 'ts-mixer';
 import { KeyTrait } from './internal/key-trait.js';
 import { KeyType } from './internal/key-type-enum.js';
 import { LocalFileOpenTrait } from './internal/local-file-open-trait.js';
 
-export class PublicKey extends Derive(DataArrayTrait, KeyTrait, LocalFileOpenTrait) {
+export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
     /**
      * Read file and return PublicKey instance
      *

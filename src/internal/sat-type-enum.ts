@@ -1,9 +1,9 @@
-enum SatType {
+export enum SatType {
     FIEL = 'FIEL',
     CSD = 'CSD',
 }
 
-class SatTypeEnum {
+export class SatTypeEnum {
     private readonly type: string;
 
     constructor(type: string) {
@@ -23,5 +23,3 @@ class SatTypeEnum {
         return this.type === SatType.CSD;
     }
 }
-
-export { SatType, SatTypeEnum };

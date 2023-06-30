@@ -1,9 +1,9 @@
-import { Derive } from '@ddd-ts/traits';
 import { asn1, pkcs12, pki } from 'node-forge';
+import { Mixin } from 'ts-mixer';
 import { Credential } from '../credential.js';
 import { LocalFileOpenTrait } from '../internal/local-file-open-trait.js';
 
-export class PfxReader extends Derive(LocalFileOpenTrait) {
+export class PfxReader extends Mixin(LocalFileOpenTrait) {
     public static createCredentialFromContents(contents: string, passPhrase: string): Credential {
         if (contents === '') {
             throw new Error('Cannot create credential from empty PFX contents');

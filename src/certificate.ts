@@ -1,6 +1,6 @@
-import { Derive } from '@ddd-ts/traits';
 import { DateTime } from 'luxon';
 import { pki, util } from 'node-forge';
+import { Mixin } from 'ts-mixer';
 import { DataArrayTrait } from './internal/data-array-trait.js';
 import { LocalFileOpenTrait } from './internal/local-file-open-trait.js';
 import { Rfc4514 } from './internal/rfc4514.js';
@@ -9,7 +9,7 @@ import { PemExtractor } from './pem-extractor.js';
 import { PublicKey } from './public-key.js';
 import { SerialNumber } from './serial-number.js';
 
-class Certificate extends Derive(DataArrayTrait, LocalFileOpenTrait) {
+export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
     /**
      * Convert X.509 DER base64 or X.509 DER to X509 PEM
      *
@@ -56,7 +56,7 @@ class Certificate extends Derive(DataArrayTrait, LocalFileOpenTrait) {
     private _publicKey?: PublicKey;
 
     constructor(contents: string) {
-        super({});
+        super();
         if (contents === '') {
             throw new SyntaxError('Create certificate from empty contents');
         }
@@ -241,5 +241,3 @@ class Certificate extends Derive(DataArrayTrait, LocalFileOpenTrait) {
         throw new Error('Certificate does not contain a serial number');
     }
 }
-
-export { Certificate };

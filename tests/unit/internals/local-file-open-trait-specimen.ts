@@ -1,12 +1,8 @@
-import { Derive } from '@ddd-ts/traits';
 import { LocalFileOpenTrait } from 'src/internal/local-file-open-trait';
+import { Mixin } from 'ts-mixer';
 
-export class LocalFileOpenTraitSpecimen extends Derive(LocalFileOpenTrait) {
-    public constructor() {
-        super({});
-    }
-
+export class LocalFileOpenTraitSpecimen extends Mixin(LocalFileOpenTrait) {
     public localFileOpen2(filename: string): string {
-        return LocalFileOpenTraitSpecimen.localFileOpen(filename);
+        return LocalFileOpenTrait.localFileOpen(filename);
     }
 }
