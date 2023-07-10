@@ -24,9 +24,7 @@ describe('LocalFileOpenTrait', () => {
         const filename = `file://${filePath('FIEL_AAA010101AAA/password.txt')}`;
         const content = specimen.localFileOpen2(filename);
 
-        expect(content).toEqual(
-            readFileSync(filename.replace('file://', '')).toString('utf8')
-        );
+        expect(content).toEqual(readFileSync(filename.replace('file://', '')).toString('utf8'));
     });
 
     test('open_empty_file', () => {

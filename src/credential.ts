@@ -32,11 +32,7 @@ export class Credential {
      * @param privateKeyContents - content can be PKCS#8 DER, PKCS#8 PEM or PKCS#5 PEM
      * @param passPhrase - password for encrypted key
      */
-    public static create(
-        certificateContents: string,
-        privateKeyContents: string,
-        passPhrase: string
-    ): Credential {
+    public static create(certificateContents: string, privateKeyContents: string, passPhrase: string): Credential {
         const certificate = new Certificate(certificateContents);
         const privateKey = new PrivateKey(privateKeyContents, passPhrase);
 
@@ -56,11 +52,7 @@ export class Credential {
      *
      * This function only works in Node.js.
      */
-    public static openFiles(
-        certificateFile: string,
-        privateKeyFile: string,
-        passPhrase: string
-    ): Credential {
+    public static openFiles(certificateFile: string, privateKeyFile: string, passPhrase: string): Credential {
         const certificate = Certificate.openFile(certificateFile);
         const privateKey = PrivateKey.openFile(privateKeyFile, passPhrase);
 
@@ -98,10 +90,7 @@ export class Credential {
      * @param algorithm - algorithm to be used
      * @returns binary string signature
      */
-    public sign(
-        data: string,
-        algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256'
-    ): string {
+    public sign(data: string, algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256'): string {
         return this._privateKey.sign(data, algorithm);
     }
 

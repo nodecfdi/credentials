@@ -40,11 +40,7 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
         try {
             parsed = pki.certificateFromPem(pem);
         } catch (error) {
-            throw new Error(
-                `Cannot parse X509 certificate from contents ${
-                    (error as Error).message
-                }`
-            );
+            throw new Error(`Cannot parse X509 certificate from contents ${(error as Error).message}`);
         }
 
         this._pem = pem;
@@ -56,13 +52,8 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
             extensions: parsed.extensions,
             validity: parsed.validity,
         };
-        this._rfc = util.decodeUtf8(
-            `${this.subjectData({ type: '2.5.4.45' })?.value as string}`.split(
-                ' '
-            )[0]
-        );
-        this._legalName = this.subjectData({ type: '2.5.4.41' })
-            ?.value as string;
+        this._rfc = util.decodeUtf8(`${this.subjectData({ type: '2.5.4.45' })?.value as string}`.split(' ')[0]);
+        this._legalName = this.subjectData({ type: '2.5.4.41' })?.value as string;
         this._dataArray.hash = parsed.issuer.hash;
         this._dataArray.signatureTypeLN = parsed.signature;
     }
@@ -122,30 +113,18 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
     }
 
     public branchName(): string {
-        return (
-            (this.subjectData({ shortName: 'OU' })?.value as
-                | string
-                | undefined) ?? ''
-        );
+        return (this.subjectData({ shortName: 'OU' })?.value as string | undefined) ?? '';
     }
 
     public name(): string {
-        return util.decodeUtf8(
-            `/CN=${
-                (this.subjectData({ shortName: 'CN' })?.value as
-                    | string
-                    | undefined) ?? ''
-            }`
-        );
+        return util.decodeUtf8(`/CN=${(this.subjectData({ shortName: 'CN' })?.value as string | undefined) ?? ''}`);
     }
 
     public subject(): pki.Certificate['subject'] {
         return this.extractArray('subject') as pki.Certificate['subject'];
     }
 
-    public subjectData(
-        key: string | pki.CertificateFieldOptions
-    ): pki.CertificateField | undefined {
+    public subjectData(key: string | pki.CertificateFieldOptions): pki.CertificateField | undefined {
         return this.subject().getField(key) as pki.CertificateField;
     }
 
@@ -157,9 +136,7 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
         return this.extractArray('issuer') as pki.Certificate['issuer'];
     }
 
-    public issuerData(
-        key: string | pki.CertificateFieldOptions
-    ): pki.CertificateField {
+    public issuerData(key: string | pki.CertificateFieldOptions): pki.CertificateField {
         return this.issuer().getField(key) as pki.CertificateField;
     }
 
@@ -241,18 +218,13 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
                 continue;
             }
 
-            issuer[line.shortName ?? line.type ?? ''] = util.decodeUtf8(
-                line.value as string
-            );
+            issuer[line.shortName ?? line.type ?? ''] = util.decodeUtf8(line.value as string);
         }
 
         return new Rfc4514().escapeRecord(issuer);
     }
 
-    protected createSerialNumber(
-        hexadecimal: string,
-        decimal: string
-    ): SerialNumber {
+    protected createSerialNumber(hexadecimal: string, decimal: string): SerialNumber {
         if (hexadecimal !== '') {
             return SerialNumber.createFromHexadecimal(hexadecimal);
         }

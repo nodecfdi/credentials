@@ -6,8 +6,7 @@ export const useTestCase = (): {
     filePath: (filename: string) => string;
     fileContents: (filename: string) => string;
 } => {
-    const filePath = (filename: string): string =>
-        join(dirname(fileURLToPath(import.meta.url)), '_files', filename);
+    const filePath = (filename: string): string => join(dirname(fileURLToPath(import.meta.url)), '_files', filename);
 
     const fileContents = (filename: string): string => {
         if (!existsSync(filePath(filename))) {

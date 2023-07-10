@@ -12,9 +12,7 @@ export class KeyTrait extends Mixin(DataArrayTrait) {
 
     public get type(): KeyTypeEnum {
         if (!this.typeKey) {
-            this.typeKey = new KeyTypeEnum(
-                this.extractString('type') || KeyType.RSA
-            );
+            this.typeKey = new KeyTypeEnum(this.extractString('type') || KeyType.RSA);
         }
 
         return this.typeKey;

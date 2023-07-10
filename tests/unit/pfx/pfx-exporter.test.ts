@@ -14,9 +14,7 @@ describe('Pfx_Exporter', () => {
     let credential: Credential;
 
     beforeEach(() => {
-        credentialPassprase = fileContents(
-            'CSD01_AAA010101AAA/password.txt'
-        ).trim();
+        credentialPassprase = fileContents('CSD01_AAA010101AAA/password.txt').trim();
         credential = Credential.openFiles(
             filePath('CSD01_AAA010101AAA/certificate.cer'),
             filePath('CSD01_AAA010101AAA/private_key.key'),
@@ -29,13 +27,7 @@ describe('Pfx_Exporter', () => {
         const pfxContents = pfxExporter.export('');
 
         expect(JSON.stringify(PfxReader.loadPkcs12(pfxContents))).toEqual(
-            JSON.stringify(
-                PfxReader.loadPkcs12(
-                    fileContents(
-                        'CSD01_AAA010101AAA/credential_unprotected.pfx'
-                    )
-                )
-            )
+            JSON.stringify(PfxReader.loadPkcs12(fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')))
         );
     });
 
@@ -43,27 +35,13 @@ describe('Pfx_Exporter', () => {
         const pfxExporter = new PfxExporter(credential);
         const pfxBase64 = pfxExporter.exportToBase64('');
 
-        expect(
-            JSON.stringify(
-                PfxReader.loadPkcs12(
-                    Buffer.from(pfxBase64, 'base64').toString('binary')
-                )
-            )
-        ).toEqual(
-            JSON.stringify(
-                PfxReader.loadPkcs12(
-                    fileContents(
-                        'CSD01_AAA010101AAA/credential_unprotected.pfx'
-                    )
-                )
-            )
+        expect(JSON.stringify(PfxReader.loadPkcs12(Buffer.from(pfxBase64, 'base64').toString('binary')))).toEqual(
+            JSON.stringify(PfxReader.loadPkcs12(fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')))
         );
     });
 
     test('export_with_error', () => {
-        const certificate = Certificate.openFile(
-            filePath('CSD01_AAA010101AAA/certificate.cer')
-        );
+        const certificate = Certificate.openFile(filePath('CSD01_AAA010101AAA/certificate.cer'));
         const privateKey = mock<PrivateKey>();
         privateKey.belongsTo.mockReturnValue(true);
         privateKey.pem.mockReturnValue('bar');
@@ -73,15 +51,11 @@ describe('Pfx_Exporter', () => {
 
         const t = (): string => pfxExporter.export('');
         expect(t).toThrow(Error);
-        expect(t).toThrow(
-            'Cannot export credential with certificate 30001000000300023708'
-        );
+        expect(t).toThrow('Cannot export credential with certificate 30001000000300023708');
     });
 
     test('export_to_base64_with_error', () => {
-        const certificate = Certificate.openFile(
-            filePath('CSD01_AAA010101AAA/certificate.cer')
-        );
+        const certificate = Certificate.openFile(filePath('CSD01_AAA010101AAA/certificate.cer'));
         const privateKey = mock<PrivateKey>();
         privateKey.belongsTo.mockReturnValue(true);
         privateKey.pem.mockReturnValue('bar');
@@ -91,9 +65,7 @@ describe('Pfx_Exporter', () => {
 
         const t = (): string => pfxExporter.exportToBase64('');
         expect(t).toThrow(Error);
-        expect(t).toThrow(
-            'Cannot export credential with certificate 30001000000300023708'
-        );
+        expect(t).toThrow('Cannot export credential with certificate 30001000000300023708');
     });
 
     test('get_credential', () => {

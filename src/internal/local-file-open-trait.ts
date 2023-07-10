@@ -20,11 +20,7 @@ export abstract class LocalFileOpenTrait {
             throw new Error('The file to open is empty');
         }
 
-        if (
-            /(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w!#%&+./:=?@-]))?/.test(
-                filename
-            )
-        ) {
+        if (/(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w!#%&+./:=?@-]))?/.test(filename)) {
             throw new Error('Invalid scheme to open file');
         }
 

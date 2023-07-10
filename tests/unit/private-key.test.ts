@@ -7,32 +7,19 @@ describe('PrivateKey', () => {
 
     const createPrivateKey = (): PrivateKey => {
         const password = fileContents('FIEL_AAA010101AAA/password.txt').trim();
-        const filename = filePath(
-            'FIEL_AAA010101AAA/private_key_protected.key.pem'
-        );
+        const filename = filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
 
         return PrivateKey.openFile(filename, password);
     };
 
     test('pem_and_passPhrase_properties', () => {
-        const passPhrase = fileContents(
-            'FIEL_AAA010101AAA/password.txt'
-        ).trim();
-        const contents = fileContents(
-            'FIEL_AAA010101AAA/private_key_protected.key.pem'
-        );
+        const passPhrase = fileContents('FIEL_AAA010101AAA/password.txt').trim();
+        const contents = fileContents('FIEL_AAA010101AAA/private_key_protected.key.pem');
         const privateKey = new PrivateKey(contents, passPhrase);
 
         expect(privateKey.pem().includes(contents)).toBeTruthy();
-        expect(
-            privateKey.pem().startsWith('-----BEGIN RSA PRIVATE KEY-----')
-        ).toBeTruthy();
-        expect(
-            privateKey
-                .pem()
-                .replaceAll('\n', '')
-                .endsWith('-----END RSA PRIVATE KEY-----')
-        ).toBeTruthy();
+        expect(privateKey.pem().startsWith('-----BEGIN RSA PRIVATE KEY-----')).toBeTruthy();
+        expect(privateKey.pem().replaceAll('\n', '').endsWith('-----END RSA PRIVATE KEY-----')).toBeTruthy();
         expect(privateKey.passPhrase()).toEqual(passPhrase);
     });
 
@@ -42,12 +29,8 @@ describe('PrivateKey', () => {
         const privateKey = createPrivateKey();
         const publicKey = privateKey.publicKey();
 
-        expect(certificate.publicKey().parsed().key).toBe(
-            publicKey.parsed().key
-        );
-        expect(privateKey.publicKey().parsed().key).toBe(
-            publicKey.parsed().key
-        );
+        expect(certificate.publicKey().parsed().key).toBe(publicKey.parsed().key);
+        expect(privateKey.publicKey().parsed().key).toBe(publicKey.parsed().key);
     });
 
     test('sign_sha512', () => {
@@ -58,9 +41,7 @@ describe('PrivateKey', () => {
         expect(signature).not.toBe('');
 
         const publicKey = privateKey.publicKey();
-        expect(
-            publicKey.verify(sourceString, signature, 'sha512')
-        ).toBeTruthy();
+        expect(publicKey.verify(sourceString, signature, 'sha512')).toBeTruthy();
     });
 
     test('sign_dont_set_signature', () => {
@@ -76,12 +57,9 @@ describe('PrivateKey', () => {
     test.each([
         ['paired_certificate', 'FIEL_AAA010101AAA/certificate.cer', true],
         ['other_certificate', 'CSD01_AAA010101AAA/certificate.cer', false],
-    ])(
-        'belongs_to_%s',
-        (_name: string, filename: string, expectBelongsTo: boolean) => {
-            const certificate = Certificate.openFile(filePath(filename));
-            const privateKey = createPrivateKey();
-            expect(privateKey.belongsTo(certificate)).toBe(expectBelongsTo);
-        }
-    );
+    ])('belongs_to_%s', (_name: string, filename: string, expectBelongsTo: boolean) => {
+        const certificate = Certificate.openFile(filePath(filename));
+        const privateKey = createPrivateKey();
+        expect(privateKey.belongsTo(certificate)).toBe(expectBelongsTo);
+    });
 });

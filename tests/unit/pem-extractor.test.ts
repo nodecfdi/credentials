@@ -41,9 +41,7 @@ describe('PemExtractor', () => {
     });
 
     test('extract_certificate_with_public_key', () => {
-        const contents = fileContents(
-            'CSD01_AAA010101AAA/certificate_public_key.pem'
-        );
+        const contents = fileContents('CSD01_AAA010101AAA/certificate_public_key.pem');
         const extractor = new PemExtractor(contents);
 
         expect(extractor.getContents()).toBe(contents);

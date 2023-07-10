@@ -6,20 +6,19 @@ import { LocalFileOpenTrait } from './internal/local-file-open-trait.js';
 
 export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
     constructor(source: string) {
-        const dataObject: Record<string, unknown> =
-            PublicKey.callOnPublicKeyWithContents(
-                (publicKey): Record<string, unknown> => {
-                    const pem = pki.publicKeyToPem(publicKey);
-                    const data: Record<string, unknown> = {};
-                    data.bits = publicKey.n.bitLength();
-                    data.key = pem;
-                    data[KeyType.RSA] = publicKey;
-                    data.type = KeyType.RSA;
+        const dataObject: Record<string, unknown> = PublicKey.callOnPublicKeyWithContents(
+            (publicKey): Record<string, unknown> => {
+                const pem = pki.publicKeyToPem(publicKey);
+                const data: Record<string, unknown> = {};
+                data.bits = publicKey.n.bitLength();
+                data.key = pem;
+                data[KeyType.RSA] = publicKey;
+                data.type = KeyType.RSA;
 
-                    return data;
-                },
-                source
-            );
+                return data;
+            },
+            source
+        );
         super(dataObject);
     }
 
@@ -61,9 +60,7 @@ export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
             try {
                 pubKey = pki.publicKeyFromPem(_publicKeyContents);
             } catch (error) {
-                latestError = `Cannot open public key: ${
-                    (error as Error).message
-                }`;
+                latestError = `Cannot open public key: ${(error as Error).message}`;
                 pubKey = undefined;
             }
         }
@@ -104,12 +101,7 @@ export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
      *
      * @param callableFunction - Function to call and inject content
      */
-    public callOnPublicKey<T>(
-        callableFunction: (pbk: pki.rsa.PublicKey) => T
-    ): T {
-        return PublicKey.callOnPublicKeyWithContents(
-            callableFunction,
-            this.publicKeyContents()
-        );
+    public callOnPublicKey<T>(callableFunction: (pbk: pki.rsa.PublicKey) => T): T {
+        return PublicKey.callOnPublicKeyWithContents(callableFunction, this.publicKeyContents());
     }
 }

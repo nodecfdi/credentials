@@ -19,9 +19,7 @@ export class SerialNumber {
         }
 
         if (!/^[\da-f]*$/.test(hexadecimal)) {
-            throw new Error(
-                'The hexadecimal string contains invalid characters'
-            );
+            throw new Error('The hexadecimal string contains invalid characters');
         }
 
         this._hexadecimal = hexadecimal;
@@ -32,11 +30,7 @@ export class SerialNumber {
     }
 
     public static createFromDecimal(decString: string): SerialNumber {
-        const hexadecimal = BaseConverter.createBase36().convert(
-            decString,
-            10,
-            16
-        );
+        const hexadecimal = BaseConverter.createBase36().convert(decString, 10, 16);
 
         return new SerialNumber(hexadecimal);
     }

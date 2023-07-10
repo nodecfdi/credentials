@@ -39,17 +39,15 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
 
         this._pem = pem;
         this._passPhrase = passPhrase;
-        this._dataArray = this.callOnPrivateKey(
-            (privateKey): Record<string, unknown> => {
-                const data: Record<string, unknown> = {};
-                const pubKey = pki.setRsaPublicKey(privateKey.n, privateKey.e);
-                data.bits = privateKey.n.bitLength();
-                data.key = pki.publicKeyToPem(pubKey);
-                data[KeyType.RSA] = privateKey;
-                data.type = KeyType.RSA;
-                return data;
-            }
-        );
+        this._dataArray = this.callOnPrivateKey((privateKey): Record<string, unknown> => {
+            const data: Record<string, unknown> = {};
+            const pubKey = pki.setRsaPublicKey(privateKey.n, privateKey.e);
+            data.bits = privateKey.n.bitLength();
+            data.key = pki.publicKeyToPem(pubKey);
+            data[KeyType.RSA] = privateKey;
+            data.type = KeyType.RSA;
+            return data;
+        });
     }
 
     /**
@@ -58,13 +56,8 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
      * @param contents -
      * @param isEncrypted -
      */
-    public static convertDerToPem(
-        contents: string,
-        isEncrypted: boolean
-    ): string {
-        const privateKeyName = isEncrypted
-            ? 'ENCRYPTED PRIVATE KEY'
-            : 'PRIVATE KEY';
+    public static convertDerToPem(contents: string, isEncrypted: boolean): string {
+        const privateKeyName = isEncrypted ? 'ENCRYPTED PRIVATE KEY' : 'PRIVATE KEY';
 
         return [
             `-----BEGIN ${privateKeyName}-----\n`,
@@ -109,10 +102,7 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
      * @param algorithm - algorithm to be used
      * @returns binary string signature
      */
-    public sign(
-        data: string,
-        algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256'
-    ): string {
+    public sign(data: string, algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256'): string {
         if (data.length === 0) {
             throw new Error('Cannot sign data: empty signature');
         }
@@ -142,16 +132,12 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
         return JSON.stringify(certPubKey) === JSON.stringify(pubKey);
     }
 
-    public callOnPrivateKey<T>(
-        callableFunction: (prv: pki.rsa.PrivateKey) => T
-    ): T {
+    public callOnPrivateKey<T>(callableFunction: (prv: pki.rsa.PrivateKey) => T): T {
         let privateKey: pki.rsa.PrivateKey | undefined;
         try {
             privateKey = pki.decryptRsaPrivateKey(this._pem, this._passPhrase);
         } catch (error) {
-            throw new Error(
-                `Cannot open private key: ${(error as Error).message}`
-            );
+            throw new Error(`Cannot open private key: ${(error as Error).message}`);
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

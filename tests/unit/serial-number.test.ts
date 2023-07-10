@@ -5,16 +5,13 @@ describe('SerialNumber', () => {
     const SerialBytes = '30001000000300023708';
     const SerialDecimal = '292233162870206001759766198425879490508935868472';
 
-    test.each([[''], ['0X'], ['0x']])(
-        'create_from_hexadecimal_%s',
-        (prefix) => {
-            const value = `${prefix}${SerialHexadecimal}`;
-            const serial = SerialNumber.createFromHexadecimal(value);
-            expect(serial.hexadecimal()).toBe(SerialHexadecimal);
-            expect(serial.decimal()).toBe(SerialDecimal);
-            expect(serial.bytes()).toBe(SerialBytes);
-        }
-    );
+    test.each([[''], ['0X'], ['0x']])('create_from_hexadecimal_%s', (prefix) => {
+        const value = `${prefix}${SerialHexadecimal}`;
+        const serial = SerialNumber.createFromHexadecimal(value);
+        expect(serial.hexadecimal()).toBe(SerialHexadecimal);
+        expect(serial.decimal()).toBe(SerialDecimal);
+        expect(serial.bytes()).toBe(SerialBytes);
+    });
 
     test('create_hexadecimal_empty', () => {
         const t = (): SerialNumber => SerialNumber.createFromHexadecimal('');
@@ -24,16 +21,14 @@ describe('SerialNumber', () => {
     });
 
     test('create_hexadecimal_invalid_chars', () => {
-        const t = (): SerialNumber =>
-            SerialNumber.createFromHexadecimal('0x001122x3');
+        const t = (): SerialNumber => SerialNumber.createFromHexadecimal('0x001122x3');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('contains invalid characters');
     });
 
     test('create_hexadecimal_double_prefix', () => {
-        const t = (): SerialNumber =>
-            SerialNumber.createFromHexadecimal('0x0xFF');
+        const t = (): SerialNumber => SerialNumber.createFromHexadecimal('0x0xFF');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('contains invalid characters');
