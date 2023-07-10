@@ -18,7 +18,11 @@ describe('Rfc4514', () => {
         ['with inner #', 'foo#bar', 'foo#bar'],
         ['with trail #', 'foo bar#', 'foo bar#'],
         ['with =', '=foo=bar=', '\\3dfoo\\3dbar\\3d'],
-        ['complex : [# a=1,b>2,c<3 ]', '# a=1,b>2,c<3 ', '\\22 a\\3d1\\2cb\\3e2\\2cc\\3c3\\20'],
+        [
+            'complex : [# a=1,b>2,c<3 ]',
+            '# a=1,b>2,c<3 ',
+            '\\22 a\\3d1\\2cb\\3e2\\2cc\\3c3\\20',
+        ],
     ])('escape_%s', (_name: string, subject: string, expected: string) => {
         expect(object.escape(subject)).toBe(expected);
     });

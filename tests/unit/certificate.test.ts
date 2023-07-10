@@ -1,31 +1,34 @@
 import { Buffer } from 'node:buffer';
 import { DateTime } from 'luxon';
 import { type pki } from 'node-forge';
+import { useTestCase } from '../test-case';
 import { Certificate } from 'src/certificate';
 import { type SerialNumber } from 'src/serial-number';
-import { useTestCase } from '../test-case.js';
 
 describe('Certificate', () => {
     const { fileContents } = useTestCase();
 
-    const createCertificate = (): Certificate => {
-        return new Certificate(fileContents('FIEL_AAA010101AAA/certificate.cer'));
-    };
+    const createCertificate = (): Certificate =>
+        new Certificate(fileContents('FIEL_AAA010101AAA/certificate.cer'));
 
-    const createCertificateSello = (): Certificate => {
-        return new Certificate(fileContents('CSD01_AAA010101AAA/certificate.cer'));
-    };
+    const createCertificateSello = (): Certificate =>
+        new Certificate(fileContents('CSD01_AAA010101AAA/certificate.cer'));
 
     test('pem_contents_only', () => {
         const certificate = createCertificateSello();
-        const expected = fileContents('CSD01_AAA010101AAA/certificate.cer.pem').trim();
+        const expected = fileContents(
+            'CSD01_AAA010101AAA/certificate.cer.pem'
+        ).trim();
 
         expect(certificate.pem().trim()).toEqual(expected);
     });
 
     test('pem_contents_as_one_line', () => {
         const certificate = createCertificateSello();
-        const expected = Buffer.from(fileContents('CSD01_AAA010101AAA/certificate.cer'), 'binary').toString('base64');
+        const expected = Buffer.from(
+            fileContents('CSD01_AAA010101AAA/certificate.cer'),
+            'binary'
+        ).toString('base64');
 
         expect(certificate.pemAsOneLine().trim()).toEqual(expected);
     });
@@ -45,7 +48,9 @@ describe('Certificate', () => {
 
         expect(certificate.validFromDateTime()).toStrictEqual(validSince);
         expect(certificate.validToDateTime()).toStrictEqual(validUntil);
-        expect(certificate.validOn(validSince.minus({ second: 1 }))).toBeFalsy();
+        expect(
+            certificate.validOn(validSince.minus({ second: 1 }))
+        ).toBeFalsy();
         expect(certificate.validOn(validSince)).toBeTruthy();
         expect(certificate.validOn(validUntil)).toBeTruthy();
         expect(certificate.validOn(validUntil.plus({ second: 1 }))).toBeFalsy();
@@ -54,7 +59,8 @@ describe('Certificate', () => {
     test('valid_on_without_date', () => {
         const certificate = createCertificate();
         const now = DateTime.now();
-        const expected = now.toMillis() <= certificate.validToDateTime().toMillis();
+        const expected =
+            now.toMillis() <= certificate.validToDateTime().toMillis();
 
         expect(certificate.validOn()).toBe(expected);
     });
@@ -64,7 +70,9 @@ describe('Certificate', () => {
     });
 
     test('legal_name', () => {
-        expect(createCertificate().legalName()).toBe('ACCEM SERVICIOS EMPRESARIALES SC');
+        expect(createCertificate().legalName()).toBe(
+            'ACCEM SERVICIOS EMPRESARIALES SC'
+        );
     });
 
     test('sat_type_efirma', () => {
@@ -77,7 +85,9 @@ describe('Certificate', () => {
 
     test('issuer_data', () => {
         const certificate = createCertificate();
-        expect(certificate.issuerData({ type: '2.5.4.45' }).value).toBe('SAT970701NN3');
+        expect(certificate.issuerData({ type: '2.5.4.45' }).value).toBe(
+            'SAT970701NN3'
+        );
     });
 
     test('issuer_as_rfc_4514', () => {
@@ -96,7 +106,9 @@ describe('Certificate', () => {
             '1.2.840.113549.1.9.2=Responsable: ACDMA',
         ];
 
-        expect(certificate.issuerAsRfc4514().split(',')).toStrictEqual(expected);
+        expect(certificate.issuerAsRfc4514().split(',')).toStrictEqual(
+            expected
+        );
     });
 
     test('public_key', () => {
@@ -112,7 +124,11 @@ describe('Certificate', () => {
 
         expect(parsed).toHaveProperty('subject');
         expect(certificate.name()).toContain(
-            (parsed.subject as pki.Certificate['subject']).getField({ shortName: 'CN' }).value
+            (
+                (parsed.subject as pki.Certificate['subject']).getField({
+                    shortName: 'CN',
+                }) as Record<string, unknown>
+            ).value
         );
     });
 
@@ -125,7 +141,9 @@ describe('Certificate', () => {
     test('hash', () => {
         const certificate = createCertificate();
 
-        expect(certificate.hash()).toBe('d2f2c823204e31bdbbd3acfe5eb133ca912fe16c');
+        expect(certificate.hash()).toBe(
+            'd2f2c823204e31bdbbd3acfe5eb133ca912fe16c'
+        );
     });
 
     test('version', () => {
@@ -154,18 +172,31 @@ describe('Certificate', () => {
     });
 
     test('certificate_with_teletexstring', () => {
-        const certificate = new Certificate(fileContents('00001000000413053762.cer'));
+        const certificate = new Certificate(
+            fileContents('00001000000413053762.cer')
+        );
 
         expect(certificate.rfc()).toBe('SMA0112284B2');
         expect(certificate.legalName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
         expect(certificate.branchName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
     });
 
-    const certificateCreateSerialNumber = (hexadecimal: string, decimal: string): SerialNumber => {
-        const certificate = Object.create(Certificate.prototype) as Certificate & {
-            createSerialNumber: (hexadecimal: string, decimal: string) => SerialNumber;
+    const certificateCreateSerialNumber = (
+        hexadecimal: string,
+        decimal: string
+    ): SerialNumber => {
+        const certificate = Object.create(
+            Certificate.prototype
+        ) as Certificate & {
+            createSerialNumber: (
+                hexadecimal: string,
+                decimal: string
+            ) => SerialNumber;
         };
-        const serialNumber = certificate.createSerialNumber(hexadecimal, decimal);
+        const serialNumber = certificate.createSerialNumber(
+            hexadecimal,
+            decimal
+        );
 
         return serialNumber;
     };
@@ -180,9 +211,7 @@ describe('Certificate', () => {
         serialNumber = certificateCreateSerialNumber('', '13104');
         expect(serialNumber.hexadecimal()).toBe('3330');
 
-        const t = (): SerialNumber => {
-            return certificateCreateSerialNumber('', '');
-        };
+        const t = (): SerialNumber => certificateCreateSerialNumber('', '');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Certificate does not contain a serial number');

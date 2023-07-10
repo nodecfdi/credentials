@@ -1,5 +1,5 @@
+import { KeySpecimen } from './key-specimen';
 import { KeyType } from 'src/internal/key-type-enum';
-import { KeySpecimen } from './key-specimen.js';
 
 describe('Key', () => {
     test('accessors_using_fake_key_data', () => {

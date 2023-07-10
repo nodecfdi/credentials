@@ -10,6 +10,16 @@ export class KeyTrait extends Mixin(DataArrayTrait) {
         this._dataArray = dataArray;
     }
 
+    public get type(): KeyTypeEnum {
+        if (!this.typeKey) {
+            this.typeKey = new KeyTypeEnum(
+                this.extractString('type') || KeyType.RSA
+            );
+        }
+
+        return this.typeKey;
+    }
+
     public parsed(): Record<string, unknown> {
         return this._dataArray;
     }
@@ -20,14 +30,6 @@ export class KeyTrait extends Mixin(DataArrayTrait) {
 
     public numberOfBits(): number {
         return this.extractInteger('bits');
-    }
-
-    public get type(): KeyTypeEnum {
-        if (!this.typeKey) {
-            this.typeKey = new KeyTypeEnum(this.extractString('type') || KeyType.RSA);
-        }
-
-        return this.typeKey;
     }
 
     public typeData(): Record<string, unknown> {

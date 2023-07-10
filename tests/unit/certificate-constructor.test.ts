@@ -1,5 +1,5 @@
+import { useTestCase } from '../test-case';
 import { Certificate } from 'src/certificate';
-import { useTestCase } from '../test-case.js';
 
 describe('Certificate_constructor', () => {
     const { fileContents } = useTestCase();
@@ -19,18 +19,14 @@ describe('Certificate_constructor', () => {
     });
 
     test('constructor_with_empty_content', () => {
-        const t = (): Certificate => {
-            return new Certificate('');
-        };
+        const t = (): Certificate => new Certificate('');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Create certificate from empty contents');
     });
 
     test('constructor_with_invalid_content', () => {
-        const t = (): Certificate => {
-            return new Certificate('x');
-        };
+        const t = (): Certificate => new Certificate('x');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Cannot parse X509 certificate from contents');

@@ -1,14 +1,19 @@
+import { useTestCase } from '../test-case';
 import { Certificate } from 'src/certificate';
 import { Credential } from 'src/credential';
 import { PrivateKey } from 'src/private-key';
-import { useTestCase } from '../test-case.js';
 
 describe('Credential', () => {
     const { filePath, fileContents } = useTestCase();
 
     test('create_with_matching_values', () => {
-        const certificate = Certificate.openFile(filePath('FIEL_AAA010101AAA/certificate.cer'));
-        const privateKey = PrivateKey.openFile(filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
+        const certificate = Certificate.openFile(
+            filePath('FIEL_AAA010101AAA/certificate.cer')
+        );
+        const privateKey = PrivateKey.openFile(
+            filePath('FIEL_AAA010101AAA/private_key.key.pem'),
+            ''
+        );
         const fiel = new Credential(certificate, privateKey);
 
         expect(fiel.certificate()).toBe(certificate);
@@ -16,12 +21,15 @@ describe('Credential', () => {
     });
 
     test('create_with_unmatched_values', () => {
-        const certificate = Certificate.openFile(filePath('CSD01_AAA010101AAA/certificate.cer'));
-        const privateKey = PrivateKey.openFile(filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
+        const certificate = Certificate.openFile(
+            filePath('CSD01_AAA010101AAA/certificate.cer')
+        );
+        const privateKey = PrivateKey.openFile(
+            filePath('FIEL_AAA010101AAA/private_key.key.pem'),
+            ''
+        );
 
-        const t = (): Credential => {
-            return new Credential(certificate, privateKey);
-        };
+        const t = (): Credential => new Credential(certificate, privateKey);
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Certificate does not belong to private key');
@@ -58,7 +66,9 @@ describe('Credential', () => {
         expect(credential.isFiel()).toBeFalsy();
 
         expect(credential.rfc()).toBe(credential.certificate().rfc());
-        expect(credential.legalName()).toBe(credential.certificate().legalName());
+        expect(credential.legalName()).toBe(
+            credential.certificate().legalName()
+        );
 
         const textToSign = 'The quick brown fox jumps over the lazy dog';
         const signature = credential.sign(textToSign);

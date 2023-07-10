@@ -1,6 +1,6 @@
 import { EOL } from 'node:os';
+import { useTestCase } from '../test-case';
 import { PemExtractor } from 'src/pem-extractor';
-import { useTestCase } from '../test-case.js';
 
 describe('PemExtractor', () => {
     const { fileContents } = useTestCase();
@@ -41,7 +41,9 @@ describe('PemExtractor', () => {
     });
 
     test('extract_certificate_with_public_key', () => {
-        const contents = fileContents('CSD01_AAA010101AAA/certificate_public_key.pem');
+        const contents = fileContents(
+            'CSD01_AAA010101AAA/certificate_public_key.pem'
+        );
         const extractor = new PemExtractor(contents);
 
         expect(extractor.getContents()).toBe(contents);
