@@ -1,5 +1,13 @@
 # @nodecfdi/credentials ChangeLog
 
+## 2.0.1
+
+### Patch Changes - Resolve problems with usage on esmodule
+
+- Resolve problem with lib `node-forge` original commonjs but usage as module.
+- Apply new suite of rules with node-cfdi standard.
+- Small refactoring.
+
 ## 2.0.0
 
 ### Major Changes - PFX and Refactor to node-forge

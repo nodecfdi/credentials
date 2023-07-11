@@ -1,6 +1,6 @@
 {
     "name": "@nodecfdi/credentials",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Librería para usar eFirma (fiel) y CSD (sellos) para el SAT",
     "keywords": [
         "certificate",
