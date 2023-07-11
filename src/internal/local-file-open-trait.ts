@@ -20,7 +20,8 @@ export abstract class LocalFileOpenTrait {
             throw new Error('The file to open is empty');
         }
 
-        if (/(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w!#%&+./:=?@-]))?/.test(filename)) {
+        // eslint-disable-next-line unicorn/better-regex -- Prefer this regex for not denial of service reported
+        if (/(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-/]))?/.test(filename)) {
             throw new Error('Invalid scheme to open file');
         }
 
