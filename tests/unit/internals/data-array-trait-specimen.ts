@@ -1,6 +1,6 @@
 import { type DateTime } from 'luxon';
-import { DataArrayTrait } from 'src/internal/data-array-trait';
 import { Mixin } from 'ts-mixer';
+import { DataArrayTrait } from 'src/internal/data-array-trait';
 
 export class DataArrayTraitSpecimen extends Mixin(DataArrayTrait) {
     constructor(dataArray: Record<string, unknown>) {

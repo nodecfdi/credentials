@@ -40,9 +40,7 @@ export class Rfc4514 {
 
     public escapeRecord(values: Record<string, string>): string {
         return Object.entries(values)
-            .map(([name, value]): string => {
-                return `${this.escape(name)}=${this.escape(value)}`;
-            })
+            .map(([name, value]): string => `${this.escape(name)}=${this.escape(value)}`)
             .join(',');
     }
 }

@@ -2,6 +2,26 @@ import { Certificate } from './certificate.js';
 import { PrivateKey } from './private-key.js';
 
 export class Credential {
+    private readonly _certificate: Certificate;
+
+    private readonly _privateKey: PrivateKey;
+
+    /**
+     * Credential constructor
+     *
+     * @param certificate - Certificate Instance
+     * @param privateKey - PrivateKey instance
+     * @throws Exception Certificate does not belong to private key
+     */
+    constructor(certificate: Certificate, privateKey: PrivateKey) {
+        if (!privateKey.belongsTo(certificate)) {
+            throw new Error('Certificate does not belong to private key');
+        }
+
+        this._certificate = certificate;
+        this._privateKey = privateKey;
+    }
+
     /**
      * Create a Credential object based on string contents
      *
@@ -37,26 +57,6 @@ export class Credential {
         const privateKey = PrivateKey.openFile(privateKeyFile, passPhrase);
 
         return new Credential(certificate, privateKey);
-    }
-
-    private readonly _certificate: Certificate;
-
-    private readonly _privateKey: PrivateKey;
-
-    /**
-     * Credential constructor
-     *
-     * @param certificate - Certificate Instance
-     * @param privateKey - PrivateKey instance
-     * @throws Exception Certificate does not belong to private key
-     */
-    constructor(certificate: Certificate, privateKey: PrivateKey) {
-        if (!privateKey.belongsTo(certificate)) {
-            throw new Error('Certificate does not belong to private key');
-        }
-
-        this._certificate = certificate;
-        this._privateKey = privateKey;
     }
 
     public certificate(): Certificate {

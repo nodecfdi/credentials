@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 export enum KeyType {
     RSA = 'RSA',
     DSA = 'DSA',

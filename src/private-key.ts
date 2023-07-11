@@ -1,4 +1,4 @@
-import { md, pki, util } from 'node-forge';
+import * as forge from 'node-forge';
 import { Mixin } from 'ts-mixer';
 import { type Certificate } from './certificate.js';
 import { KeyTrait } from './internal/key-trait.js';
@@ -8,35 +8,6 @@ import { PemExtractor } from './pem-extractor.js';
 import { PublicKey } from './public-key.js';
 
 export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
-    /**
-     * Convert PKCS#8 DER to PKCS#8 PEM
-     *
-     * @param contents -
-     * @param isEncrypted -
-     */
-    public static convertDerToPem(contents: string, isEncrypted: boolean): string {
-        const privateKeyName = isEncrypted ? 'ENCRYPTED PRIVATE KEY' : 'PRIVATE KEY';
-
-        return [
-            `-----BEGIN ${privateKeyName}-----\n`,
-            `${(util.encode64(contents).match(/.{1,64}/g) ?? []).join('\n')}\n`,
-            `-----END ${privateKeyName}-----`,
-        ].join('');
-    }
-
-    /**
-     * Create a PrivateKey object by opening a local file
-     * The content file can be a PKCS#8 DER, PKCS#8 PEM OR PKCS#5 PEM
-     *
-     * @param filename - file name to be read
-     * @param passPhrase - if file is encrypted
-     *
-     * This function only works in Node.js.
-     */
-    public static openFile(filename: string, passPhrase: string): PrivateKey {
-        return new PrivateKey(PrivateKey.localFileOpen(filename), passPhrase);
-    }
-
     /** String PEM contents of private key  */
     private readonly _pem: string;
 
@@ -70,13 +41,42 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
         this._passPhrase = passPhrase;
         this._dataArray = this.callOnPrivateKey((privateKey): Record<string, unknown> => {
             const data: Record<string, unknown> = {};
-            const pubKey = pki.setRsaPublicKey(privateKey.n, privateKey.e);
+            const pubKey = forge.pki.setRsaPublicKey(privateKey.n, privateKey.e);
             data.bits = privateKey.n.bitLength();
-            data.key = pki.publicKeyToPem(pubKey);
+            data.key = forge.pki.publicKeyToPem(pubKey);
             data[KeyType.RSA] = privateKey;
             data.type = KeyType.RSA;
             return data;
         });
+    }
+
+    /**
+     * Convert PKCS#8 DER to PKCS#8 PEM
+     *
+     * @param contents -
+     * @param isEncrypted -
+     */
+    public static convertDerToPem(contents: string, isEncrypted: boolean): string {
+        const privateKeyName = isEncrypted ? 'ENCRYPTED PRIVATE KEY' : 'PRIVATE KEY';
+
+        return [
+            `-----BEGIN ${privateKeyName}-----\n`,
+            `${(forge.util.encode64(contents).match(/.{1,64}/g) ?? []).join('\n')}\n`,
+            `-----END ${privateKeyName}-----`,
+        ].join('');
+    }
+
+    /**
+     * Create a PrivateKey object by opening a local file
+     * The content file can be a PKCS#8 DER, PKCS#8 PEM OR PKCS#5 PEM
+     *
+     * @param filename - file name to be read
+     * @param passPhrase - if file is encrypted
+     *
+     * This function only works in Node.js.
+     */
+    public static openFile(filename: string, passPhrase: string): PrivateKey {
+        return new PrivateKey(PrivateKey.localFileOpen(filename), passPhrase);
     }
 
     public pem(): string {
@@ -109,7 +109,7 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
 
         return this.callOnPrivateKey((privateKey) => {
             try {
-                const sig = md[algorithm].create();
+                const sig = forge.md[algorithm].create();
                 sig.update(data);
 
                 return privateKey.sign(sig);
@@ -125,23 +125,24 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
     }
 
     public belongsToPEMCertificate(certificate: string): boolean {
-        const pubKey = pki.publicKeyFromPem(this.publicKeyContents()); // Or certificate
-        const x = pki.certificateFromPem(certificate);
+        const pubKey = forge.pki.publicKeyFromPem(this.publicKeyContents()); // Or certificate
+        const x = forge.pki.certificateFromPem(certificate);
         const certPubKey = x.publicKey;
 
         return JSON.stringify(certPubKey) === JSON.stringify(pubKey);
     }
 
-    public callOnPrivateKey<T>(callableFunction: (prv: pki.rsa.PrivateKey) => T): T {
-        let privateKey: pki.rsa.PrivateKey;
+    public callOnPrivateKey<T>(callableFunction: (prv: forge.pki.rsa.PrivateKey) => T): T {
+        let privateKey: forge.pki.rsa.PrivateKey | undefined;
         try {
-            privateKey = pki.decryptRsaPrivateKey(this._pem, this._passPhrase);
+            privateKey = forge.pki.decryptRsaPrivateKey(this._pem, this._passPhrase);
         } catch (error) {
             throw new Error(`Cannot open private key: ${(error as Error).message}`);
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Its necesary because forge not break on error.
         if (!privateKey) {
-            throw new Error(`Cannot open private key: invalid pem or password`);
+            throw new Error('Cannot open private key: invalid key or password');
         }
 
         return callableFunction(privateKey);

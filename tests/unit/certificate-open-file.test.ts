@@ -1,5 +1,5 @@
+import { useTestCase } from '../test-case';
 import { Certificate } from 'src/certificate';
-import { useTestCase } from '../test-case.js';
 
 describe('Certificate_open_file', () => {
     const { filePath } = useTestCase();

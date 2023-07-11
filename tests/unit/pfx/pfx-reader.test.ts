@@ -1,13 +1,12 @@
+import { useTestCase } from '../../test-case.js';
 import { Credential } from 'src/credential';
 import { PfxReader } from 'src/pfx/pfx-reader';
-import { useTestCase } from '../../test-case.js';
 
 describe('Pfx_Reader', () => {
     const { fileContents, filePath } = useTestCase();
 
-    const obtainKnownCredential = (): Credential => {
-        return PfxReader.createCredentialFromFile(filePath('CSD01_AAA010101AAA/credential_unprotected.pfx'), '');
-    };
+    const obtainKnownCredential = (): Credential =>
+        PfxReader.createCredentialFromFile(filePath('CSD01_AAA010101AAA/credential_unprotected.pfx'), '');
 
     test.each([
         ['CSD01_AAA010101AAA/credential_unprotected.pfx', ''],
@@ -23,30 +22,25 @@ describe('Pfx_Reader', () => {
     });
 
     test('create_credential_empty_contents', () => {
-        const t = (): Credential => {
-            return PfxReader.createCredentialFromContents('', '');
-        };
+        const t = (): Credential => PfxReader.createCredentialFromContents('', '');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Cannot create credential from empty PFX contents');
     });
 
     test('create_credential_wrong_content', () => {
-        const t = (): Credential => {
-            return PfxReader.createCredentialFromContents('invalid-contents', '');
-        };
+        const t = (): Credential => PfxReader.createCredentialFromContents('invalid-contents', '');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Invalid PKCS#12 contents or wrong passphrase');
     });
 
     test('create_credential_wrong_password', () => {
-        const t = (): Credential => {
-            return PfxReader.createCredentialFromFile(
+        const t = (): Credential =>
+            PfxReader.createCredentialFromFile(
                 filePath('CSD01_AAA010101AAA/credential_protected.pfx'),
                 'wrong-password'
             );
-        };
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Invalid PKCS#12 contents or wrong passphrase');

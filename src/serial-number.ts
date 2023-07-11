@@ -6,28 +6,6 @@ import { BaseConverter } from '@nodecfdi/base-converter';
  * It is not intended to use in general.
  */
 export class SerialNumber {
-    public static createFromHexadecimal(hexadecimal: string): SerialNumber {
-        return new SerialNumber(hexadecimal);
-    }
-
-    public static createFromDecimal(decString: string): SerialNumber {
-        const hexadecimal = BaseConverter.createBase36().convert(decString, 10, 16);
-
-        return new SerialNumber(hexadecimal);
-    }
-
-    public static createFromBytes(input: string): SerialNumber {
-        const hexadecimal = (input.match(/./g) ?? [])
-            .map((value) => {
-                const fixedNumber = value.codePointAt(0)!;
-
-                return Number.parseInt(`${fixedNumber}`, 10).toString(16);
-            })
-            .join('');
-
-        return new SerialNumber(hexadecimal);
-    }
-
     /** Hexadecimal string representation */
     private readonly _hexadecimal: string;
 
@@ -47,6 +25,28 @@ export class SerialNumber {
         this._hexadecimal = hexadecimal;
     }
 
+    public static createFromHexadecimal(hexadecimal: string): SerialNumber {
+        return new SerialNumber(hexadecimal);
+    }
+
+    public static createFromDecimal(decString: string): SerialNumber {
+        const hexadecimal = BaseConverter.createBase36().convert(decString, 10, 16);
+
+        return new SerialNumber(hexadecimal);
+    }
+
+    public static createFromBytes(input: string): SerialNumber {
+        const hexadecimal = (input.match(/./g) ?? [])
+            .map((value) => {
+                const fixedNumber = value.codePointAt(0) ?? 0;
+
+                return Number.parseInt(`${fixedNumber}`, 10).toString(16);
+            })
+            .join('');
+
+        return new SerialNumber(hexadecimal);
+    }
+
     public hexadecimal(): string {
         return this._hexadecimal;
     }
@@ -54,7 +54,7 @@ export class SerialNumber {
     public bytes(): string {
         return (this._hexadecimal.match(/.{1,2}/g) ?? [])
             .map((value) => {
-                const fixedValue = value.replace(/[^a-f\d]/gi, '');
+                const fixedValue = value.replaceAll(/[^\da-f]/gi, '');
                 const fixedNumber = Number.parseInt(fixedValue, 16);
 
                 return String.fromCodePoint(fixedNumber);

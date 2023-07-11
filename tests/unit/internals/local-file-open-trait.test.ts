@@ -28,9 +28,7 @@ describe('LocalFileOpenTrait', () => {
     });
 
     test('open_empty_file', () => {
-        const t = (): string => {
-            return specimen.localFileOpen2('');
-        };
+        const t = (): string => specimen.localFileOpen2('');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('The file to open is empty');
@@ -39,9 +37,7 @@ describe('LocalFileOpenTrait', () => {
     test('open_with_double_scheme_on_path', () => {
         const filename = 'file://http://example.com/index.htm';
 
-        const t = (): string => {
-            return specimen.localFileOpen2(filename);
-        };
+        const t = (): string => specimen.localFileOpen2(filename);
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Invalid scheme to open file');
@@ -50,9 +46,7 @@ describe('LocalFileOpenTrait', () => {
     test('open_with_directory', () => {
         const filename = __dirname;
 
-        const t = (): string => {
-            return specimen.localFileOpen2(filename);
-        };
+        const t = (): string => specimen.localFileOpen2(filename);
 
         expect(t).toThrow(Error);
         expect(t).toThrow('File content is empty');
@@ -61,9 +55,7 @@ describe('LocalFileOpenTrait', () => {
     test('open_with_non_existent_path', () => {
         const filename = `${__dirname}/nonexistent`;
 
-        const t = (): string => {
-            return specimen.localFileOpen2(filename);
-        };
+        const t = (): string => specimen.localFileOpen2(filename);
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Unable to locate the file to open');
@@ -75,9 +67,7 @@ describe('LocalFileOpenTrait', () => {
         ['c:\\certs\\file.txt'],
         ['file://c:\\certs\\file.txt'],
     ])('open_with_windows_path_%s', (filename) => {
-        const t = (): string => {
-            return specimen.localFileOpen2(filename);
-        };
+        const t = (): string => specimen.localFileOpen2(filename);
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Unable to locate the file to open');

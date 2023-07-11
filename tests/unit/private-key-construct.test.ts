@@ -1,5 +1,5 @@
+import { useTestCase } from '../test-case';
 import { PrivateKey } from 'src/private-key';
-import { useTestCase } from '../test-case.js';
 
 describe('PrivateKey_construct', () => {
     const { fileContents, filePath } = useTestCase();
@@ -29,36 +29,28 @@ describe('PrivateKey_construct', () => {
     test('open_file_with_invalid_password', () => {
         const filename = filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
 
-        const t = (): PrivateKey => {
-            return PrivateKey.openFile(filename, '');
-        };
+        const t = (): PrivateKey => PrivateKey.openFile(filename, '');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Cannot open private key');
     });
 
     test('construct_with_empty_content', () => {
-        const t = (): PrivateKey => {
-            return new PrivateKey('', '');
-        };
+        const t = (): PrivateKey => new PrivateKey('', '');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Private key is empty');
     });
 
     test('construct_with_invalid_content', () => {
-        const t = (): PrivateKey => {
-            return new PrivateKey('invalid content', '');
-        };
+        const t = (): PrivateKey => new PrivateKey('invalid content', '');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Cannot open private key: Too few bytes to read ASN.1 value.');
     });
 
     test('construct_with_invalid_but_base64_content', () => {
-        const t = (): PrivateKey => {
-            return new PrivateKey('INVALID+CONTENT', '');
-        };
+        const t = (): PrivateKey => new PrivateKey('INVALID+CONTENT', '');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Cannot open private key: Too few bytes to read ASN.1 value.');

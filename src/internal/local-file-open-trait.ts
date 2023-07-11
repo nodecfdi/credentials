@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export abstract class LocalFileOpenTrait {
     /**
      * Read file and return file contents as binary string
@@ -9,8 +8,8 @@ export abstract class LocalFileOpenTrait {
      * This function only works in Node.js.
      */
     public static localFileOpen(filename: string): string {
-        if (typeof window !== 'undefined' && window.document !== undefined) {
-            throw new Error('Método no disponible en browser');
+        if (typeof window !== 'undefined') {
+            throw new TypeError('Método no disponible en browser');
         }
 
         if (filename.startsWith('file://')) {
@@ -21,6 +20,7 @@ export abstract class LocalFileOpenTrait {
             throw new Error('The file to open is empty');
         }
 
+        // eslint-disable-next-line unicorn/better-regex -- Prefer this regex for not denial of service reported
         if (/(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%@\-/]))?/.test(filename)) {
             throw new Error('Invalid scheme to open file');
         }

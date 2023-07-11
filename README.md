@@ -55,7 +55,7 @@ pnpm add @nodecfdi/credentials
 
 ### CDN - Browser
 
-Usa la versión mas reciente publicada cambiando `<latest-version>` por la última versión. Por ejemplo ...credentials@2.0.0/dist...
+Usa la versión mas reciente publicada cambiando `<latest-version>` por la última versión. Por ejemplo ...credentials@2.0.1/dist...
 
 ```html
 <script src="https://unpkg.com/@nodecfdi/credentials@<latest-version>/dist/credentials.global.js"></script>

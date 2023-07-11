@@ -14,27 +14,21 @@ describe('SerialNumber', () => {
     });
 
     test('create_hexadecimal_empty', () => {
-        const t = (): SerialNumber => {
-            return SerialNumber.createFromHexadecimal('');
-        };
+        const t = (): SerialNumber => SerialNumber.createFromHexadecimal('');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('is empty');
     });
 
     test('create_hexadecimal_invalid_chars', () => {
-        const t = (): SerialNumber => {
-            return SerialNumber.createFromHexadecimal('0x001122x3');
-        };
+        const t = (): SerialNumber => SerialNumber.createFromHexadecimal('0x001122x3');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('contains invalid characters');
     });
 
     test('create_hexadecimal_double_prefix', () => {
-        const t = (): SerialNumber => {
-            return SerialNumber.createFromHexadecimal('0x0xFF');
-        };
+        const t = (): SerialNumber => SerialNumber.createFromHexadecimal('0x0xFF');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('contains invalid characters');

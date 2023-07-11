@@ -1,6 +1,6 @@
+import { useTestCase } from '../test-case';
 import { Certificate } from 'src/certificate';
 import { PrivateKey } from 'src/private-key';
-import { useTestCase } from '../test-case.js';
 
 describe('PrivateKey', () => {
     const { fileContents, filePath } = useTestCase();
@@ -48,9 +48,7 @@ describe('PrivateKey', () => {
         const privateKey = createPrivateKey();
         const sourceString = '';
 
-        const t = (): string => {
-            return privateKey.sign(sourceString, 'sha1');
-        };
+        const t = (): string => privateKey.sign(sourceString, 'sha1');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Cannot sign data: empty signature');

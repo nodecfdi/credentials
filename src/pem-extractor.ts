@@ -42,7 +42,7 @@ export class PemExtractor {
     }
 
     protected extractBase64(type: string): string {
-        type = type.replace(/[.\\+*?[^\]$(){}=!<>|:/-]/g, '\\$&');
+        type = type.replaceAll(/[!$()*+./:<=>?[\\\]^{|}-]/g, '\\$&');
 
         const pattern = `^-----BEGIN ${type}-----\r?\n([A-Za-z0-9+/=]+\r?\n)+-----END ${type}-----\r?\n?$`;
         const matches = new RegExp(pattern, 'm').exec(this.getContents());
@@ -51,13 +51,14 @@ export class PemExtractor {
     }
 
     protected extractRsaProtected(): string {
-        const pattern = `^-----BEGIN RSA PRIVATE KEY-----\r?\nProc-Type: .+\r?\nDEK-Info: .+\r?\n\r?\n([A-Za-z0-9+/=]+\r?\n)+-----END RSA PRIVATE KEY-----\r?\n?$`;
+        const pattern =
+            '^-----BEGIN RSA PRIVATE KEY-----\r?\nProc-Type: .+\r?\nDEK-Info: .+\r?\n\r?\n([A-Za-z0-9+/=]+\r?\n)+-----END RSA PRIVATE KEY-----\r?\n?$';
         const matches = new RegExp(pattern, 'm').exec(this.getContents());
 
         return this.normalizeLineEndings(`${matches ? matches[0] : ''}`);
     }
 
     protected normalizeLineEndings(content: string): string {
-        return content.replace(/\r\n/g, '\n');
+        return content.replaceAll('\r\n', '\n');
     }
 }

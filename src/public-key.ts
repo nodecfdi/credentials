@@ -1,10 +1,27 @@
-import { md, pki } from 'node-forge';
+import * as forge from 'node-forge';
 import { Mixin } from 'ts-mixer';
 import { KeyTrait } from './internal/key-trait.js';
 import { KeyType } from './internal/key-type-enum.js';
 import { LocalFileOpenTrait } from './internal/local-file-open-trait.js';
 
 export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
+    constructor(source: string) {
+        const dataObject: Record<string, unknown> = PublicKey.callOnPublicKeyWithContents(
+            (publicKey): Record<string, unknown> => {
+                const pem = forge.pki.publicKeyToPem(publicKey);
+                const data: Record<string, unknown> = {};
+                data.bits = publicKey.n.bitLength();
+                data.key = pem;
+                data[KeyType.RSA] = publicKey;
+                data.type = KeyType.RSA;
+
+                return data;
+            },
+            source
+        );
+        super(dataObject);
+    }
+
     /**
      * Read file and return PublicKey instance
      *
@@ -25,15 +42,15 @@ export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
      * @throws Error when Cannot open public key
      */
     private static callOnPublicKeyWithContents<T>(
-        callableFunction: (pbk: pki.rsa.PublicKey) => T,
+        callableFunction: (pbk: forge.pki.rsa.PublicKey) => T,
         _publicKeyContents: string
     ): T {
-        let pubKey: pki.rsa.PublicKey | undefined;
+        let pubKey: forge.pki.rsa.PublicKey | undefined;
         let latestError = '';
 
         try {
-            const certPem = pki.certificateFromPem(_publicKeyContents);
-            pubKey = certPem.publicKey as pki.rsa.PublicKey;
+            const certPem = forge.pki.certificateFromPem(_publicKeyContents);
+            pubKey = certPem.publicKey as forge.pki.rsa.PublicKey;
         } catch (error) {
             latestError = `Cannot open public key: ${(error as Error).message}`;
             pubKey = undefined;
@@ -41,7 +58,7 @@ export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
 
         if (!pubKey) {
             try {
-                pubKey = pki.publicKeyFromPem(_publicKeyContents);
+                pubKey = forge.pki.publicKeyFromPem(_publicKeyContents);
             } catch (error) {
                 latestError = `Cannot open public key: ${(error as Error).message}`;
                 pubKey = undefined;
@@ -53,23 +70,6 @@ export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
         }
 
         return callableFunction(pubKey);
-    }
-
-    constructor(source: string) {
-        const dataObject: Record<string, unknown> = PublicKey.callOnPublicKeyWithContents(
-            (publicKey): Record<string, unknown> => {
-                const pem = pki.publicKeyToPem(publicKey);
-                const data: Record<string, unknown> = {};
-                data.bits = publicKey.n.bitLength();
-                data.key = pem;
-                data[KeyType.RSA] = publicKey;
-                data.type = KeyType.RSA;
-
-                return data;
-            },
-            source
-        );
-        super(dataObject);
     }
 
     /**
@@ -86,7 +86,7 @@ export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
     ): boolean {
         return this.callOnPublicKey((publicKey): boolean => {
             try {
-                const sig = md[algorithm].create();
+                const sig = forge.md[algorithm].create();
                 sig.update(data);
 
                 return publicKey.verify(sig.digest().bytes(), signature);
@@ -101,7 +101,7 @@ export class PublicKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
      *
      * @param callableFunction - Function to call and inject content
      */
-    public callOnPublicKey<T>(callableFunction: (pbk: pki.rsa.PublicKey) => T): T {
+    public callOnPublicKey<T>(callableFunction: (pbk: forge.pki.rsa.PublicKey) => T): T {
         return PublicKey.callOnPublicKeyWithContents(callableFunction, this.publicKeyContents());
     }
 }

@@ -1,7 +1,7 @@
 import { EOL } from 'node:os';
+import { useTestCase } from '../test-case';
 import { PrivateKey } from 'src/private-key';
 import { PublicKey } from 'src/public-key';
-import { useTestCase } from '../test-case.js';
 
 describe('PublicKey', () => {
     const { fileContents, filePath } = useTestCase();
@@ -22,9 +22,7 @@ describe('PublicKey', () => {
     test('create_public_key_with_invalid_data', () => {
         const contents = 'invalid data';
 
-        const t = (): PublicKey => {
-            return new PublicKey(contents);
-        };
+        const t = (): PublicKey => new PublicKey(contents);
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Cannot open public key');
@@ -41,15 +39,13 @@ describe('PublicKey', () => {
 
         expect(publicKey.verify(sourceString, signature)).toBeTruthy();
         expect(publicKey.verify(`${sourceString}${EOL}`, signature)).toBeFalsy();
-        expect(publicKey.verify(sourceString, signature, 'sha512/224')).toBeFalsy();
+        expect(publicKey.verify(sourceString, signature, 'sha512')).toBeFalsy();
     });
 
     test('verify_with_error', () => {
         const publicKey = PublicKey.openFile(filePath('CSD01_AAA010101AAA/public_key.pem'));
 
-        const t = (): boolean => {
-            return publicKey.verify('', '', 'sha256');
-        };
+        const t = (): boolean => publicKey.verify('', '', 'sha256');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Verify error');

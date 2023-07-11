@@ -1,6 +1,6 @@
 import { EOL } from 'node:os';
+import { useTestCase } from '../test-case';
 import { PemExtractor } from 'src/pem-extractor';
-import { useTestCase } from '../test-case.js';
 
 describe('PemExtractor', () => {
     const { fileContents } = useTestCase();

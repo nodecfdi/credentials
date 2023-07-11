@@ -1,11 +1,11 @@
 import { Buffer } from 'node:buffer';
+import { mock } from 'vitest-mock-extended';
+import { useTestCase } from '../../test-case';
 import { Certificate } from 'src/certificate';
 import { Credential } from 'src/credential';
 import { PfxExporter } from 'src/pfx/pfx-exporter';
 import { PfxReader } from 'src/pfx/pfx-reader';
 import { type PrivateKey } from 'src/private-key';
-import { mock } from 'vitest-mock-extended';
-import { useTestCase } from '../../test-case.js';
 
 describe('Pfx_Exporter', () => {
     const { fileContents, filePath } = useTestCase();

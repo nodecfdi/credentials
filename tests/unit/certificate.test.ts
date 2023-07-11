@@ -1,20 +1,17 @@
 import { Buffer } from 'node:buffer';
 import { DateTime } from 'luxon';
-import { type pki } from 'node-forge';
+import type forge from 'node-forge';
+import { useTestCase } from '../test-case';
 import { Certificate } from 'src/certificate';
 import { type SerialNumber } from 'src/serial-number';
-import { useTestCase } from '../test-case.js';
 
 describe('Certificate', () => {
     const { fileContents } = useTestCase();
 
-    const createCertificate = (): Certificate => {
-        return new Certificate(fileContents('FIEL_AAA010101AAA/certificate.cer'));
-    };
+    const createCertificate = (): Certificate => new Certificate(fileContents('FIEL_AAA010101AAA/certificate.cer'));
 
-    const createCertificateSello = (): Certificate => {
-        return new Certificate(fileContents('CSD01_AAA010101AAA/certificate.cer'));
-    };
+    const createCertificateSello = (): Certificate =>
+        new Certificate(fileContents('CSD01_AAA010101AAA/certificate.cer'));
 
     test('pem_contents_only', () => {
         const certificate = createCertificateSello();
@@ -112,7 +109,11 @@ describe('Certificate', () => {
 
         expect(parsed).toHaveProperty('subject');
         expect(certificate.name()).toContain(
-            (parsed.subject as pki.Certificate['subject']).getField({ shortName: 'CN' }).value
+            (
+                (parsed.subject as forge.pki.Certificate['subject']).getField({
+                    shortName: 'CN',
+                }) as Record<string, unknown>
+            ).value
         );
     });
 
@@ -180,9 +181,7 @@ describe('Certificate', () => {
         serialNumber = certificateCreateSerialNumber('', '13104');
         expect(serialNumber.hexadecimal()).toBe('3330');
 
-        const t = (): SerialNumber => {
-            return certificateCreateSerialNumber('', '');
-        };
+        const t = (): SerialNumber => certificateCreateSerialNumber('', '');
 
         expect(t).toThrow(Error);
         expect(t).toThrow('Certificate does not contain a serial number');
