@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { pki, util } from 'node-forge';
+import * as forge from 'node-forge';
 import { Mixin } from 'ts-mixer';
 import { DataArrayTrait } from './internal/data-array-trait.js';
 import { LocalFileOpenTrait } from './internal/local-file-open-trait.js';
@@ -36,9 +36,9 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
             pem = Certificate.convertDerToPem(contents);
         }
 
-        let parsed: pki.Certificate;
+        let parsed: forge.pki.Certificate;
         try {
-            parsed = pki.certificateFromPem(pem);
+            parsed = forge.pki.certificateFromPem(pem);
         } catch (error) {
             throw new Error(`Cannot parse X509 certificate from contents ${(error as Error).message}`);
         }
@@ -52,7 +52,7 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
             extensions: parsed.extensions,
             validity: parsed.validity,
         };
-        this._rfc = util.decodeUtf8(`${this.subjectData({ type: '2.5.4.45' })?.value as string}`.split(' ')[0]);
+        this._rfc = forge.util.decodeUtf8(`${this.subjectData({ type: '2.5.4.45' })?.value as string}`.split(' ')[0]);
         this._legalName = this.subjectData({ type: '2.5.4.41' })?.value as string;
         this._dataArray.hash = parsed.issuer.hash;
         this._dataArray.signatureTypeLN = parsed.signature;
@@ -65,8 +65,8 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
      */
     public static convertDerToPem(contents: string): string {
         // Effectively compare that all the content is base64, if it isn't then encode it
-        if (contents !== util.encode64(util.decode64(contents))) {
-            contents = util.encode64(contents);
+        if (contents !== forge.util.encode64(forge.util.decode64(contents))) {
+            contents = forge.util.encode64(contents);
         }
 
         return [
@@ -117,27 +117,29 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
     }
 
     public name(): string {
-        return util.decodeUtf8(`/CN=${(this.subjectData({ shortName: 'CN' })?.value as string | undefined) ?? ''}`);
+        return forge.util.decodeUtf8(
+            `/CN=${(this.subjectData({ shortName: 'CN' })?.value as string | undefined) ?? ''}`
+        );
     }
 
-    public subject(): pki.Certificate['subject'] {
-        return this.extractArray('subject') as pki.Certificate['subject'];
+    public subject(): forge.pki.Certificate['subject'] {
+        return this.extractArray('subject') as forge.pki.Certificate['subject'];
     }
 
-    public subjectData(key: string | pki.CertificateFieldOptions): pki.CertificateField | undefined {
-        return this.subject().getField(key) as pki.CertificateField;
+    public subjectData(key: string | forge.pki.CertificateFieldOptions): forge.pki.CertificateField | undefined {
+        return this.subject().getField(key) as forge.pki.CertificateField;
     }
 
     public hash(): string {
         return this.extractString('hash');
     }
 
-    public issuer(): pki.Certificate['issuer'] {
-        return this.extractArray('issuer') as pki.Certificate['issuer'];
+    public issuer(): forge.pki.Certificate['issuer'] {
+        return this.extractArray('issuer') as forge.pki.Certificate['issuer'];
     }
 
-    public issuerData(key: string | pki.CertificateFieldOptions): pki.CertificateField {
-        return this.issuer().getField(key) as pki.CertificateField;
+    public issuerData(key: string | forge.pki.CertificateFieldOptions): forge.pki.CertificateField {
+        return this.issuer().getField(key) as forge.pki.CertificateField;
     }
 
     public version(): string {
@@ -153,8 +155,8 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
         return this._serialNumber;
     }
 
-    public validity(): pki.Certificate['validity'] {
-        return this.extractArray('validity') as pki.Certificate['validity'];
+    public validity(): forge.pki.Certificate['validity'] {
+        return this.extractArray('validity') as forge.pki.Certificate['validity'];
     }
 
     public validFrom(): Date {
@@ -218,7 +220,7 @@ export class Certificate extends Mixin(DataArrayTrait, LocalFileOpenTrait) {
                 continue;
             }
 
-            issuer[line.shortName ?? line.type ?? ''] = util.decodeUtf8(line.value as string);
+            issuer[line.shortName ?? line.type ?? ''] = forge.util.decodeUtf8(line.value as string);
         }
 
         return new Rfc4514().escapeRecord(issuer);

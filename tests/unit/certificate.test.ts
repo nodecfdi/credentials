@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { DateTime } from 'luxon';
-import { type pki } from 'node-forge';
+import type forge from 'node-forge';
 import { useTestCase } from '../test-case';
 import { Certificate } from 'src/certificate';
 import { type SerialNumber } from 'src/serial-number';
@@ -110,7 +110,7 @@ describe('Certificate', () => {
         expect(parsed).toHaveProperty('subject');
         expect(certificate.name()).toContain(
             (
-                (parsed.subject as pki.Certificate['subject']).getField({
+                (parsed.subject as forge.pki.Certificate['subject']).getField({
                     shortName: 'CN',
                 }) as Record<string, unknown>
             ).value

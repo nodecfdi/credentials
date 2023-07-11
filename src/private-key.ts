@@ -1,4 +1,4 @@
-import { md, pki, util } from 'node-forge';
+import * as forge from 'node-forge';
 import { Mixin } from 'ts-mixer';
 import { type Certificate } from './certificate.js';
 import { KeyTrait } from './internal/key-trait.js';
@@ -41,9 +41,9 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
         this._passPhrase = passPhrase;
         this._dataArray = this.callOnPrivateKey((privateKey): Record<string, unknown> => {
             const data: Record<string, unknown> = {};
-            const pubKey = pki.setRsaPublicKey(privateKey.n, privateKey.e);
+            const pubKey = forge.pki.setRsaPublicKey(privateKey.n, privateKey.e);
             data.bits = privateKey.n.bitLength();
-            data.key = pki.publicKeyToPem(pubKey);
+            data.key = forge.pki.publicKeyToPem(pubKey);
             data[KeyType.RSA] = privateKey;
             data.type = KeyType.RSA;
             return data;
@@ -61,7 +61,7 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
 
         return [
             `-----BEGIN ${privateKeyName}-----\n`,
-            `${(util.encode64(contents).match(/.{1,64}/g) ?? []).join('\n')}\n`,
+            `${(forge.util.encode64(contents).match(/.{1,64}/g) ?? []).join('\n')}\n`,
             `-----END ${privateKeyName}-----`,
         ].join('');
     }
@@ -109,7 +109,7 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
 
         return this.callOnPrivateKey((privateKey) => {
             try {
-                const sig = md[algorithm].create();
+                const sig = forge.md[algorithm].create();
                 sig.update(data);
 
                 return privateKey.sign(sig);
@@ -125,22 +125,22 @@ export class PrivateKey extends Mixin(KeyTrait, LocalFileOpenTrait) {
     }
 
     public belongsToPEMCertificate(certificate: string): boolean {
-        const pubKey = pki.publicKeyFromPem(this.publicKeyContents()); // Or certificate
-        const x = pki.certificateFromPem(certificate);
+        const pubKey = forge.pki.publicKeyFromPem(this.publicKeyContents()); // Or certificate
+        const x = forge.pki.certificateFromPem(certificate);
         const certPubKey = x.publicKey;
 
         return JSON.stringify(certPubKey) === JSON.stringify(pubKey);
     }
 
-    public callOnPrivateKey<T>(callableFunction: (prv: pki.rsa.PrivateKey) => T): T {
-        let privateKey: pki.rsa.PrivateKey | undefined;
+    public callOnPrivateKey<T>(callableFunction: (prv: forge.pki.rsa.PrivateKey) => T): T {
+        let privateKey: forge.pki.rsa.PrivateKey | undefined;
         try {
-            privateKey = pki.decryptRsaPrivateKey(this._pem, this._passPhrase);
+            privateKey = forge.pki.decryptRsaPrivateKey(this._pem, this._passPhrase);
         } catch (error) {
             throw new Error(`Cannot open private key: ${(error as Error).message}`);
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Its necesary because forge not break on error.
         if (!privateKey) {
             throw new Error('Cannot open private key: invalid key or password');
         }
