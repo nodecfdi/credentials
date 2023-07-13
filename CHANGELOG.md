@@ -1,5 +1,11 @@
 # @nodecfdi/credentials ChangeLog
 
+## 2.0.3
+
+### Patch Changes - Esm lib `node-forge` usage default
+
+- Fix problem with usage of external lib `node-forge`
+
 ## 2.0.2
 
 ### Patch Changes - Esm and support to require
