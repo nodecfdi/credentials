@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import * as forge from 'node-forge';
+import forge from 'node-forge';
 import { Mixin } from 'ts-mixer';
 import { Credential } from '../credential.js';
 import { LocalFileOpenTrait } from '../internal/local-file-open-trait.js';

@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import * as forge from 'node-forge';
+import forge from 'node-forge';
 import { Mixin } from 'ts-mixer';
 import { DataArrayTrait } from './internal/data-array-trait.js';
 import { LocalFileOpenTrait } from './internal/local-file-open-trait.js';
