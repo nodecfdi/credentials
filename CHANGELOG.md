@@ -1,5 +1,12 @@
 # @nodecfdi/credentials ChangeLog
 
+## 2.0.2
+
+### Patch Changes - Esm and support to require
+
+- Fix problem with esm and required node:fs
+- Update dependencies
+
 ## 2.0.1
 
 ### Patch Changes - Resolve problems with usage on esmodule
