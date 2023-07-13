@@ -1,4 +1,4 @@
-import * as forge from 'node-forge';
+import forge from 'node-forge';
 import { Mixin } from 'ts-mixer';
 import { type Certificate } from './certificate.js';
 import { KeyTrait } from './internal/key-trait.js';
