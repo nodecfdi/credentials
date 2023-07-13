@@ -12,6 +12,15 @@ const sharedConfig = defineConfig({
     noExternal: ['ts-mixer'],
     minify: isCI,
     shims: true,
+    esbuildOptions: (options, context) => {
+        if (context.format !== 'esm') {
+            return;
+        }
+
+        options.banner = {
+            js: `import { createRequire } from 'module'; const require = createRequire(import.meta.url);`,
+        };
+    },
 });
 
 const mainConfig = defineConfig({
