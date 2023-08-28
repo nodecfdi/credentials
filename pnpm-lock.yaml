@@ -71,11 +71,11 @@ devDependencies:
     specifier: ^7.1.0
     version: 7.1.0(ts-node@10.8.2)(typescript@5.1.6)
   typedoc:
-    specifier: ^0.24.8
-    version: 0.24.8(typescript@5.1.6)
+    specifier: ^0.25.0
+    version: 0.25.0(typescript@5.1.6)
   typedoc-theme-hierarchy:
     specifier: ^4.0.0
-    version: 4.0.0(typedoc@0.24.8)
+    version: 4.0.0(typedoc@0.25.0)
   typescript:
     specifier: ^5.1.6
     version: 5.1.6
@@ -1194,7 +1194,7 @@ packages:
       graphemer: 1.4.0
       ignore: 5.2.4
       natural-compare-lite: 1.4.0
-      semver: 7.5.3
+      semver: 7.5.4
       tsutils: 3.21.0(typescript@5.1.6)
       typescript: 5.1.6
     transitivePeerDependencies:
@@ -1268,7 +1268,7 @@ packages:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.5.3
+      semver: 7.5.4
       tsutils: 3.21.0(typescript@5.1.6)
       typescript: 5.1.6
     transitivePeerDependencies:
@@ -1289,7 +1289,7 @@ packages:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.1.6)
       eslint: 8.44.0
       eslint-scope: 5.1.1
-      semver: 7.5.3
+      semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -1642,7 +1642,7 @@ packages:
   /builtins@5.0.1:
     resolution: {integrity: sha512-qwVpFEHNfhYJIzNRBvd2C1kyo6jz3ZSMPyyuR47OPdiKWlbYnZNyDWuyR175qDnAJLiCo5fBBqPb3RiXgWlkOQ==}
     dependencies:
-      semver: 7.5.3
+      semver: 7.5.4
     dev: true
 
   /bundle-name@3.0.0:
@@ -2443,7 +2443,7 @@ packages:
       is-core-module: 2.12.1
       minimatch: 3.1.2
       resolve: 1.22.2
-      semver: 7.5.3
+      semver: 7.5.4
     dev: true
 
   /eslint-plugin-tsdoc@0.2.17:
@@ -2474,7 +2474,7 @@ packages:
       regexp-tree: 0.1.27
       regjsparser: 0.10.0
       safe-regex: 2.1.1
-      semver: 7.5.3
+      semver: 7.5.4
       strip-indent: 3.0.0
     dev: true
 
@@ -3901,6 +3901,13 @@ packages:
       brace-expansion: 2.0.1
     dev: true
 
+  /minimatch@9.0.3:
+    resolution: {integrity: sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
+
   /minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
@@ -5254,25 +5261,25 @@ packages:
       is-typed-array: 1.1.10
     dev: true
 
-  /typedoc-theme-hierarchy@4.0.0(typedoc@0.24.8):
+  /typedoc-theme-hierarchy@4.0.0(typedoc@0.25.0):
     resolution: {integrity: sha512-/y8QfmkLN+NS57hoxsS/vD1fdAPdkd7JtC7xWp2Lk3rE6/cRweFdEfaKD6GJCQMD3CuSD7Ldcc5vjwwrF4UqyQ==}
     peerDependencies:
       typedoc: ^0.24.0
     dependencies:
       fs-extra: 10.1.0
-      typedoc: 0.24.8(typescript@5.1.6)
+      typedoc: 0.25.0(typescript@5.1.6)
     dev: true
 
-  /typedoc@0.24.8(typescript@5.1.6):
-    resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
-    engines: {node: '>= 14.14'}
+  /typedoc@0.25.0(typescript@5.1.6):
+    resolution: {integrity: sha512-FvCYWhO1n5jACE0C32qg6b3dSfQ8f2VzExnnRboowHtqUD6ARzM2r8YJeZFYXhcm2hI4C2oCRDgNPk/yaQUN9g==}
+    engines: {node: '>= 16'}
     hasBin: true
     peerDependencies:
-      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x
+      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x
     dependencies:
       lunr: 2.3.9
       marked: 4.3.0
-      minimatch: 9.0.2
+      minimatch: 9.0.3
       shiki: 0.14.3
       typescript: 5.1.6
     dev: true
