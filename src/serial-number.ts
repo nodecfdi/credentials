@@ -6,63 +6,63 @@ import { BaseConverter } from '@nodecfdi/base-converter';
  * It is not intended to use in general.
  */
 export class SerialNumber {
-    /** Hexadecimal string representation */
-    private readonly _hexadecimal: string;
+  /** Hexadecimal string representation */
+  private readonly _hexadecimal: string;
 
-    constructor(hexadecimal: string) {
-        if (hexadecimal === '') {
-            throw new Error('The hexadecimal string is empty');
-        }
-
-        if ('0x'.toLowerCase() === hexadecimal.slice(0, 2).toLowerCase()) {
-            hexadecimal = hexadecimal.slice(2);
-        }
-
-        if (!/^[\da-f]*$/.test(hexadecimal)) {
-            throw new Error('The hexadecimal string contains invalid characters');
-        }
-
-        this._hexadecimal = hexadecimal;
+  constructor(hexadecimal: string) {
+    if (hexadecimal === '') {
+      throw new Error('The hexadecimal string is empty');
     }
 
-    public static createFromHexadecimal(hexadecimal: string): SerialNumber {
-        return new SerialNumber(hexadecimal);
+    if ('0x'.toLowerCase() === hexadecimal.slice(0, 2).toLowerCase()) {
+      hexadecimal = hexadecimal.slice(2);
     }
 
-    public static createFromDecimal(decString: string): SerialNumber {
-        const hexadecimal = BaseConverter.createBase36().convert(decString, 10, 16);
-
-        return new SerialNumber(hexadecimal);
+    if (!/^[\da-f]*$/.test(hexadecimal)) {
+      throw new Error('The hexadecimal string contains invalid characters');
     }
 
-    public static createFromBytes(input: string): SerialNumber {
-        const hexadecimal = (input.match(/./g) ?? [])
-            .map((value) => {
-                const fixedNumber = value.codePointAt(0) ?? 0;
+    this._hexadecimal = hexadecimal;
+  }
 
-                return Number.parseInt(`${fixedNumber}`, 10).toString(16);
-            })
-            .join('');
+  public static createFromHexadecimal(hexadecimal: string): SerialNumber {
+    return new SerialNumber(hexadecimal);
+  }
 
-        return new SerialNumber(hexadecimal);
-    }
+  public static createFromDecimal(decString: string): SerialNumber {
+    const hexadecimal = BaseConverter.createBase36().convert(decString, 10, 16);
 
-    public hexadecimal(): string {
-        return this._hexadecimal;
-    }
+    return new SerialNumber(hexadecimal);
+  }
 
-    public bytes(): string {
-        return (this._hexadecimal.match(/.{1,2}/g) ?? [])
-            .map((value) => {
-                const fixedValue = value.replaceAll(/[^\da-f]/gi, '');
-                const fixedNumber = Number.parseInt(fixedValue, 16);
+  public static createFromBytes(input: string): SerialNumber {
+    const hexadecimal = (input.match(/./g) ?? [])
+      .map((value) => {
+        const fixedNumber = value.codePointAt(0) ?? 0;
 
-                return String.fromCodePoint(fixedNumber);
-            })
-            .join('');
-    }
+        return Number.parseInt(`${fixedNumber}`, 10).toString(16);
+      })
+      .join('');
 
-    public decimal(): string {
-        return BaseConverter.createBase36().convert(this.hexadecimal(), 16, 10);
-    }
+    return new SerialNumber(hexadecimal);
+  }
+
+  public hexadecimal(): string {
+    return this._hexadecimal;
+  }
+
+  public bytes(): string {
+    return (this._hexadecimal.match(/.{1,2}/g) ?? [])
+      .map((value) => {
+        const fixedValue = value.replaceAll(/[^\da-f]/gi, '');
+        const fixedNumber = Number.parseInt(fixedValue, 16);
+
+        return String.fromCodePoint(fixedNumber);
+      })
+      .join('');
+  }
+
+  public decimal(): string {
+    return BaseConverter.createBase36().convert(this.hexadecimal(), 16, 10);
+  }
 }

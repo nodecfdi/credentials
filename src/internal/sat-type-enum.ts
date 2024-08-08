@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 export enum SatType {
-    FIEL = 'FIEL',
-    CSD = 'CSD',
+  FIEL = 'FIEL',
+  CSD = 'CSD',
 }
 
 export class SatTypeEnum {
-    private readonly type: string;
+  private readonly type: string;
 
-    constructor(type: string) {
-        /* istanbul ignore if -- @preserve */
-        if (!(type in SatType)) {
-            throw new Error('Index Not Found');
-        }
-
-        this.type = type;
+  constructor(type: string) {
+    /* istanbul ignore if -- @preserve */
+    if (!(type in SatType)) {
+      throw new Error('Index Not Found');
     }
 
-    public isFiel(): boolean {
-        return this.type === SatType.FIEL;
-    }
+    this.type = type;
+  }
 
-    public isCsd(): boolean {
-        return this.type === SatType.CSD;
-    }
+  public isFiel(): boolean {
+    return this.type === SatType.FIEL;
+  }
+
+  public isCsd(): boolean {
+    return this.type === SatType.CSD;
+  }
 }

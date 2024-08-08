@@ -64,7 +64,7 @@ Usa la versión mas reciente publicada cambiando `<latest-version>` por la últi
 ## Ejemplo básico de uso
 
 ```ts
-import * as fs from "fs";
+import * as fs from 'fs';
 import { Credential } from '@nodecfdi/credentials';
 // se puede mandar el path o el contenido
 const certFile = fs.readFileSync('fiel/certificado.cer', 'binary');
@@ -126,7 +126,7 @@ Notas de tratamiento de archivos `DER`:
 - Al convertir `PKCS#8 DER` a `PKCS#8 PEM` se determina si es una llave encriptada si se estableció
   una contraseña, si no se estableció se tratará como una llave plana (no encriptada).
 - No se sabe reconocer de forma automática si se trata de un archivo `PKCS#5 DER` por lo que este
-  tipo de llave se deben convertir *manualmente* antes de intentar abrirlos, su cabecera es `RSA PRIVATE KEY`.
+  tipo de llave se deben convertir _manualmente_ antes de intentar abrirlos, su cabecera es `RSA PRIVATE KEY`.
 - A diferencia de los certificados que pueden interpretar un formato `DER base64`, la lectura de llave
   privada no hace esta distinción, si desea trabajar con un formato sin caracteres especiales use `PEM`.
 
@@ -142,7 +142,11 @@ Para exportar el archivo PFX en NodeJS:
 ```ts
 import { Credential, PfxExporter } from '@nodecfdi/credentials';
 
-const credential = Credential.openFiles('certificate/certificado.cer', 'certificate/private-key.key', 'password');
+const credential = Credential.openFiles(
+  'certificate/certificado.cer',
+  'certificate/private-key.key',
+  'password',
+);
 const pfxExporter = new PfxExporter(credential);
 
 // Crea el binary string usando la contraseña dada
@@ -158,7 +162,10 @@ Para leer el archivo PFX y obtener un objeto `Credential`:
 import { PfxReader } from '@nodecfdi/credentials';
 
 // Crea un objeto Credential dado el contenido de un archivo pfx
-const credential = PfxReader.createCredentialFromContents('contenido-del-archivo', 'pfx-passphrase');
+const credential = PfxReader.createCredentialFromContents(
+  'contenido-del-archivo',
+  'pfx-passphrase',
+);
 
 // Crea un objeto Credential dada la ruta de un archivo pfx
 const credential = PfxReader.createCredentialsFromFile('pfxFilePath', 'pfx-passphrase');
@@ -187,19 +194,17 @@ The `@nodecfdi/credentials` library is copyright © [NodeCfdi](https://github.co
 
 [contributing]: https://github.com/nodecfdi/credentials/blob/main/CONTRIBUTING.md
 [changelog]: https://github.com/nodecfdi/credentials/blob/main/CHANGELOG.md
-
 [source]: https://github.com/nodecfdi/credentials
 [node-version]: https://www.npmjs.com/package/@nodecfdi/credentials
 [discord]: https://discord.gg/AsqX8fkW2k
 [release]: https://www.npmjs.com/package/@nodecfdi/credentials
 [license]: https://github.com/nodecfdi/credentials/blob/main/LICENSE
 [build]: https://github.com/nodecfdi/credentials/actions/workflows/build.yml?query=branch:main
-[reliability]:https://sonarcloud.io/component_measures?id=nodecfdi_credentials&metric=Reliability
+[reliability]: https://sonarcloud.io/component_measures?id=nodecfdi_credentials&metric=Reliability
 [maintainability]: https://sonarcloud.io/component_measures?id=nodecfdi_credentials&metric=Maintainability
 [coverage]: https://sonarcloud.io/component_measures?id=nodecfdi_credentials&metric=Coverage
 [violations]: https://sonarcloud.io/project/issues?id=nodecfdi_credentials&resolved=false
 [downloads]: https://www.npmjs.com/package/@nodecfdi/credentials
-
 [badge-source]: https://img.shields.io/badge/source-nodecfdi/credentials-blue.svg?logo=github
 [badge-node-version]: https://img.shields.io/node/v/@nodecfdi/credentials.svg?logo=nodedotjs
 [badge-discord]: https://img.shields.io/discord/459860554090283019?logo=discord
