@@ -1,26 +1,27 @@
-export class Rfc4514 {
+export default class Rfc4514 {
   public static LeadChars = [' ', '#'];
 
-  public static LeadReplacements = ['\\20', '\\22'];
+  public static LeadReplacements = [String.raw`\20`, String.raw`\22`];
 
   public static TrailChars = [' '];
 
-  public static TrailReplacements = ['\\20'];
+  public static TrailReplacements = [String.raw`\20`];
 
   public static InnerChars = [/\\/g, /"/g, /\+/g, /,/g, /;/g, /</g, /=/g, />/g];
 
   public static InnerReplacements = [
-    '\\5C',
-    '\\22',
-    '\\2b',
-    '\\2c',
-    '\\3b',
-    '\\3c',
-    '\\3d',
-    '\\3e',
+    String.raw`\5C`,
+    String.raw`\22`,
+    String.raw`\2b`,
+    String.raw`\2c`,
+    String.raw`\3b`,
+    String.raw`\3c`,
+    String.raw`\3d`,
+    String.raw`\3e`,
   ];
 
-  public escape(subject: string): string {
+  public escape(targetSubject: string): string {
+    let subject = targetSubject;
     let prefix = '';
     let suffix = '';
     const stringReplace = (
