@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer';
+import type forge from '@vilic/node-forge';
 import { DateTime } from 'luxon';
-import type forge from 'node-forge';
 import Certificate from '#src/base/certificate';
 import type SerialNumber from '#src/serial_number';
 import { fileContents } from '../test_utils.js';

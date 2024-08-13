@@ -1,4 +1,4 @@
-import forge from 'node-forge';
+import forge from '@vilic/node-forge';
 import type Credential from '#src/base/credential';
 import { type AlgorithmPfx } from '#src/types';
 

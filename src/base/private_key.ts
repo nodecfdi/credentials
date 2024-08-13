@@ -1,4 +1,4 @@
-import forge from 'node-forge';
+import forge from '@vilic/node-forge';
 import type Certificate from '#src/base/certificate';
 import PublicKey from '#src/base/public_key';
 import Key from '#src/internal/key';

@@ -1,4 +1,4 @@
-import forge from 'node-forge';
+import forge from '@vilic/node-forge';
 import Key from '#src/internal/key';
 import { KeyType } from '#src/internal/key_type';
 

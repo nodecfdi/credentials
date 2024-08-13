@@ -1,5 +1,5 @@
+import forge from '@vilic/node-forge';
 import { DateTime } from 'luxon';
-import forge from 'node-forge';
 import PublicKey from '#src/base/public_key';
 import DataArray from '#src/internal/data_array';
 import Rfc4514 from '#src/internal/rfc4514';
@@ -213,7 +213,7 @@ export default class Certificate extends DataArray {
       }
 
       const keyIssuer: string = line.shortName ?? line.type!;
-      issuer[keyIssuer] = forge.util.decodeUtf8(line.value as string);
+      issuer[keyIssuer] = line.value as string;
     }
 
     return new Rfc4514().escapeRecord(issuer);
