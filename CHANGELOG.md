@@ -1,3 +1,4 @@
+## [3.0.0](https://github.com/nodecfdi/credentials/compare/v2.0.3...v3.0.0) (2024-08-13)
 ## [2.0.0](https://github.com/nodecfdi/credentials/compare/v1.3.0...v2.0.0) (2023-06-30)
 
 ### Features
