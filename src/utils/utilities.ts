@@ -4,3 +4,5 @@ export const isNumber = (n: unknown): boolean =>
 
 export const isScalar = (value: unknown): value is string | boolean | number =>
   /boolean|number|string/.test(typeof value);
+
+export const isHexadecimal = (value: string): boolean => /^[\da-f]+$/i.test(value);

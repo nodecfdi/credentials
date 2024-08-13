@@ -1,10 +1,12 @@
 import { Buffer } from 'node:buffer';
+import { existsSync, unlinkSync } from 'node:fs';
 import { mock } from 'vitest-mock-extended';
 import PfxExporter from '#src/base/pfx/pfx_exporter';
 import PfxReader from '#src/base/pfx/pfx_reader';
 import type PrivateKey from '#src/base/private_key';
 import Certificate from '#src/node/certificate';
 import Credential from '#src/node/credential';
+import PfxExporterNode from '#src/node/pfx/pfx_exporter';
 import { fileContents, filePath } from '../../test_utils.js';
 
 describe('pfx exporter', () => {
@@ -42,6 +44,23 @@ describe('pfx exporter', () => {
         PfxReader.loadPkcs12(fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')),
       ),
     );
+  });
+
+  test('export to file', () => {
+    const filename = filePath('generated.pfx');
+
+    const pfxExporter = new PfxExporterNode(credential);
+    pfxExporter.exportToFile(filename, '');
+    expect(existsSync(filename)).toBeTruthy();
+    const contents = fileContents('generated.pfx');
+
+    expect(JSON.stringify(PfxReader.loadPkcs12(contents))).toStrictEqual(
+      JSON.stringify(
+        PfxReader.loadPkcs12(fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')),
+      ),
+    );
+
+    unlinkSync(filename);
   });
 
   test('export with error', () => {

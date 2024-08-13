@@ -72,7 +72,7 @@ export default class Certificate extends DataArray {
 
     return [
       '-----BEGIN CERTIFICATE-----\n',
-      `${(finalContent.match(/.{1,64}/g) ?? []).join('\n')}\n`,
+      `${finalContent.match(/.{1,64}/g)!.join('\n')}\n`,
       '-----END CERTIFICATE-----',
     ].join('');
   }
@@ -212,7 +212,8 @@ export default class Certificate extends DataArray {
         continue;
       }
 
-      issuer[line.shortName ?? line.type ?? ''] = forge.util.decodeUtf8(line.value as string);
+      const keyIssuer: string = line.shortName ?? line.type!;
+      issuer[keyIssuer] = forge.util.decodeUtf8(line.value as string);
     }
 
     return new Rfc4514().escapeRecord(issuer);

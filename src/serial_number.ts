@@ -1,4 +1,6 @@
 import { BaseConverter } from '@nodecfdi/base-converter';
+import forge from 'node-forge';
+import { isHexadecimal } from '#src/utils/utilities';
 
 /**
  * This class is used to load hexadecimal or decimal data as a certificate serial number.
@@ -20,7 +22,7 @@ export default class SerialNumber {
     }
 
     hexadecimal = hexadecimal.toUpperCase();
-    if (!/^[\dA-F]*$/.test(hexadecimal)) {
+    if (!isHexadecimal(hexadecimal)) {
       throw new Error('The hexadecimal string contains invalid characters');
     }
 
@@ -38,13 +40,7 @@ export default class SerialNumber {
   }
 
   public static createFromBytes(input: string): SerialNumber {
-    const hexadecimal = (input.match(/./g) ?? [])
-      .map((value) => {
-        const fixedNumber = value.codePointAt(0) ?? 0;
-
-        return Number.parseInt(`${fixedNumber}`, 10).toString(16);
-      })
-      .join('');
+    const hexadecimal = forge.util.bytesToHex(input);
 
     return new SerialNumber(hexadecimal);
   }
@@ -54,14 +50,7 @@ export default class SerialNumber {
   }
 
   public bytes(): string {
-    return (this._hexadecimal.match(/.{1,2}/g) ?? [])
-      .map((value) => {
-        const fixedValue = value.replaceAll(/[^\da-f]/gi, '');
-        const fixedNumber = Number.parseInt(fixedValue, 16);
-
-        return String.fromCodePoint(fixedNumber);
-      })
-      .join('');
+    return forge.util.hexToBytes(this._hexadecimal);
   }
 
   public decimal(): string {
@@ -69,6 +58,6 @@ export default class SerialNumber {
   }
 
   public bytesArePrintable(): boolean {
-    return /^[:inprt]*$/.test(this.bytes());
+    return /^[\u0020-\u007E]*$/.test(this.bytes());
   }
 }

@@ -60,7 +60,10 @@ export default class PrivateKey extends Key {
 
     return [
       `-----BEGIN ${privateKeyName}-----\n`,
-      `${(forge.util.encode64(contents).match(/.{1,64}/g) ?? []).join('\n')}\n`,
+      `${forge.util
+        .encode64(contents)
+        .match(/.{1,64}/g)!
+        .join('\n')}\n`,
       `-----END ${privateKeyName}-----`,
     ].join('');
   }
