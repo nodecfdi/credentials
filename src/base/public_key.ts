@@ -68,7 +68,7 @@ export default class PublicKey extends Key {
   public verify(
     data: string,
     signature: string,
-    algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256',
+    algorithm: forge.md.Algorithm = 'sha256',
   ): boolean {
     return this.callOnPublicKey((publicKey): boolean => {
       try {

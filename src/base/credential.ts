@@ -1,3 +1,4 @@
+import type forge from '@vilic/node-forge';
 import Certificate from '#src/base/certificate';
 import PrivateKey from '#src/base/private_key';
 
@@ -74,10 +75,7 @@ export default class Credential {
    * @param algorithm - algorithm to be used
    * @returns binary string signature
    */
-  public sign(
-    data: string,
-    algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256',
-  ): string {
+  public sign(data: string, algorithm: forge.md.Algorithm = 'sha256'): string {
     return this._privateKey.sign(data, algorithm);
   }
 
@@ -91,7 +89,7 @@ export default class Credential {
   public verify(
     data: string,
     signature: string,
-    algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256',
+    algorithm: forge.md.Algorithm = 'sha256',
   ): boolean {
     return this._certificate.publicKey().verify(data, signature, algorithm);
   }
