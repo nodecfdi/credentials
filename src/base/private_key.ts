@@ -91,10 +91,7 @@ export default class PrivateKey extends Key {
    * @param algorithm - algorithm to be used
    * @returns binary string signature
    */
-  public sign(
-    data: string,
-    algorithm: 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512' = 'sha256',
-  ): string {
+  public sign(data: string, algorithm: forge.md.Algorithm = 'sha256'): string {
     if (data.length === 0) {
       throw new Error('Cannot sign data: empty signature');
     }
@@ -138,5 +135,22 @@ export default class PrivateKey extends Key {
     }
 
     return callableFunction(privateKey);
+  }
+
+  public changePassPhrase(newPassPhrase: string): PrivateKey {
+    const pem = this.callOnPrivateKey((privateKey) => {
+      const rsaPrivateKey = forge.pki.privateKeyToAsn1(privateKey);
+      const privateKeyInfo = forge.pki.wrapRsaPrivateKey(rsaPrivateKey);
+
+      if (newPassPhrase === '') {
+        return forge.pki.privateKeyInfoToPem(privateKeyInfo);
+      }
+
+      const encryptPrivateKeyInfo = forge.pki.encryptPrivateKeyInfo(privateKeyInfo, newPassPhrase);
+
+      return forge.pki.encryptedPrivateKeyToPem(encryptPrivateKeyInfo);
+    });
+
+    return new PrivateKey(pem, newPassPhrase);
   }
 }

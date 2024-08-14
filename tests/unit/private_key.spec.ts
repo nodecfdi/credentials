@@ -10,6 +10,9 @@ describe('private key', () => {
     return PrivateKey.openFile(filename, password);
   };
 
+  const createCertificate = (): Certificate =>
+    new Certificate(fileContents('FIEL_AAA010101AAA/certificate.cer'));
+
   test('pem and passPhrase properties', () => {
     const passPhrase = fileContents('FIEL_AAA010101AAA/password.txt').trim();
     const contents = fileContents('FIEL_AAA010101AAA/private_key_protected.key.pem');
@@ -61,5 +64,21 @@ describe('private key', () => {
     const certificate = Certificate.openFile(filePath(filename));
     const privateKey = createPrivateKey();
     expect(privateKey.belongsTo(certificate)).toBe(expectBelongsTo);
+  });
+
+  test.each([
+    ['clear password', '', 'PRIVATE KEY'],
+    ['change password', 'other password', 'ENCRYPTED PRIVATE KEY'],
+  ])('change pass phrase %s', (_name, newPassword, expectedHeaderName) => {
+    const certificate = createCertificate();
+    const baseKey = createPrivateKey();
+
+    const changed = baseKey.changePassPhrase(newPassword);
+
+    expect(baseKey.pem()).not.toBe(changed.pem());
+    expect(changed.belongsTo(certificate)).toBeTruthy();
+
+    const pkcs8Header = `-----BEGIN ${expectedHeaderName}-----`;
+    expect(changed.pem().startsWith(pkcs8Header)).toBeTruthy();
   });
 });
