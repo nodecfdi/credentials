@@ -1,15 +1,15 @@
 export default class Rfc4514 {
-  public static LeadChars = [' ', '#'];
+  public static readonly LeadChars = [' ', '#'];
 
-  public static LeadReplacements = [String.raw`\20`, String.raw`\22`];
+  public static readonly LeadReplacements = [String.raw`\20`, String.raw`\22`];
 
-  public static TrailChars = [' '];
+  public static readonly TrailChars = [' '];
 
-  public static TrailReplacements = [String.raw`\20`];
+  public static readonly TrailReplacements = [String.raw`\20`];
 
-  public static InnerChars = [/\\/g, /"/g, /\+/g, /,/g, /;/g, /</g, /=/g, />/g];
+  public static readonly InnerChars = [/\\/g, /"/g, /\+/g, /,/g, /;/g, /</g, /=/g, />/g];
 
-  public static InnerReplacements = [
+  public static readonly InnerReplacements = [
     String.raw`\5C`,
     String.raw`\22`,
     String.raw`\2b`,

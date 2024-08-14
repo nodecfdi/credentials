@@ -72,7 +72,7 @@ export default class Certificate extends DataArray {
 
     return [
       '-----BEGIN CERTIFICATE-----\n',
-      `${finalContent.match(/.{1,64}/g)!.join('\n')}\n`,
+      `${finalContent.match(/.{1,64}/g)?.join('\n')}\n`,
       '-----END CERTIFICATE-----',
     ].join('');
   }
