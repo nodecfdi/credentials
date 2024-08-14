@@ -1,3 +1,8 @@
+## [3.1.0](https://github.com/nodecfdi/credentials/compare/v3.0.0...v3.1.0) (2024-08-14)
+
+### Features
+
+* :sparkles: add support to change private key password ([08d3b16](https://github.com/nodecfdi/credentials/commit/08d3b16decf8f2fe498d8a7e2fa7c86821777742)), closes [#20](https://github.com/nodecfdi/credentials/issues/20)
 ## [3.0.0](https://github.com/nodecfdi/credentials/compare/v2.0.3...v3.0.0) (2024-08-13)
 ## [2.0.0](https://github.com/nodecfdi/credentials/compare/v1.3.0...v2.0.0) (2023-06-30)
 
