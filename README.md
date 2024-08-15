@@ -35,7 +35,7 @@ Esta librería ha sido inspirada por la versión para php https://github.com/php
 
 ## Documentación
 
-La documentación está disponible en el sitio web [NodeCfdi](https://nodecfdi.com/librarys/credentials/gettting-started)
+La documentación está disponible en el sitio web [NodeCfdi](https://nodecfdi.com/librarys/credentials/getting-started)
 
 ## Soporte
 
