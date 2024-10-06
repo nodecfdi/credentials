@@ -1,6 +1,7 @@
 import forge from '@vilic/node-forge';
 import Key from '#src/internal/key';
 import { KeyType } from '#src/internal/key_type';
+import { type Algorithm } from '#src/types';
 
 export default class PublicKey extends Key {
   public constructor(source: string) {
@@ -65,11 +66,7 @@ export default class PublicKey extends Key {
    * @param signature - Target signature
    * @param algorithm - Algorithm to be used
    */
-  public verify(
-    data: string,
-    signature: string,
-    algorithm: forge.md.Algorithm = 'sha256',
-  ): boolean {
+  public verify(data: string, signature: string, algorithm: Algorithm = 'sha256'): boolean {
     return this.callOnPublicKey((publicKey): boolean => {
       try {
         const sig = forge.md[algorithm].create();

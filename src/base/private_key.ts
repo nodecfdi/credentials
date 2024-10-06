@@ -4,6 +4,7 @@ import PublicKey from '#src/base/public_key';
 import Key from '#src/internal/key';
 import { KeyType } from '#src/internal/key_type';
 import PemExtractor from '#src/pem_extractor';
+import { type Algorithm } from '#src/types';
 
 export default class PrivateKey extends Key {
   /** String PEM contents of private key  */
@@ -91,7 +92,7 @@ export default class PrivateKey extends Key {
    * @param algorithm - algorithm to be used
    * @returns binary string signature
    */
-  public sign(data: string, algorithm: forge.md.Algorithm = 'sha256'): string {
+  public sign(data: string, algorithm: Algorithm = 'sha256'): string {
     if (data.length === 0) {
       throw new Error('Cannot sign data: empty signature');
     }
