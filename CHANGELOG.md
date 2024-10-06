@@ -5,13 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v3.1.1](https://luffynando.github.com/nodecfdi/credentials/compare/v3.1.0...v3.1.1)
+## [v3.2.0](https://luffynando.github.com/nodecfdi/credentials/compare/v3.1.1...v3.2.0)
 
 ### Commits
 
+- feat: :sparkles: add missing types exported form node-forge for algorithms usage in sign [`64faf4f`](https://luffynando.github.com/nodecfdi/credentials/commit/64faf4f9b055d7bafb8609a83398e36f7682346d)
+- chore: :arrow_up: update dependencies [`7551e0b`](https://luffynando.github.com/nodecfdi/credentials/commit/7551e0b7aeb7409078d62a01634290e88d681d4a)
+- build: :construction: remove export of package.json file not necessary export [`a4bb015`](https://luffynando.github.com/nodecfdi/credentials/commit/a4bb0154a653244621f22140d291551d525d7adc)
+
+## [v3.1.1](https://luffynando.github.com/nodecfdi/credentials/compare/v3.1.0...v3.1.1) - 2024-09-11
+
+### Commits
+
+- chore(release): :tada: 3.1.1 [`6b45e95`](https://luffynando.github.com/nodecfdi/credentials/commit/6b45e95d9f3afb9776b4f57109cbd6842f6997ba)
 - chore: :arrow_up: update dependencies, eslint config update to latest and usage of auto-changelog [`6ab7f27`](https://luffynando.github.com/nodecfdi/credentials/commit/6ab7f270449452bf8e0f48410418cc2a7a863fca)
 - docs: :memo: small change to show badge icon on build [`b2fc2a0`](https://luffynando.github.com/nodecfdi/credentials/commit/b2fc2a018c350f340827ecae47e07a51d61a89a3)
-- docs: :memo: update bad link to documentation [`40061eb`](https://luffynando.github.com/nodecfdi/credentials/commit/40061eb162b14741b039d6117886c061bf3acb4c)
 
 ## [v3.1.0](https://luffynando.github.com/nodecfdi/credentials/compare/v3.0.0...v3.1.0) - 2024-08-14
 
