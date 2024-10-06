@@ -30,7 +30,6 @@
         "default": "./dist/commonjs/types.js"
       }
     },
-    "./package.json": "./package.json",
     "./browser": {
       "import": {
         "types": "./dist/esm/base/index.d.ts",
@@ -165,7 +164,6 @@
     "exports": {
       ".": "./src/index.ts",
       "./types": "./src/types.ts",
-      "./package.json": "./package.json",
       "./browser": "./src/base/index.ts",
       "./node": "./src/node/index.ts"
     }
