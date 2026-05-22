@@ -132,7 +132,7 @@
     "pfx"
   ],
   "engines": {
-    "node": ">=18 <=22 || ^16"
+    "node": ">=18 || ^16"
   },
   "browserslist": [
     "defaults",
