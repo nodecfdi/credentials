@@ -178,12 +178,15 @@ importers:
       '@nodecfdi/base-converter':
         specifier: ^3.0.1
         version: 3.0.1
-      '@vilic/node-forge':
-        specifier: 1.3.2-5
-        version: 1.3.2-5
+      '@types/node-forge':
+        specifier: ^1.3.14
+        version: 1.3.14
       luxon:
         specifier: ^3.7.2
         version: 3.7.2
+      node-forge:
+        specifier: ^1.4.3
+        version: 1.4.3
       ts-mixer:
         specifier: ^6.0.4
         version: 6.0.4
@@ -1020,6 +1023,9 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
+  '@types/node-forge@1.3.14':
+    resolution: {integrity: sha512-mhVF2BnD4BO+jtOp7z1CdzaK4mbuK0LLQYAvdOLqHTavxFNq4zA1EmYkpnFjP8HOUzedfQkRnp0E2ulSAYSzAw==}
+
   '@types/node@26.6.6':
     resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
 
@@ -1091,10 +1097,6 @@ packages:
   '@typescript-eslint/visitor-keys@8.73.0':
     resolution: {integrity: sha512-k4lsFVpRZICbltkIEEH4hZRkwXkqDF1GHBpClKQOHQY+RkoZAAuyc1ci3I6p+CB6v3U4jaHIUshc4RzzQXZWLg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@vilic/node-forge@1.3.2-5':
-    resolution: {integrity: sha512-8GVr3S/nmLKL7QI7RYhVIcz3PuT/fxfkQLuh/F1CaT+/3QgI14RqiJkcKIni7h9u4ySbQGiGvm4XbNxRBJin4g==}
-    engines: {node: '>= 6.13.0'}
 
   '@vitest/coverage-istanbul@5.1.0':
     resolution: {integrity: sha512-XRAUYsfdho+Az4K2eEWOVPedtIzUZbCl2eO9pOjNH5L1/niuy8cYwlK2W9RUtfwYZumoqic+4pRGqAvch/JSzg==}
@@ -2422,6 +2424,10 @@ packages:
   new-github-release-url@2.0.0:
     resolution: {integrity: sha512-NHDDGYudnvRutt/VhKFlX26IotXe1w0cmkDm6JGquh5bz/bDTw0LufSmH/GxTjEdpHEO+bVKFTwdrcGa/9XlKQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
+  node-forge@1.4.3:
+    resolution: {integrity: sha512-P6wzfh6t70avmV8FrVEAd/36sOPJQ+hkaJVX1Laap9J/77m7M0eyozDvc8SwnDf4P7MP94gwbAAo0rg3YVXT+g==}
+    engines: {node: '>= 6.13.0'}
 
   node-releases@2.0.64:
     resolution: {integrity: sha512-zAPCKqMcnqs2nGy6nlkm7JduFseiBJy3EXHGLh+8pFR+TxGCBxxiEN21+UROU5CKwX/f4TlUcYjiM+vs/tsyxw==}
@@ -3864,6 +3870,10 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
+  '@types/node-forge@1.3.14':
+    dependencies:
+      '@types/node': 26.6.6
+
   '@types/node@26.6.6':
     dependencies:
       undici-types: 8.9.0
@@ -3966,8 +3976,6 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.73.0
       eslint-visitor-keys: 5.0.1
-
-  '@vilic/node-forge@1.3.2-5': {}
 
   '@vitest/coverage-istanbul@5.1.0(vitest@5.1.0)':
     dependencies:
@@ -5434,6 +5442,8 @@ snapshots:
   new-github-release-url@2.0.0:
     dependencies:
       type-fest: 2.19.0
+
+  node-forge@1.4.3: {}
 
   node-releases@2.0.64: {}
 

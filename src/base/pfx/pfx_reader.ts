@@ -1,4 +1,4 @@
-import forge from '@vilic/node-forge';
+import forge from 'node-forge';
 import Credential from '../credential';
 
 export default class PfxReader {

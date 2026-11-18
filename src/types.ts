@@ -1,4 +1,4 @@
-import type { md } from '@vilic/node-forge';
+import type { md } from 'node-forge';
 
 export type Sha512Algorithm = md.sha512.Algorithm;
 export type Algorithm = md.Algorithm;

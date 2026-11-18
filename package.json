@@ -108,7 +108,8 @@
   },
   "dependencies": {
     "@nodecfdi/base-converter": "^3.0.1",
-    "@vilic/node-forge": "1.3.2-5",
+    "@types/node-forge": "^1.3.14",
+    "node-forge": "^1.4.3",
     "ts-mixer": "^6.0.4"
   },
   "devDependencies": {

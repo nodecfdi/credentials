@@ -1,5 +1,5 @@
-import forge from '@vilic/node-forge';
 import { DateTime } from 'luxon';
+import forge from 'node-forge';
 import DataArray from '../internal/data_array';
 import Rfc4514 from '../internal/rfc4514';
 import { SatType, SatTypeEnum } from '../internal/sat_type';
@@ -49,6 +49,15 @@ export default class Certificate extends DataArray {
       parsed = forge.pki.certificateFromPem(pem);
     } catch (error) {
       throw new Error(`Cannot parse X509 certificate from contents ${(error as Error).message}`);
+    }
+
+    for (const attribute of [...parsed.subject.attributes, ...parsed.issuer.attributes]) {
+      if (
+        (attribute.valueTagClass as unknown as forge.asn1.Type) === forge.asn1.Type.UTF8
+        && typeof attribute.value === 'string'
+      ) {
+        attribute.value = forge.util.decodeUtf8(attribute.value);
+      }
     }
 
     this._pem = pem;

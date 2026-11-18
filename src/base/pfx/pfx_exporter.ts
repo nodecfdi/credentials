@@ -1,6 +1,6 @@
 import type { AlgorithmPfx } from '../../types';
 import type Credential from '../credential';
-import forge from '@vilic/node-forge';
+import forge from 'node-forge';
 
 export default class PfxExporter {
   private readonly _credential: Credential;

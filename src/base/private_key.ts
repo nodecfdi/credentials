@@ -1,6 +1,6 @@
 import type { Algorithm } from '../types';
 import type Certificate from './certificate';
-import forge from '@vilic/node-forge';
+import forge from 'node-forge';
 import Key from '../internal/key';
 import { KeyType } from '../internal/key_type';
 import PemExtractor from '../pem_extractor';

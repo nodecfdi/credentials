@@ -1,5 +1,5 @@
 import { BaseConverter } from '@nodecfdi/base-converter';
-import forge from '@vilic/node-forge';
+import forge from 'node-forge';
 import { isHexadecimal } from './utils/utilities';
 
 /**

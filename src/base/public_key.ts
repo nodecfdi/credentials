@@ -1,5 +1,5 @@
 import type { Algorithm } from '../types';
-import forge from '@vilic/node-forge';
+import forge from 'node-forge';
 import Key from '../internal/key';
 import { KeyType } from '../internal/key_type';
 

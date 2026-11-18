@@ -1,4 +1,4 @@
-import type forge from '@vilic/node-forge';
+import type forge from 'node-forge';
 import type SerialNumber from '../../src/serial_number';
 import { Buffer } from 'node:buffer';
 import { DateTime } from 'luxon';
