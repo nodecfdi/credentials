@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import PrivateKey from '../../src/node/private_key';
+import { openPrivateKeyFile } from '../../src/node';
+import PrivateKey from '../../src/private_key';
 import { utilities } from '../test_utilities.js';
 
 describe('private key construct', () => {
@@ -12,7 +13,7 @@ describe('private key construct', () => {
 
   test('open file unprotected', () => {
     const filename = utilities.filePath('FIEL_AAA010101AAA/private_key.key.pem');
-    const privateKey = PrivateKey.openFile(filename, '');
+    const privateKey = openPrivateKeyFile(filename, '');
 
     expect(privateKey.numberOfBits()).toBeGreaterThan(0);
   });
@@ -20,7 +21,7 @@ describe('private key construct', () => {
   test('open file with valid password', () => {
     const password = utilities.fileContents('FIEL_AAA010101AAA/password.txt').trim();
     const filename = utilities.filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
-    const privateKey = PrivateKey.openFile(filename, password);
+    const privateKey = openPrivateKeyFile(filename, password);
 
     expect(privateKey.numberOfBits()).toBeGreaterThan(0);
   });
@@ -28,7 +29,7 @@ describe('private key construct', () => {
   test('open file with invalid password', () => {
     const filename = utilities.filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
 
-    const t = (): PrivateKey => PrivateKey.openFile(filename, '');
+    const t = (): PrivateKey => openPrivateKeyFile(filename, '');
 
     expect(t).toThrow(Error);
     expect(t).toThrow('Cannot open private key');

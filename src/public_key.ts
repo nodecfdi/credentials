@@ -1,7 +1,7 @@
-import type { Algorithm } from '../types';
+import type { Algorithm } from './types';
 import forge from 'node-forge';
-import Key from '../internal/key';
-import { KeyType } from '../internal/key_type';
+import Key from './internal/key';
+import { KeyType } from './internal/key_type';
 
 export default class PublicKey extends Key {
   public constructor(source: string) {

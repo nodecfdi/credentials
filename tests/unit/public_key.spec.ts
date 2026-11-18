@@ -1,7 +1,7 @@
 import { EOL } from 'node:os';
 import { describe, expect, test } from 'vitest';
-import PrivateKey from '../../src/node/private_key';
-import PublicKey from '../../src/node/public_key';
+import { openPrivateKeyFile, openPublicKeyFile } from '../../src/node';
+import PublicKey from '../../src/public_key';
 import { utilities } from '../test_utilities.js';
 
 describe('public key', () => {
@@ -13,7 +13,7 @@ describe('public key', () => {
   });
 
   test('open file', () => {
-    const publicKey = PublicKey.openFile(utilities.filePath('CSD01_AAA010101AAA/public_key.pem'));
+    const publicKey = openPublicKeyFile(utilities.filePath('CSD01_AAA010101AAA/public_key.pem'));
 
     expect(publicKey.numberOfBits()).toBeGreaterThan(0);
   });
@@ -28,13 +28,13 @@ describe('public key', () => {
   });
 
   test('verify', () => {
-    const privateKey = PrivateKey.openFile(utilities.filePath('CSD01_AAA010101AAA/private_key.key.pem'), '');
+    const privateKey = openPrivateKeyFile(utilities.filePath('CSD01_AAA010101AAA/private_key.key.pem'), '');
     const sourceString = 'The quick brown fox jumps over the lazy dog';
     const signature = privateKey.sign(sourceString);
 
     expect(signature).not.toBe('');
 
-    const publicKey = PublicKey.openFile(utilities.filePath('CSD01_AAA010101AAA/public_key.pem'));
+    const publicKey = openPublicKeyFile(utilities.filePath('CSD01_AAA010101AAA/public_key.pem'));
 
     expect(publicKey.verify(sourceString, signature)).toBeTruthy();
     expect(publicKey.verify(`${sourceString}${EOL}`, signature)).toBeFalsy();
@@ -42,7 +42,7 @@ describe('public key', () => {
   });
 
   test('verify with error', () => {
-    const publicKey = PublicKey.openFile(utilities.filePath('CSD01_AAA010101AAA/public_key.pem'));
+    const publicKey = openPublicKeyFile(utilities.filePath('CSD01_AAA010101AAA/public_key.pem'));
 
     const t = (): boolean => publicKey.verify('', '', 'sha256');
 

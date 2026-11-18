@@ -1,8 +1,7 @@
-import { Mixin } from 'ts-mixer';
-import DataArray from '../internal/data_array';
-import { KeyTypeEnum } from '../internal/key_type';
+import DataArray from './data_array';
+import { KeyTypeEnum } from './key_type';
 
-export default class Key extends Mixin(DataArray) {
+export default class Key extends DataArray {
   private typeKey?: KeyTypeEnum;
 
   public constructor(dataArray: Record<string, unknown>) {

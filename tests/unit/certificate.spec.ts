@@ -3,7 +3,7 @@ import type SerialNumber from '../../src/serial_number';
 import { Buffer } from 'node:buffer';
 import { DateTime } from 'luxon';
 import { describe, expect, test } from 'vitest';
-import Certificate from '../../src/base/certificate';
+import Certificate from '../../src/certificate';
 import { utilities } from '../test_utilities.js';
 
 describe('certificate', () => {

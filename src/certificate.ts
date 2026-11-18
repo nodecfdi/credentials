@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon';
 import forge from 'node-forge';
-import DataArray from '../internal/data_array';
-import Rfc4514 from '../internal/rfc4514';
-import { SatType, SatTypeEnum } from '../internal/sat_type';
-import PemExtractor from '../pem_extractor';
-import SerialNumber from '../serial_number';
+import DataArray from './internal/data_array';
+import Rfc4514 from './internal/rfc4514';
+import { SatType, SatTypeEnum } from './internal/sat_type';
+import PemExtractor from './pem_extractor';
 import PublicKey from './public_key';
+import SerialNumber from './serial_number';
 
 export default class Certificate extends DataArray {
   /**

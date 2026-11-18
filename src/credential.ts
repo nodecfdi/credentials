@@ -1,6 +1,6 @@
-import type { Algorithm } from '../types';
-import Certificate from '../base/certificate';
-import PrivateKey from '../base/private_key';
+import type { Algorithm } from './types';
+import Certificate from './certificate';
+import PrivateKey from './private_key';
 
 export default class Credential {
   private readonly _certificate: Certificate;

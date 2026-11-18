@@ -1,9 +1,9 @@
-import type { Algorithm } from '../types';
 import type Certificate from './certificate';
+import type { Algorithm } from './types';
 import forge from 'node-forge';
-import Key from '../internal/key';
-import { KeyType } from '../internal/key_type';
-import PemExtractor from '../pem_extractor';
+import Key from './internal/key';
+import { KeyType } from './internal/key_type';
+import PemExtractor from './pem_extractor';
 import PublicKey from './public_key';
 
 export default class PrivateKey extends Key {

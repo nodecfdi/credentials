@@ -1,5 +1,5 @@
-import type { AlgorithmPfx } from '../../types';
 import type Credential from '../credential';
+import type { AlgorithmPfx } from '../types';
 import forge from 'node-forge';
 
 export default class PfxExporter {

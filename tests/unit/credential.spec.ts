@@ -1,13 +1,12 @@
 import { describe, expect, test } from 'vitest';
-import Certificate from '../../src/node/certificate';
-import Credential from '../../src/node/credential';
-import PrivateKey from '../../src/node/private_key';
+import Credential from '../../src/credential';
+import { openCertificateFile, openCredentialFiles, openPrivateKeyFile } from '../../src/node';
 import { utilities } from '../test_utilities.js';
 
 describe('credential', () => {
   test('create with matching values', () => {
-    const certificate = Certificate.openFile(utilities.filePath('FIEL_AAA010101AAA/certificate.cer'));
-    const privateKey = PrivateKey.openFile(utilities.filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
+    const certificate = openCertificateFile(utilities.filePath('FIEL_AAA010101AAA/certificate.cer'));
+    const privateKey = openPrivateKeyFile(utilities.filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
     const fiel = new Credential(certificate, privateKey);
 
     expect(fiel.certificate()).toBe(certificate);
@@ -15,8 +14,8 @@ describe('credential', () => {
   });
 
   test('create with unmatched values', () => {
-    const certificate = Certificate.openFile(utilities.filePath('CSD01_AAA010101AAA/certificate.cer'));
-    const privateKey = PrivateKey.openFile(utilities.filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
+    const certificate = openCertificateFile(utilities.filePath('CSD01_AAA010101AAA/certificate.cer'));
+    const privateKey = openPrivateKeyFile(utilities.filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
 
     const t = (): Credential => new Credential(certificate, privateKey);
 
@@ -25,7 +24,7 @@ describe('credential', () => {
   });
 
   test('create with files', () => {
-    const fiel = Credential.openFiles(
+    const fiel = openCredentialFiles(
       utilities.filePath('FIEL_AAA010101AAA/certificate.cer'),
       utilities.filePath('FIEL_AAA010101AAA/private_key_protected.key.pem'),
       utilities.fileContents('FIEL_AAA010101AAA/password.txt').trim(),
@@ -45,7 +44,7 @@ describe('credential', () => {
   });
 
   test('shortcuts', () => {
-    const credential = Credential.openFiles(
+    const credential = openCredentialFiles(
       utilities.filePath('CSD01_AAA010101AAA/certificate.cer'),
       utilities.filePath('CSD01_AAA010101AAA/private_key_protected.key.pem'),
       utilities.fileContents('CSD01_AAA010101AAA/password.txt').trim(),
