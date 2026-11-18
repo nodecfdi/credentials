@@ -11,7 +11,7 @@ export const utilities = {
 
     const file = readFileSync(filePath, options?.fromEncoding);
 
-    return file.toString(options?.toEncoding);
+    return file.toString(options?.toEncoding ?? 'binary');
   },
   fileContents: (append: string): string => utilities.fileContent(utilities.filePath(append)),
 } as const;

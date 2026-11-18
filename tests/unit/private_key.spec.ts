@@ -1,21 +1,22 @@
-import Certificate from '#src/node/certificate';
-import PrivateKey from '#src/node/private_key';
-import { fileContents, filePath } from '../test_utilities.js';
+import { describe, expect, test } from 'vitest';
+import Certificate from '../../src/node/certificate';
+import PrivateKey from '../../src/node/private_key';
+import { utilities } from '../test_utilities.js';
 
 describe('private key', () => {
   const createPrivateKey = (): PrivateKey => {
-    const password = fileContents('FIEL_AAA010101AAA/password.txt').trim();
-    const filename = filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
+    const password = utilities.fileContents('FIEL_AAA010101AAA/password.txt').trim();
+    const filename = utilities.filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
 
     return PrivateKey.openFile(filename, password);
   };
 
   const createCertificate = (): Certificate =>
-    new Certificate(fileContents('FIEL_AAA010101AAA/certificate.cer'));
+    new Certificate(utilities.fileContents('FIEL_AAA010101AAA/certificate.cer'));
 
   test('pem and passPhrase properties', () => {
-    const passPhrase = fileContents('FIEL_AAA010101AAA/password.txt').trim();
-    const contents = fileContents('FIEL_AAA010101AAA/private_key_protected.key.pem');
+    const passPhrase = utilities.fileContents('FIEL_AAA010101AAA/password.txt').trim();
+    const contents = utilities.fileContents('FIEL_AAA010101AAA/private_key_protected.key.pem');
     const privateKey = new PrivateKey(contents, passPhrase);
 
     expect(privateKey.pem().includes(contents)).toBeTruthy();
@@ -27,7 +28,7 @@ describe('private key', () => {
   });
 
   test('public key is the same as in certificate', () => {
-    const certFile = filePath('FIEL_AAA010101AAA/certificate.cer');
+    const certFile = utilities.filePath('FIEL_AAA010101AAA/certificate.cer');
     const certificate = Certificate.openFile(certFile);
     const privateKey = createPrivateKey();
     const publicKey = privateKey.publicKey();
@@ -61,7 +62,7 @@ describe('private key', () => {
     ['paired certificate', 'FIEL_AAA010101AAA/certificate.cer', true],
     ['other certificate', 'CSD01_AAA010101AAA/certificate.cer', false],
   ])('belongs to %s', (_name: string, filename: string, expectBelongsTo: boolean) => {
-    const certificate = Certificate.openFile(filePath(filename));
+    const certificate = Certificate.openFile(utilities.filePath(filename));
     const privateKey = createPrivateKey();
     expect(privateKey.belongsTo(certificate)).toBe(expectBelongsTo);
   });

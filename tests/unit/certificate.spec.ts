@@ -1,20 +1,21 @@
-import { Buffer } from 'node:buffer';
 import type forge from '@vilic/node-forge';
+import type SerialNumber from '../../src/serial_number';
+import { Buffer } from 'node:buffer';
 import { DateTime } from 'luxon';
-import Certificate from '#src/base/certificate';
-import type SerialNumber from '#src/serial_number';
-import { fileContents } from '../test_utilities.js';
+import { describe, expect, test } from 'vitest';
+import Certificate from '../../src/base/certificate';
+import { utilities } from '../test_utilities.js';
 
 describe('certificate', () => {
   const createCertificate = (): Certificate =>
-    new Certificate(fileContents('FIEL_AAA010101AAA/certificate.cer'));
+    new Certificate(utilities.fileContents('FIEL_AAA010101AAA/certificate.cer'));
 
   const createCertificateSello = (): Certificate =>
-    new Certificate(fileContents('CSD01_AAA010101AAA/certificate.cer'));
+    new Certificate(utilities.fileContents('CSD01_AAA010101AAA/certificate.cer'));
 
   test('pem contents only', () => {
     const certificate = createCertificateSello();
-    const expected = fileContents('CSD01_AAA010101AAA/certificate.cer.pem').trim();
+    const expected = utilities.fileContents('CSD01_AAA010101AAA/certificate.cer.pem').trim();
 
     expect(certificate.pem().trim()).toStrictEqual(expected);
   });
@@ -22,7 +23,7 @@ describe('certificate', () => {
   test('pem contents as oneline', () => {
     const certificate = createCertificateSello();
     const expected = Buffer.from(
-      fileContents('CSD01_AAA010101AAA/certificate.cer'),
+      utilities.fileContents('CSD01_AAA010101AAA/certificate.cer'),
       'binary',
     ).toString('base64');
 
@@ -157,7 +158,7 @@ describe('certificate', () => {
   });
 
   test('certificate with teletexstring', () => {
-    const certificate = new Certificate(fileContents('00001000000413053762.cer'));
+    const certificate = new Certificate(utilities.fileContents('00001000000413053762.cer'));
 
     expect(certificate.rfc()).toBe('SMA0112284B2');
     expect(certificate.legalName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
@@ -167,7 +168,7 @@ describe('certificate', () => {
   test('create serial number', () => {
     const certificateCreateSerialNumber = (hexadecimal: string, decimal: string): SerialNumber => {
       const certificate = Object.create(Certificate.prototype) as Certificate & {
-        createSerialNumber(hexadecimal: string, decimal: string): SerialNumber;
+        createSerialNumber: (hexadecimal: string, decimal: string) => SerialNumber;
       };
       const sNumber = certificate.createSerialNumber(hexadecimal, decimal);
 

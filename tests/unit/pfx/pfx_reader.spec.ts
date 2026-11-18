@@ -1,12 +1,13 @@
-import CredentialBase from '#src/base/credential';
-import type Credential from '#src/node/credential';
-import PfxReader from '#src/node/pfx/pfx_reader';
-import { fileContents, filePath } from '../../test_utilities.js';
+import type Credential from '../../../src/node/credential';
+import { describe, expect, test } from 'vitest';
+import CredentialBase from '../../../src/base/credential';
+import PfxReader from '../../../src/node/pfx/pfx_reader';
+import { utilities } from '../../test_utilities.js';
 
 describe('pfx reader', () => {
   const obtainKnownCredential = (): Credential =>
     PfxReader.createCredentialFromFile(
-      filePath('CSD01_AAA010101AAA/credential_unprotected.pfx'),
+      utilities.filePath('CSD01_AAA010101AAA/credential_unprotected.pfx'),
       '',
     );
 
@@ -14,9 +15,9 @@ describe('pfx reader', () => {
     ['CSD01_AAA010101AAA/credential_unprotected.pfx', ''],
     ['CSD01_AAA010101AAA/credential_protected.pfx', 'CSD01_AAA010101AAA/password.txt'],
   ])('create credential from file', (dir, passPhrasePath) => {
-    const passPhrase = passPhrasePath === '' ? '' : fileContents(passPhrasePath);
+    const passPhrase = passPhrasePath === '' ? '' : utilities.fileContents(passPhrasePath);
     const expectedCsd = obtainKnownCredential();
-    const csd = PfxReader.createCredentialFromFile(filePath(dir), passPhrase);
+    const csd = PfxReader.createCredentialFromFile(utilities.filePath(dir), passPhrase);
 
     expect(csd).toBeInstanceOf(CredentialBase);
     expect(csd.certificate().pem()).toBe(expectedCsd.certificate().pem());
@@ -40,7 +41,7 @@ describe('pfx reader', () => {
   test('create credential wrong password', () => {
     const t = (): Credential =>
       PfxReader.createCredentialFromFile(
-        filePath('CSD01_AAA010101AAA/credential_protected.pfx'),
+        utilities.filePath('CSD01_AAA010101AAA/credential_protected.pfx'),
         'wrong-password',
       );
 

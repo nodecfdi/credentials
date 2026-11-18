@@ -1,31 +1,32 @@
-import PrivateKey from '#src/node/private_key';
-import { fileContents, filePath } from '../test_utilities.js';
+import { describe, expect, test } from 'vitest';
+import PrivateKey from '../../src/node/private_key';
+import { utilities } from '../test_utilities.js';
 
 describe('private key construct', () => {
   test('construct with valid content', () => {
-    const content = fileContents('FIEL_AAA010101AAA/private_key.key.pem');
+    const content = utilities.fileContents('FIEL_AAA010101AAA/private_key.key.pem');
     const privateKey = new PrivateKey(content, '');
 
     expect(privateKey.numberOfBits()).toBeGreaterThan(0);
   });
 
   test('open file unprotected', () => {
-    const filename = filePath('FIEL_AAA010101AAA/private_key.key.pem');
+    const filename = utilities.filePath('FIEL_AAA010101AAA/private_key.key.pem');
     const privateKey = PrivateKey.openFile(filename, '');
 
     expect(privateKey.numberOfBits()).toBeGreaterThan(0);
   });
 
   test('open file with valid password', () => {
-    const password = fileContents('FIEL_AAA010101AAA/password.txt').trim();
-    const filename = filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
+    const password = utilities.fileContents('FIEL_AAA010101AAA/password.txt').trim();
+    const filename = utilities.filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
     const privateKey = PrivateKey.openFile(filename, password);
 
     expect(privateKey.numberOfBits()).toBeGreaterThan(0);
   });
 
   test('open file with invalid password', () => {
-    const filename = filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
+    const filename = utilities.filePath('FIEL_AAA010101AAA/private_key_protected.key.pem');
 
     const t = (): PrivateKey => PrivateKey.openFile(filename, '');
 
@@ -55,15 +56,15 @@ describe('private key construct', () => {
   });
 
   test('construct with pkcs8Encrypted', () => {
-    const content = fileContents('CSD01_AAA010101AAA/private_key.key');
-    const password = fileContents('CSD01_AAA010101AAA/password.txt').trim();
+    const content = utilities.fileContents('CSD01_AAA010101AAA/private_key.key');
+    const password = utilities.fileContents('CSD01_AAA010101AAA/password.txt').trim();
     const privateKey = new PrivateKey(content, password);
 
     expect(privateKey.numberOfBits()).toBeGreaterThan(0);
   });
 
   test('construct with pkcs8unencrypted', () => {
-    const content = fileContents('CSD01_AAA010101AAA/private_key_plain.key');
+    const content = utilities.fileContents('CSD01_AAA010101AAA/private_key_plain.key');
     const privateKey = new PrivateKey(content, '');
     expect(privateKey.numberOfBits()).toBeGreaterThan(0);
   });

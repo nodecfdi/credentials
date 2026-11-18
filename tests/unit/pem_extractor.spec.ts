@@ -1,6 +1,7 @@
 import { EOL } from 'node:os';
-import PemExtractor from '#src/pem_extractor';
-import { fileContents } from '../test_utilities.js';
+import { describe, expect, test } from 'vitest';
+import PemExtractor from '../../src/pem_extractor';
+import { utilities } from '../test_utilities.js';
 
 describe('pem extractor', () => {
   test('extractor with empty content', () => {
@@ -39,7 +40,7 @@ describe('pem extractor', () => {
   });
 
   test('extract certificate with public key', () => {
-    const contents = fileContents('CSD01_AAA010101AAA/certificate_public_key.pem');
+    const contents = utilities.fileContents('CSD01_AAA010101AAA/certificate_public_key.pem');
     const extractor = new PemExtractor(contents);
 
     expect(extractor.getContents()).toBe(contents);
@@ -48,14 +49,14 @@ describe('pem extractor', () => {
   });
 
   test('extract private key', () => {
-    const contents = fileContents('CSD01_AAA010101AAA/private_key.key.pem');
+    const contents = utilities.fileContents('CSD01_AAA010101AAA/private_key.key.pem');
     const extractor = new PemExtractor(contents);
 
     expect(extractor.extractPrivateKey()).toContain('PRIVATE KEY');
   });
 
   test('using binary file extract nothing', () => {
-    const contents = fileContents('CSD01_AAA010101AAA/private_key.key');
+    const contents = utilities.fileContents('CSD01_AAA010101AAA/private_key.key');
     const extractor = new PemExtractor(contents);
 
     expect(extractor.extractCertificate()).toBe('');
@@ -64,7 +65,7 @@ describe('pem extractor', () => {
   });
 
   test('using all in one pem contents', () => {
-    const contents = fileContents('CSD01_AAA010101AAA/all_in_one.pem');
+    const contents = utilities.fileContents('CSD01_AAA010101AAA/all_in_one.pem');
     const extractor = new PemExtractor(contents);
 
     expect(extractor.extractPrivateKey()).toContain('PRIVATE KEY');

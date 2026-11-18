@@ -1,12 +1,13 @@
-import Certificate from '#src/node/certificate';
-import Credential from '#src/node/credential';
-import PrivateKey from '#src/node/private_key';
-import { fileContents, filePath } from '../test_utilities.js';
+import { describe, expect, test } from 'vitest';
+import Certificate from '../../src/node/certificate';
+import Credential from '../../src/node/credential';
+import PrivateKey from '../../src/node/private_key';
+import { utilities } from '../test_utilities.js';
 
 describe('credential', () => {
   test('create with matching values', () => {
-    const certificate = Certificate.openFile(filePath('FIEL_AAA010101AAA/certificate.cer'));
-    const privateKey = PrivateKey.openFile(filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
+    const certificate = Certificate.openFile(utilities.filePath('FIEL_AAA010101AAA/certificate.cer'));
+    const privateKey = PrivateKey.openFile(utilities.filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
     const fiel = new Credential(certificate, privateKey);
 
     expect(fiel.certificate()).toBe(certificate);
@@ -14,8 +15,8 @@ describe('credential', () => {
   });
 
   test('create with unmatched values', () => {
-    const certificate = Certificate.openFile(filePath('CSD01_AAA010101AAA/certificate.cer'));
-    const privateKey = PrivateKey.openFile(filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
+    const certificate = Certificate.openFile(utilities.filePath('CSD01_AAA010101AAA/certificate.cer'));
+    const privateKey = PrivateKey.openFile(utilities.filePath('FIEL_AAA010101AAA/private_key.key.pem'), '');
 
     const t = (): Credential => new Credential(certificate, privateKey);
 
@@ -25,9 +26,9 @@ describe('credential', () => {
 
   test('create with files', () => {
     const fiel = Credential.openFiles(
-      filePath('FIEL_AAA010101AAA/certificate.cer'),
-      filePath('FIEL_AAA010101AAA/private_key_protected.key.pem'),
-      fileContents('FIEL_AAA010101AAA/password.txt').trim(),
+      utilities.filePath('FIEL_AAA010101AAA/certificate.cer'),
+      utilities.filePath('FIEL_AAA010101AAA/private_key_protected.key.pem'),
+      utilities.fileContents('FIEL_AAA010101AAA/password.txt').trim(),
     );
 
     expect(fiel.isFiel()).toBeTruthy();
@@ -35,9 +36,9 @@ describe('credential', () => {
 
   test('create credential with contents', () => {
     const fiel = Credential.create(
-      fileContents('FIEL_AAA010101AAA/certificate.cer'),
-      fileContents('FIEL_AAA010101AAA/private_key_protected.key.pem'),
-      fileContents('FIEL_AAA010101AAA/password.txt').trim(),
+      utilities.fileContents('FIEL_AAA010101AAA/certificate.cer'),
+      utilities.fileContents('FIEL_AAA010101AAA/private_key_protected.key.pem'),
+      utilities.fileContents('FIEL_AAA010101AAA/password.txt').trim(),
     );
 
     expect(fiel.isFiel()).toBeTruthy();
@@ -45,9 +46,9 @@ describe('credential', () => {
 
   test('shortcuts', () => {
     const credential = Credential.openFiles(
-      filePath('CSD01_AAA010101AAA/certificate.cer'),
-      filePath('CSD01_AAA010101AAA/private_key_protected.key.pem'),
-      fileContents('CSD01_AAA010101AAA/password.txt').trim(),
+      utilities.filePath('CSD01_AAA010101AAA/certificate.cer'),
+      utilities.filePath('CSD01_AAA010101AAA/private_key_protected.key.pem'),
+      utilities.fileContents('CSD01_AAA010101AAA/password.txt').trim(),
     );
 
     expect(credential.isCsd()).toBeTruthy();

@@ -1,13 +1,35 @@
 {
   "name": "@nodecfdi/credentials",
-  "description": "Librería para usar eFirma (fiel) y CSD (sellos) para el SAT",
-  "version": "3.2.0",
   "type": "module",
-  "main": "./dist/commonjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/commonjs/index.d.ts",
-  "files": [
-    "dist"
+  "version": "3.2.0",
+  "packageManager": "pnpm@12.21.0",
+  "description": "Librería para usar eFirma (fiel) y CSD (sellos) para el SAT",
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ],
+  "author": "Fernando Isidro <luffynando@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/nodecfdi/credentials",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nodecfdi/credentials.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nodecfdi/credentials/issues"
+  },
+  "keywords": [
+    "certificate",
+    "sat",
+    "csd",
+    "fiel",
+    "signing",
+    "firmar",
+    "factura",
+    "rfc",
+    "efirma",
+    "sellos",
+    "pfx"
   ],
   "exports": {
     ".": {
@@ -51,6 +73,15 @@
       }
     }
   },
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": "^22.13.0 || ^24 || ^26"
+  },
   "scripts": {
     "prepare": "is-in-ci || husky",
     "changelog": "auto-changelog -u -p",
@@ -65,6 +96,20 @@
     "tool:build": "pnpm run tool:code && pnpm run test:run",
     "build": "tsdown",
     "release": "release-it"
+  },
+  "peerDependencies": {
+    "@types/luxon": "3.7.6",
+    "luxon": "^3.7.2"
+  },
+  "peerDependenciesMeta": {
+    "@types/luxon": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@nodecfdi/base-converter": "^3.0.1",
+    "@vilic/node-forge": "1.3.2-5",
+    "ts-mixer": "^6.0.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
@@ -84,56 +129,11 @@
     "vitest": "^5.1.0",
     "vitest-mock-extended": "^6.0.1"
   },
-  "dependencies": {
-    "@nodecfdi/base-converter": "^3.0.1",
-    "@vilic/node-forge": "1.3.2-5",
-    "ts-mixer": "^6.0.4"
-  },
-  "peerDependencies": {
-    "@types/luxon": "3.7.6",
-    "luxon": "^3.7.2"
-  },
-  "peerDependenciesMeta": {
-    "@types/luxon": {
-      "optional": true
-    }
-  },
-  "browserslist": [
-    "defaults",
-    "not IE 11"
-  ],
-  "author": "Fernando Isidro <luffynando@gmail.com>",
-  "license": "MIT",
-  "homepage": "https://github.com/nodecfdi/credentials",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nodecfdi/credentials.git"
-  },
-  "bugs": {
-    "url": "https://github.com/nodecfdi/credentials/issues"
-  },
-  "keywords": [
-    "certificate",
-    "sat",
-    "csd",
-    "fiel",
-    "signing",
-    "firmar",
-    "factura",
-    "rfc",
-    "efirma",
-    "sellos",
-    "pfx"
-  ],
-  "engines": {
-    "node": "^22.13.0 || ^24 || ^26"
-  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
   },
-  "packageManager": "pnpm@12.21.0",
   "publishConfig": {
     "access": "public",
     "tag": "latest"

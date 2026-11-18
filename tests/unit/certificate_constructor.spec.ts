@@ -1,16 +1,17 @@
-import Certificate from '#src/base/certificate';
-import { fileContents } from '../test_utilities.js';
+import { describe, expect, test } from 'vitest';
+import Certificate from '../../src/base/certificate';
+import { utilities } from '../test_utilities.js';
 
 describe('certificate constructor', () => {
   test('constructor with pem content', () => {
-    const pem = fileContents('FIEL_AAA010101AAA/certificate.cer.pem');
+    const pem = utilities.fileContents('FIEL_AAA010101AAA/certificate.cer.pem');
     const certificate = new Certificate(pem);
 
     expect(certificate.serialNumber().bytes()).toBe('30001000000300023685');
   });
 
   test('constructor with der content', () => {
-    const contents = fileContents('FIEL_AAA010101AAA/certificate.cer');
+    const contents = utilities.fileContents('FIEL_AAA010101AAA/certificate.cer');
     const certificate = new Certificate(contents);
 
     expect(certificate.serialNumber().bytes()).toBe('30001000000300023685');

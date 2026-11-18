@@ -1,5 +1,6 @@
+import { Buffer } from 'node:buffer';
 import { describe, expect, test } from 'vitest';
-import SerialNumber from '#src/serial_number';
+import SerialNumber from '../../src/serial_number';
 
 describe('serial number', () => {
   const serialHexadecimal = '3330303031303030303030333030303233373038';
