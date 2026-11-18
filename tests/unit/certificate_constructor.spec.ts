@@ -1,5 +1,5 @@
 import Certificate from '#src/base/certificate';
-import { fileContents } from '../test_utils.js';
+import { fileContents } from '../test_utilities.js';
 
 describe('certificate constructor', () => {
   test('constructor with pem content', () => {

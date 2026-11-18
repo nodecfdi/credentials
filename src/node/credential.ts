@@ -1,6 +1,6 @@
-import CredentialBase from '#src/base/credential';
-import Certificate from '#src/node/certificate';
-import PrivateKey from '#src/node/private_key';
+import CredentialBase from '../base/credential';
+import Certificate from './certificate';
+import PrivateKey from './private_key';
 
 export default class Credential extends CredentialBase {
   /**

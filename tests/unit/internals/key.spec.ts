@@ -1,4 +1,5 @@
-import { KeyType } from '#src/index';
+import { describe, expect, test } from 'vitest';
+import { KeyType } from '../../../src/internal/key_type';
 import KeySpecimen from './key_specimen.js';
 
 describe('key', () => {

@@ -1,6 +1,6 @@
 import { Mixin } from 'ts-mixer';
-import CertificateBase from '#src/base/certificate';
-import LocalFileOpen from '#src/internal/local_file_open';
+import CertificateBase from '../base/certificate';
+import LocalFileOpen from '../internal/local_file_open';
 
 export default class Certificate extends Mixin(CertificateBase, LocalFileOpen) {
   /**
@@ -12,6 +12,6 @@ export default class Certificate extends Mixin(CertificateBase, LocalFileOpen) {
    * This function only works in Node.js.
    */
   public static openFile(filename: string): Certificate {
-    return new Certificate(Certificate.localFileOpen(filename));
+    return new Certificate(this.localFileOpen(filename));
   }
 }

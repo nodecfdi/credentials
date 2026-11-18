@@ -1,6 +1,6 @@
 import { Mixin } from 'ts-mixer';
-import DataArray from '#src/internal/data_array';
-import { KeyTypeEnum } from '#src/internal/key_type';
+import DataArray from '../internal/data_array';
+import { KeyTypeEnum } from '../internal/key_type';
 
 export default class Key extends Mixin(DataArray) {
   private typeKey?: KeyTypeEnum;
@@ -11,9 +11,7 @@ export default class Key extends Mixin(DataArray) {
   }
 
   public get type(): KeyTypeEnum {
-    if (!this.typeKey) {
-      this.typeKey = new KeyTypeEnum(this.extractString('type'));
-    }
+    this.typeKey ??= new KeyTypeEnum(this.extractString('type'));
 
     return this.typeKey;
   }

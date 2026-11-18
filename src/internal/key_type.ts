@@ -10,7 +10,7 @@ export class KeyTypeEnum {
   public constructor(rawType: string) {
     const type = rawType === '' ? 'RSA' : rawType;
 
-    if (!(type in KeyType)) {
+    if (!(Object.hasOwn(KeyType, type))) {
       throw new Error('Index Not Found');
     }
 

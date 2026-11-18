@@ -1,7 +1,7 @@
 import { EOL } from 'node:os';
 import PrivateKey from '#src/node/private_key';
 import PublicKey from '#src/node/public_key';
-import { fileContents, filePath } from '../test_utils.js';
+import { fileContents, filePath } from '../test_utilities.js';
 
 describe('public key', () => {
   test('create public key from certificate', () => {

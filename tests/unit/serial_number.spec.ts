@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import SerialNumber from '#src/serial_number';
 
 describe('serial number', () => {

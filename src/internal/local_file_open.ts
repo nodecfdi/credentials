@@ -20,7 +20,6 @@ export default abstract class LocalFileOpen {
       throw new Error('The file to open is empty');
     }
 
-    // eslint-disable-next-line security/detect-unsafe-regex
     if (/^(?:(?:https?|ftp):\/\/)?(?:www\.)?[\da-z-]+\.[\da-z-]\S*$/i.test(filename)) {
       throw new Error('Invalid scheme to open file');
     }

@@ -31,6 +31,7 @@ export default class Rfc4514 {
     ): string => {
       let fixedTarget = target;
       for (const [index, from] of search.entries()) {
+        // eslint-disable-next-line unicorn/no-unsafe-string-replacement
         fixedTarget = fixedTarget.replace(from, replace[index]);
       }
 

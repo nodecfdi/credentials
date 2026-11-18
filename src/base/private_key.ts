@@ -1,19 +1,25 @@
+import type { Algorithm } from '../types';
+import type Certificate from './certificate';
 import forge from '@vilic/node-forge';
-import type Certificate from '#src/base/certificate';
-import PublicKey from '#src/base/public_key';
-import Key from '#src/internal/key';
-import { KeyType } from '#src/internal/key_type';
-import PemExtractor from '#src/pem_extractor';
-import { type Algorithm } from '#src/types';
+import Key from '../internal/key';
+import { KeyType } from '../internal/key_type';
+import PemExtractor from '../pem_extractor';
+import PublicKey from './public_key';
 
 export default class PrivateKey extends Key {
-  /** String PEM contents of private key  */
+  /**
+  String PEM contents of private key
+   */
   private readonly _pem: string;
 
-  /** String password of private key */
+  /**
+  String password of private key
+   */
   private readonly _passPhrase: string;
 
-  /** Public key extracted from private key **/
+  /**
+  Public key extracted from private key *
+   */
   private _publicKey?: PublicKey;
 
   /**
@@ -50,25 +56,6 @@ export default class PrivateKey extends Key {
     });
   }
 
-  /**
-   * Convert PKCS#8 DER to PKCS#8 PEM
-   *
-   * @param contents -
-   * @param isEncrypted -
-   */
-  public static convertDerToPem(contents: string, isEncrypted: boolean): string {
-    const privateKeyName = isEncrypted ? 'ENCRYPTED PRIVATE KEY' : 'PRIVATE KEY';
-
-    return [
-      `-----BEGIN ${privateKeyName}-----\n`,
-      `${forge.util
-        .encode64(contents)
-        .match(/.{1,64}/g)!
-        .join('\n')}\n`,
-      `-----END ${privateKeyName}-----`,
-    ].join('');
-  }
-
   public pem(): string {
     return this._pem;
   }
@@ -78,9 +65,7 @@ export default class PrivateKey extends Key {
   }
 
   public publicKey(): PublicKey {
-    if (!this._publicKey) {
-      this._publicKey = new PublicKey(this.publicKeyContents());
-    }
+    this._publicKey ??= new PublicKey(this.publicKeyContents());
 
     return this._publicKey;
   }
@@ -153,5 +138,24 @@ export default class PrivateKey extends Key {
     });
 
     return new PrivateKey(pem, newPassPhrase);
+  }
+
+  /**
+   * Convert PKCS#8 DER to PKCS#8 PEM
+   *
+   * @param contents -
+   * @param isEncrypted -
+   */
+  public static convertDerToPem(contents: string, isEncrypted: boolean): string {
+    const privateKeyName = isEncrypted ? 'ENCRYPTED PRIVATE KEY' : 'PRIVATE KEY';
+
+    return [
+      `-----BEGIN ${privateKeyName}-----\n`,
+      `${forge.util
+        .encode64(contents)
+        .match(/.{1,64}/g)!
+        .join('\n')}\n`,
+      `-----END ${privateKeyName}-----`,
+    ].join('');
   }
 }

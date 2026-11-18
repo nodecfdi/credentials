@@ -1,6 +1,6 @@
 import { BaseConverter } from '@nodecfdi/base-converter';
 import forge from '@vilic/node-forge';
-import { isHexadecimal } from '#src/utils/utilities';
+import { isHexadecimal } from './utils/utilities';
 
 /**
  * This class is used to load hexadecimal or decimal data as a certificate serial number.
@@ -8,7 +8,9 @@ import { isHexadecimal } from '#src/utils/utilities';
  * It is not intended to use in general.
  */
 export default class SerialNumber {
-  /** Hexadecimal string representation */
+  /**
+  Hexadecimal string representation
+   */
   private readonly _hexadecimal: string;
 
   public constructor(hexa: string) {
@@ -29,6 +31,22 @@ export default class SerialNumber {
     this._hexadecimal = hexadecimal;
   }
 
+  public hexadecimal(): string {
+    return this._hexadecimal;
+  }
+
+  public bytes(): string {
+    return forge.util.hexToBytes(this._hexadecimal);
+  }
+
+  public decimal(): string {
+    return BaseConverter.createBase36().convert(this.hexadecimal(), 16, 10);
+  }
+
+  public bytesArePrintable(): boolean {
+    return /^[\u{20}-\u{7E}]*$/u.test(this.bytes());
+  }
+
   public static createFromHexadecimal(hexadecimal: string): SerialNumber {
     return new SerialNumber(hexadecimal);
   }
@@ -43,21 +61,5 @@ export default class SerialNumber {
     const hexadecimal = forge.util.bytesToHex(input);
 
     return new SerialNumber(hexadecimal);
-  }
-
-  public hexadecimal(): string {
-    return this._hexadecimal;
-  }
-
-  public bytes(): string {
-    return forge.util.hexToBytes(this._hexadecimal);
-  }
-
-  public decimal(): string {
-    return BaseConverter.createBase36().convert(this.hexadecimal(), 16, 10);
-  }
-
-  public bytesArePrintable(): boolean {
-    return /^[\u0020-\u007E]*$/.test(this.bytes());
   }
 }

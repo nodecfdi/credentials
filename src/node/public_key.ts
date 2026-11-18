@@ -1,6 +1,6 @@
 import { Mixin } from 'ts-mixer';
-import PublicKeyBase from '#src/base/public_key';
-import LocalFileOpen from '#src/internal/local_file_open';
+import PublicKeyBase from '../base/public_key';
+import LocalFileOpen from '../internal/local_file_open';
 
 export default class PublicKey extends Mixin(PublicKeyBase, LocalFileOpen) {
   /**
@@ -12,6 +12,6 @@ export default class PublicKey extends Mixin(PublicKeyBase, LocalFileOpen) {
    * This function only works in Node.js.
    */
   public static openFile(filename: string): PublicKey {
-    return new PublicKey(PublicKey.localFileOpen(filename));
+    return new PublicKey(this.localFileOpen(filename));
   }
 }

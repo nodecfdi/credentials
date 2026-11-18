@@ -1,6 +1,6 @@
 import { Mixin } from 'ts-mixer';
-import PrivateKeyBase from '#src/base/private_key';
-import LocalFileOpen from '#src/internal/local_file_open';
+import PrivateKeyBase from '../base/private_key';
+import LocalFileOpen from '../internal/local_file_open';
 
 export default class PrivateKey extends Mixin(PrivateKeyBase, LocalFileOpen) {
   /**
@@ -13,6 +13,6 @@ export default class PrivateKey extends Mixin(PrivateKeyBase, LocalFileOpen) {
    * This function only works in Node.js.
    */
   public static openFile(filename: string, passPhrase: string): PrivateKey {
-    return new PrivateKey(PrivateKey.localFileOpen(filename), passPhrase);
+    return new PrivateKey(this.localFileOpen(filename), passPhrase);
   }
 }

@@ -1,5 +1,5 @@
 import Certificate from '#src/node/certificate';
-import { filePath } from '../test_utils.js';
+import { filePath } from '../test_utilities.js';
 
 describe('certificate open file', () => {
   test('open file with pem contents', () => {

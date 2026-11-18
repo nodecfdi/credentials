@@ -1,5 +1,5 @@
 import forge from '@vilic/node-forge';
-import Credential from '#src/base/credential';
+import Credential from '../credential';
 
 export default class PfxReader {
   public static createCredentialFromContents(contents: string, passPhrase: string): Credential {
@@ -24,15 +24,12 @@ export default class PfxReader {
       const p12Asn1 = forge.asn1.fromDer(contents);
       const p12 = forge.pkcs12.pkcs12FromAsn1(p12Asn1, password);
       const bagSearchCert = p12.getBags({ bagType: forge.pki.oids.certBag });
-      const bagResult = bagSearchCert[forge.pki.oids.certBag]![0];
-      const { cert } = bagResult;
+      const { cert } = bagSearchCert[forge.pki.oids.certBag]![0];
 
       const bagSearchKey = p12.getBags({
         bagType: forge.pki.oids.pkcs8ShroudedKeyBag,
       });
-      const bagsResult = bagSearchKey[forge.pki.oids.pkcs8ShroudedKeyBag]![0];
-
-      const { key } = bagsResult;
+      const { key } = bagSearchKey[forge.pki.oids.pkcs8ShroudedKeyBag]![0];
 
       return {
         cert: cert!,

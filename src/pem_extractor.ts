@@ -46,15 +46,14 @@ export default class PemExtractor {
     type = type.replaceAll(/[!$()*+./:<=>?[\\\]^{|}-]/g, String.raw`\$&`);
 
     const pattern = `^-----BEGIN ${type}-----\r?\n([A-Za-z0-9+/=]+\r?\n)+-----END ${type}-----\r?\n?$`;
-    // eslint-disable-next-line security/detect-non-literal-regexp
     const matches = new RegExp(pattern, 'm').exec(this.getContents());
 
     return this.normalizeLineEndings(matches ? matches[0] : '');
   }
 
   protected extractRsaProtected(): string {
-    const pattern =
-      '^-----BEGIN RSA PRIVATE KEY-----\r?\nProc-Type: .+\r?\nDEK-Info: .+\r?\n\r?\n(?:[A-Za-z0-9+/=]+\r?\n)+-----END RSA PRIVATE KEY-----\r?\n?$';
+    const pattern
+      = '^-----BEGIN RSA PRIVATE KEY-----\r?\nProc-Type: .+\r?\nDEK-Info: .+\r?\n\r?\n(?:[A-Za-z0-9+/=]+\r?\n)+-----END RSA PRIVATE KEY-----\r?\n?$';
     const matches = new RegExp(pattern, 'm').exec(this.getContents());
 
     return this.normalizeLineEndings(matches ? matches[0] : '');

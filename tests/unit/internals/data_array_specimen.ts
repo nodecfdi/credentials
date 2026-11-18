@@ -1,6 +1,6 @@
-import { type DateTime } from 'luxon';
+import type { DateTime } from 'luxon';
 import { Mixin } from 'ts-mixer';
-import DataArray from '#src/internal/data_array';
+import DataArray from '../../../src/internal/data_array';
 
 export default class DataArraySpecimen extends Mixin(DataArray) {
   public constructor(dataArray: Record<string, unknown>) {

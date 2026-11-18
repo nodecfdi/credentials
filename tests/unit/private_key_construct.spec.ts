@@ -1,5 +1,5 @@
 import PrivateKey from '#src/node/private_key';
-import { fileContents, filePath } from '../test_utils.js';
+import { fileContents, filePath } from '../test_utilities.js';
 
 describe('private key construct', () => {
   test('construct with valid content', () => {

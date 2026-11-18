@@ -8,7 +8,7 @@ export class SatTypeEnum {
 
   public constructor(type: string) {
     /* istanbul ignore if -- @preserve */
-    if (!(type in SatType)) {
+    if (!(Object.hasOwn(SatType, type))) {
       throw new Error('Index Not Found');
     }
 

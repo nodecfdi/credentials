@@ -51,51 +51,57 @@
       }
     }
   },
-  "imports": {
-    "#src/*": "./src/*.js"
-  },
   "scripts": {
     "prepare": "is-in-ci || husky",
+    "changelog": "auto-changelog -u -p",
+    "commitlint": "commitlint --edit",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "changelog": "auto-changelog -p && git add CHANGELOG.md",
-    "prebuild": "pnpm typecheck",
-    "build": "tshy",
-    "postbuild": "pnpm run gen:docs && git add docs/*",
-    "release": "np",
-    "version": "pnpm run build && pnpm run changelog"
+    "tool:code": "pnpm run lint:check && pnpm run typecheck",
+    "tool:build": "pnpm run tool:code && pnpm run test:run",
+    "build": "tsdown",
+    "release": "release-it"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/config-conventional": "^19.5.0",
-    "@types/luxon": "^3.4.2",
-    "@types/node": "^20.16.10",
-    "@vitest/coverage-istanbul": "^2.1.2",
-    "auto-changelog": "^2.5.0",
-    "husky": "^9.1.6",
-    "is-in-ci": "^1.0.0",
-    "np": "^10.0.7",
-    "tshy": "^3.0.2",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@eienjs/eslint-config": "^2.3.2",
+    "@types/luxon": "^3.7.6",
+    "@types/node": "^26.6.6",
+    "@vitest/coverage-istanbul": "^5.1.0",
+    "auto-changelog": "^2.7.0",
+    "eslint": "^10.15.0",
+    "eslint-plugin-erasable-syntax-only": "^0.7.2",
+    "husky": "^9.1.7",
+    "is-in-ci": "^2.0.0",
+    "release-it": "^21.1.2",
+    "tsdown": "^0.23.7",
     "typescript": "^6.0.3",
-    "vitest": "^2.1.2",
-    "vitest-mock-extended": "^2.0.2"
+    "vitest": "^5.1.0",
+    "vitest-mock-extended": "^6.0.1"
   },
   "dependencies": {
-    "@nodecfdi/base-converter": "^1.0.7",
+    "@nodecfdi/base-converter": "^3.0.1",
     "@vilic/node-forge": "1.3.2-5",
     "ts-mixer": "^6.0.4"
   },
   "peerDependencies": {
-    "@types/luxon": "3.4.2",
-    "luxon": "^3.5.0"
+    "@types/luxon": "3.7.6",
+    "luxon": "^3.7.2"
   },
   "peerDependenciesMeta": {
     "@types/luxon": {
       "optional": true
     }
   },
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ],
   "author": "Fernando Isidro <luffynando@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/nodecfdi/credentials",
@@ -122,10 +128,6 @@
   "engines": {
     "node": "^22.13.0 || ^24 || ^26"
   },
-  "browserslist": [
-    "defaults",
-    "not IE 11"
-  ],
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -138,13 +140,41 @@
   },
   "auto-changelog": {
     "template": "keepachangelog",
-    "hideCredit": true
+    "hideCredit": true,
+    "commitLimit": false
   },
-  "np": {
-    "message": "chore(release): :tada: %s",
-    "tag": "latest",
-    "branch": "main",
-    "testScript": "test:run"
+  "release-it": {
+    "git": {
+      "commit": true,
+      "tag": true,
+      "push": true,
+      "requireCleanWorkingDir": true,
+      "commitMessage": "chore(release): :tada: v${version}",
+      "tagAnnotation": "chore(release): :tada: v${version}"
+    },
+    "github": {
+      "release": true,
+      "web": true,
+      "releaseName": "Release v${version}"
+    },
+    "npm": {
+      "publish": true,
+      "publishPackageManager": "pnpm",
+      "publishArgs": [
+        "--no-git-checks"
+      ]
+    },
+    "hooks": {
+      "before:init": [
+        "pnpm run lint:check",
+        "pnpm run typecheck",
+        "pnpm test:run"
+      ],
+      "after:bump": [
+        "pnpm run build",
+        "pnpm run changelog"
+      ]
+    }
   },
   "tshy": {
     "selfLink": false,

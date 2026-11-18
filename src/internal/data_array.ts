@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { isNumber, isScalar } from '#src/utils/utilities';
+import { isNumber, isScalar } from '../utils/utilities';
 
 export default abstract class DataArray {
   protected declare _dataArray: Record<string, unknown>;
@@ -31,7 +31,7 @@ export default abstract class DataArray {
 
   protected extractArray(key: string): Record<string, unknown> {
     const data = this._dataArray[key] ?? null;
-    if (!(typeof data === 'object' && data !== null)) {
+    if (typeof data !== 'object' || data === null) {
       return {};
     }
 
@@ -40,7 +40,8 @@ export default abstract class DataArray {
 
   protected extractArrayStrings(key: string): Record<string, string> {
     const array: Record<string, string> = {};
-    for (const [name, value] of Object.entries(this.extractArray(key))) {
+    const dataEntries = Object.entries(this.extractArray(key));
+    for (const [name, value] of dataEntries) {
       if (isScalar(value)) {
         array[name] = value.toString();
       }

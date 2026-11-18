@@ -1,7 +1,9 @@
+/* eslint-disable unicorn/prefer-https */
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { filePath } from '../../test_utils.js';
+import { beforeAll, describe, expect, test } from 'vitest';
+import { utilities } from '../../test_utilities.js';
 import LocalFileOpenSpecimen from './local_file_open_specimen.js';
 
 describe('local file open', () => {
@@ -13,14 +15,14 @@ describe('local file open', () => {
   });
 
   test('open with flat path', () => {
-    const filename = filePath('FIEL_AAA010101AAA/password.txt');
+    const filename = utilities.filePath('FIEL_AAA010101AAA/password.txt');
     const content = specimen.localFileOpen(filename);
 
     expect(content).toStrictEqual(readFileSync(filename).toString('utf8'));
   });
 
   test('open with file scheme_on_path', () => {
-    const filename = `file://${filePath('FIEL_AAA010101AAA/password.txt')}`;
+    const filename = `file://${utilities.filePath('FIEL_AAA010101AAA/password.txt')}`;
     const content = specimen.localFileOpen(filename);
 
     expect(content).toStrictEqual(readFileSync(filename.replace('file://', '')).toString('utf8'));

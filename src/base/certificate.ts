@@ -1,26 +1,36 @@
 import forge from '@vilic/node-forge';
 import { DateTime } from 'luxon';
-import PublicKey from '#src/base/public_key';
-import DataArray from '#src/internal/data_array';
-import Rfc4514 from '#src/internal/rfc4514';
-import { SatType, SatTypeEnum } from '#src/internal/sat_type';
-import PemExtractor from '#src/pem_extractor';
-import SerialNumber from '#src/serial_number';
+import DataArray from '../internal/data_array';
+import Rfc4514 from '../internal/rfc4514';
+import { SatType, SatTypeEnum } from '../internal/sat_type';
+import PemExtractor from '../pem_extractor';
+import SerialNumber from '../serial_number';
+import PublicKey from './public_key';
 
 export default class Certificate extends DataArray {
-  /** String PEM contents including headers */
+  /**
+  String PEM contents including headers
+   */
   private readonly _pem: string;
 
-  /** String RFC as parsed from subject/uniqueIdentifier */
+  /**
+  String RFC as parsed from subject/uniqueIdentifier
+   */
   private readonly _rfc: string;
 
-  /** String Legal name as parsed from subject/uniqueIdentifier */
+  /**
+  String Legal name as parsed from subject/uniqueIdentifier
+   */
   private readonly _legalName: string;
 
-  /** Parsed serial number */
+  /**
+  Parsed serial number
+   */
   private _serialNumber?: SerialNumber;
 
-  /** Parsed public key */
+  /**
+  Parsed public key
+   */
   private _publicKey?: PublicKey;
 
   public constructor(contents: string) {
@@ -51,30 +61,11 @@ export default class Certificate extends DataArray {
       validity: parsed.validity,
     };
     this._rfc = forge.util.decodeUtf8(
-      (this.subjectData({ type: '2.5.4.45' })?.value as string).split(' ')[0],
+      (this.subjectData({ type: '2.5.4.45' })?.value as string).split(' ', 1)[0],
     );
     this._legalName = this.subjectData({ type: '2.5.4.41' })?.value as string;
     this._dataArray.hash = parsed.issuer.hash;
     this._dataArray.signatureTypeLN = parsed.signature;
-  }
-
-  /**
-   * Convert X.509 DER base64 or X.509 DER to X509 PEM
-   *
-   * @param contents - DER Content
-   */
-  public static convertDerToPem(contents: string): string {
-    let finalContent = contents;
-    // Effectively compare that all the content is base64, if it isn't then encode it
-    if (finalContent !== forge.util.encode64(forge.util.decode64(finalContent))) {
-      finalContent = forge.util.encode64(finalContent);
-    }
-
-    return [
-      '-----BEGIN CERTIFICATE-----\n',
-      `${finalContent.match(/.{1,64}/g)?.join('\n')}\n`,
-      '-----END CERTIFICATE-----',
-    ].join('');
   }
 
   public pem(): string {
@@ -175,10 +166,8 @@ export default class Certificate extends DataArray {
   }
 
   public publicKey(): PublicKey {
-    if (!this._publicKey) {
-      // The public key can be created from PUBLIC KEY or CERTIFICATE
-      this._publicKey = new PublicKey(this.pem());
-    }
+    // The public key can be created from PUBLIC KEY or CERTIFICATE
+    this._publicKey ??= new PublicKey(this.pem());
 
     return this._publicKey;
   }
@@ -192,14 +181,11 @@ export default class Certificate extends DataArray {
   }
 
   public validOn(datetime?: DateTime): boolean {
-    let dateTime = datetime;
-    if (!dateTime) {
-      dateTime = DateTime.now();
-    }
+    const dateTime = datetime ?? DateTime.now();
 
     return (
-      dateTime.toMillis() >= this.validFromDateTime().toMillis() &&
-      dateTime.toMillis() <= this.validToDateTime().toMillis()
+      dateTime.toMillis() >= this.validFromDateTime().toMillis()
+      && dateTime.toMillis() <= this.validToDateTime().toMillis()
     );
   }
 
@@ -234,5 +220,24 @@ export default class Certificate extends DataArray {
     }
 
     throw new Error('Certificate does not contain a serial number');
+  }
+
+  /**
+   * Convert X.509 DER base64 or X.509 DER to X509 PEM
+   *
+   * @param contents - DER Content
+   */
+  public static convertDerToPem(contents: string): string {
+    let finalContent = contents;
+    // Effectively compare that all the content is base64, if it isn't then encode it
+    if (finalContent !== forge.util.encode64(forge.util.decode64(finalContent))) {
+      finalContent = forge.util.encode64(finalContent);
+    }
+
+    return [
+      '-----BEGIN CERTIFICATE-----\n',
+      `${finalContent.match(/.{1,64}/g)?.join('\n')}\n`,
+      '-----END CERTIFICATE-----',
+    ].join('');
   }
 }

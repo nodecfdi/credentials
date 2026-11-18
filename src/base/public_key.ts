@@ -1,7 +1,7 @@
+import type { Algorithm } from '../types';
 import forge from '@vilic/node-forge';
-import Key from '#src/internal/key';
-import { KeyType } from '#src/internal/key_type';
-import { type Algorithm } from '#src/types';
+import Key from '../internal/key';
+import { KeyType } from '../internal/key_type';
 
 export default class PublicKey extends Key {
   public constructor(source: string) {
@@ -19,6 +19,35 @@ export default class PublicKey extends Key {
       source,
     );
     super(dataObject);
+  }
+
+  /**
+   * Verify the signature of some data
+   *
+   * @param data - Input data
+   * @param signature - Target signature
+   * @param algorithm - Algorithm to be used
+   */
+  public verify(data: string, signature: string, algorithm: Algorithm = 'sha256'): boolean {
+    return this.callOnPublicKey((publicKey): boolean => {
+      try {
+        const sig = forge.md[algorithm].create();
+        sig.update(data);
+
+        return publicKey.verify(sig.digest().bytes(), signature);
+      } catch (error) {
+        throw new Error(`Verify error ${(error as Error).message}`);
+      }
+    });
+  }
+
+  /**
+   * Run a Callable function with this public key opened
+   *
+   * @param callableFunction - Function to call and inject content
+   */
+  public callOnPublicKey<T>(callableFunction: (pbk: forge.pki.rsa.PublicKey) => T): T {
+    return PublicKey.callOnPublicKeyWithContents(callableFunction, this.publicKeyContents());
   }
 
   /**
@@ -57,34 +86,5 @@ export default class PublicKey extends Key {
     }
 
     return callableFunction(pubKey);
-  }
-
-  /**
-   * Verify the signature of some data
-   *
-   * @param data - Input data
-   * @param signature - Target signature
-   * @param algorithm - Algorithm to be used
-   */
-  public verify(data: string, signature: string, algorithm: Algorithm = 'sha256'): boolean {
-    return this.callOnPublicKey((publicKey): boolean => {
-      try {
-        const sig = forge.md[algorithm].create();
-        sig.update(data);
-
-        return publicKey.verify(sig.digest().bytes(), signature);
-      } catch (error) {
-        throw new Error(`Verify error ${(error as Error).message}`);
-      }
-    });
-  }
-
-  /**
-   * Run a Callable function with this public key opened
-   *
-   * @param callableFunction - Function to call and inject content
-   */
-  public callOnPublicKey<T>(callableFunction: (pbk: forge.pki.rsa.PublicKey) => T): T {
-    return PublicKey.callOnPublicKeyWithContents(callableFunction, this.publicKeyContents());
   }
 }

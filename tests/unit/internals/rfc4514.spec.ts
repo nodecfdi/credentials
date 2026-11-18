@@ -1,4 +1,5 @@
-import Rfc4514 from '#src/internal/rfc4514';
+import { beforeAll, describe, expect, test } from 'vitest';
+import Rfc4514 from '../../../src/internal/rfc4514';
 
 describe('rfc4514', () => {
   let object: Rfc4514;

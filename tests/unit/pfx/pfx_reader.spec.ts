@@ -1,7 +1,7 @@
 import CredentialBase from '#src/base/credential';
 import type Credential from '#src/node/credential';
 import PfxReader from '#src/node/pfx/pfx_reader';
-import { fileContents, filePath } from '../../test_utils.js';
+import { fileContents, filePath } from '../../test_utilities.js';
 
 describe('pfx reader', () => {
   const obtainKnownCredential = (): Credential =>

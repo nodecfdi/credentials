@@ -3,7 +3,7 @@ import type forge from '@vilic/node-forge';
 import { DateTime } from 'luxon';
 import Certificate from '#src/base/certificate';
 import type SerialNumber from '#src/serial_number';
-import { fileContents } from '../test_utils.js';
+import { fileContents } from '../test_utilities.js';
 
 describe('certificate', () => {
   const createCertificate = (): Certificate =>

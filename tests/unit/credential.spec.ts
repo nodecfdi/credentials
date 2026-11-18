@@ -1,7 +1,7 @@
 import Certificate from '#src/node/certificate';
 import Credential from '#src/node/credential';
 import PrivateKey from '#src/node/private_key';
-import { fileContents, filePath } from '../test_utils.js';
+import { fileContents, filePath } from '../test_utilities.js';
 
 describe('credential', () => {
   test('create with matching values', () => {

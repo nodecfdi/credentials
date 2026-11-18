@@ -1,6 +1,6 @@
 import Certificate from '#src/node/certificate';
 import PrivateKey from '#src/node/private_key';
-import { fileContents, filePath } from '../test_utils.js';
+import { fileContents, filePath } from '../test_utilities.js';
 
 describe('private key', () => {
   const createPrivateKey = (): PrivateKey => {

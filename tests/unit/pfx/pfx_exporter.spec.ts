@@ -1,23 +1,24 @@
+import type PrivateKey from '../../../src/base/private_key';
 import { Buffer } from 'node:buffer';
 import { existsSync, unlinkSync } from 'node:fs';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { mock } from 'vitest-mock-extended';
-import PfxExporter from '#src/base/pfx/pfx_exporter';
-import PfxReader from '#src/base/pfx/pfx_reader';
-import type PrivateKey from '#src/base/private_key';
-import Certificate from '#src/node/certificate';
-import Credential from '#src/node/credential';
-import PfxExporterNode from '#src/node/pfx/pfx_exporter';
-import { fileContents, filePath } from '../../test_utils.js';
+import PfxExporter from '../../../src/base/pfx/pfx_exporter';
+import PfxReader from '../../../src/base/pfx/pfx_reader';
+import Certificate from '../../../src/node/certificate';
+import Credential from '../../../src/node/credential';
+import PfxExporterNode from '../../../src/node/pfx/pfx_exporter';
+import { utilities } from '../../test_utilities.js';
 
 describe('pfx exporter', () => {
   let credentialPassprase: string;
   let credential: Credential;
 
   beforeEach(() => {
-    credentialPassprase = fileContents('CSD01_AAA010101AAA/password.txt').trim();
+    credentialPassprase = utilities.fileContents('CSD01_AAA010101AAA/password.txt').trim();
     credential = Credential.openFiles(
-      filePath('CSD01_AAA010101AAA/certificate.cer'),
-      filePath('CSD01_AAA010101AAA/private_key.key'),
+      utilities.filePath('CSD01_AAA010101AAA/certificate.cer'),
+      utilities.filePath('CSD01_AAA010101AAA/private_key.key'),
       credentialPassprase,
     );
   });
@@ -28,7 +29,7 @@ describe('pfx exporter', () => {
 
     expect(JSON.stringify(PfxReader.loadPkcs12(pfxContents))).toStrictEqual(
       JSON.stringify(
-        PfxReader.loadPkcs12(fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')),
+        PfxReader.loadPkcs12(utilities.fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')),
       ),
     );
   });
@@ -41,22 +42,22 @@ describe('pfx exporter', () => {
       JSON.stringify(PfxReader.loadPkcs12(Buffer.from(pfxBase64, 'base64').toString('binary'))),
     ).toStrictEqual(
       JSON.stringify(
-        PfxReader.loadPkcs12(fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')),
+        PfxReader.loadPkcs12(utilities.fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')),
       ),
     );
   });
 
   test('export to file', () => {
-    const filename = filePath('generated.pfx');
+    const filename = utilities.filePath('generated.pfx');
 
     const pfxExporter = new PfxExporterNode(credential);
     pfxExporter.exportToFile(filename, '');
     expect(existsSync(filename)).toBeTruthy();
-    const contents = fileContents('generated.pfx');
+    const contents = utilities.fileContents('generated.pfx');
 
     expect(JSON.stringify(PfxReader.loadPkcs12(contents))).toStrictEqual(
       JSON.stringify(
-        PfxReader.loadPkcs12(fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')),
+        PfxReader.loadPkcs12(utilities.fileContents('CSD01_AAA010101AAA/credential_unprotected.pfx')),
       ),
     );
 
@@ -64,7 +65,7 @@ describe('pfx exporter', () => {
   });
 
   test('export with error', () => {
-    const certificate = Certificate.openFile(filePath('CSD01_AAA010101AAA/certificate.cer'));
+    const certificate = Certificate.openFile(utilities.filePath('CSD01_AAA010101AAA/certificate.cer'));
     const privateKey = mock<PrivateKey>();
     privateKey.belongsTo.mockReturnValue(true);
     privateKey.pem.mockReturnValue('bar');
@@ -78,7 +79,7 @@ describe('pfx exporter', () => {
   });
 
   test('export to base64 with error', () => {
-    const certificate = Certificate.openFile(filePath('CSD01_AAA010101AAA/certificate.cer'));
+    const certificate = Certificate.openFile(utilities.filePath('CSD01_AAA010101AAA/certificate.cer'));
     const privateKey = mock<PrivateKey>();
     privateKey.belongsTo.mockReturnValue(true);
     privateKey.pem.mockReturnValue('bar');

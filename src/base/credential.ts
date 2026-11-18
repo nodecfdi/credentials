@@ -1,6 +1,6 @@
-import Certificate from '#src/base/certificate';
-import PrivateKey from '#src/base/private_key';
-import { type Algorithm } from '#src/types';
+import type { Algorithm } from '../types';
+import Certificate from '../base/certificate';
+import PrivateKey from '../base/private_key';
 
 export default class Credential {
   private readonly _certificate: Certificate;
@@ -21,27 +21,6 @@ export default class Credential {
 
     this._certificate = certificate;
     this._privateKey = privateKey;
-  }
-
-  /**
-   * Create a Credential object based on string contents
-   *
-   * The certificate content can be X.509 PEM, X.509 DER or X.509 DER base64
-   * The private key content can be PKCS#8 DER, PKCS#8 PEM or PKCS#5 PEM
-   *
-   * @param certificateContents - content can be X.509 PEM, X.509 DER or X.509 DER base64
-   * @param privateKeyContents - content can be PKCS#8 DER, PKCS#8 PEM or PKCS#5 PEM
-   * @param passPhrase - password for encrypted key
-   */
-  public static create(
-    certificateContents: string,
-    privateKeyContents: string,
-    passPhrase: string,
-  ): Credential {
-    const certificate = new Certificate(certificateContents);
-    const privateKey = new PrivateKey(privateKeyContents, passPhrase);
-
-    return new Credential(certificate, privateKey);
   }
 
   public certificate(): Certificate {
@@ -88,5 +67,26 @@ export default class Credential {
    */
   public verify(data: string, signature: string, algorithm: Algorithm = 'sha256'): boolean {
     return this._certificate.publicKey().verify(data, signature, algorithm);
+  }
+
+  /**
+   * Create a Credential object based on string contents
+   *
+   * The certificate content can be X.509 PEM, X.509 DER or X.509 DER base64
+   * The private key content can be PKCS#8 DER, PKCS#8 PEM or PKCS#5 PEM
+   *
+   * @param certificateContents - content can be X.509 PEM, X.509 DER or X.509 DER base64
+   * @param privateKeyContents - content can be PKCS#8 DER, PKCS#8 PEM or PKCS#5 PEM
+   * @param passPhrase - password for encrypted key
+   */
+  public static create(
+    certificateContents: string,
+    privateKeyContents: string,
+    passPhrase: string,
+  ): Credential {
+    const certificate = new Certificate(certificateContents);
+    const privateKey = new PrivateKey(privateKeyContents, passPhrase);
+
+    return new Credential(certificate, privateKey);
   }
 }

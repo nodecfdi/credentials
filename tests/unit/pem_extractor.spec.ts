@@ -1,6 +1,6 @@
 import { EOL } from 'node:os';
 import PemExtractor from '#src/pem_extractor';
-import { fileContents } from '../test_utils.js';
+import { fileContents } from '../test_utilities.js';
 
 describe('pem extractor', () => {
   test('extractor with empty content', () => {
