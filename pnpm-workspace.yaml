@@ -1,2 +1,17 @@
-allowBuilds:
-  esbuild: set this to true or false
+minimumReleaseAge: 1440
+minimumReleaseAgeExcludePrune: true
+minimumReleaseAgeExclude:
+  - "@eienjs/*"
+
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 2880
+shamefullyHoist: true
+shellEmulator: true
+
+permissions:
+  tsdown:
+    skills: true
+
+skills:
+  dirs:
+    - .agents/skills

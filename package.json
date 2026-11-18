@@ -120,7 +120,7 @@
     "pfx"
   ],
   "engines": {
-    "node": "^22 || ^24 || ^26"
+    "node": "^22.13.0 || ^24 || ^26"
   },
   "browserslist": [
     "defaults",
