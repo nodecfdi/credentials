@@ -43,4 +43,20 @@ export default defineConfig([
     dts: false,
     target: 'esnext',
   },
+  {
+    entry: {
+      cli: 'src/cli/bin.ts',
+    },
+    clean: false,
+    format: 'esm',
+    platform: 'node',
+    unbundle: false,
+    deps: {
+      neverBundle: [/^node:/, 'node-forge', '@nodecfdi/base-converter', 'luxon'],
+    },
+    minify: 'dce-only',
+    fixedExtension: false,
+    dts: false,
+    target: 'esnext',
+  },
 ]);

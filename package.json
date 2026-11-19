@@ -38,6 +38,9 @@
     "./package.json": "./package.json"
   },
   "types": "./dist/index.d.ts",
+  "bin": {
+    "nc-credentials": "./dist/cli.js"
+  },
   "files": [
     "dist"
   ],

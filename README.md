@@ -37,6 +37,39 @@ Esta librería ha sido inspirada por la versión para php https://github.com/php
 
 La documentación está disponible en el sitio web [NodeCfdi](https://nodecfdi.com/librarys/credentials/getting-started)
 
+## Uso por línea de comandos (CLI)
+
+Al instalar el paquete se incluye el ejecutable `nc-credentials` (o puedes ejecutarlo con `npx nc-credentials`):
+
+```bash
+# Obtener datos de un certificado (RFC, razón social, serie, vigencia, etc.)
+nc-credentials data --cer certificate.cer
+nc-credentials data --cer certificate.cer --json
+nc-credentials data --cer certificate.cer --field rfc
+nc-credentials data --cer certificate.cer --field legal-name
+
+# Firmar texto o archivo
+nc-credentials sign --cer certificate.cer --key private_key.key --password-file password.txt --data "cadena original"
+nc-credentials sign --key private_key.key --password-file password.txt --file documento.txt --output firma.b64
+
+# Verificar una firma
+nc-credentials verify --cer certificate.cer --data "cadena original" --signature "<firma-base64>"
+nc-credentials verify --cer certificate.cer --file documento.txt --signature-file firma.b64
+
+# Exportar a archivo PFX (PKCS#12)
+nc-credentials pfx export --cer certificate.cer --key private_key.key --password-file password.txt --output archivo.pfx
+```
+
+Ejecuta `nc-credentials --help` o `nc-credentials <comando> --help` para ver todas las opciones disponibles (incluyendo soporte para `--pfx`, `stdin`, `--encoding` y `NODECFDI_PASSWORD`).
+
+Notas de seguridad y validación:
+
+- Prefiere `--password-file` o la variable `NODECFDI_PASSWORD` en lugar de `--password`, que expone la contraseña en la lista de procesos (el CLI emite una advertencia).
+- Las opciones desconocidas, repetidas, vacías, argumentos sobrantes o valores no permitidos detienen la ejecución indicando el valor inesperado.
+- Los archivos de salida (`--output`) se crean con permisos `0600` y no se sobrescriben salvo que uses `--force`.
+- Los datos se firman byte a byte (texto en UTF-8); `--encoding binary` requiere `--output` al firmar y `--signature-file` al verificar.
+- Códigos de salida: `0` éxito, `1` error de ejecución o firma inválida, `2` argumentos inválidos.
+
 ## Soporte
 
 Puedes obtener soporte abriendo un ticket en Github.
