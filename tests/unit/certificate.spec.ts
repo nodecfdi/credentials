@@ -148,7 +148,8 @@ describe('certificate', () => {
   test('extensions is not empty', () => {
     const certificate = createCertificate();
 
-    expect(certificate.extensions()).not.toBe({});
+    expect(certificate.extensions()).not.toEqual([]);
+    expect(certificate.extensions().length).toBeGreaterThan(0);
   });
 
   test('signature', () => {
@@ -163,6 +164,7 @@ describe('certificate', () => {
     expect(certificate.rfc()).toBe('SMA0112284B2');
     expect(certificate.legalName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
     expect(certificate.branchName()).toBe('COMPAÑIA SANTA MARIA SA DE CV');
+    expect(certificate.name()).toBe('/CN=COMPAÑIA SANTA MARIA SA DE CV');
   });
 
   test('create serial number', () => {

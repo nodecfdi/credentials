@@ -18,9 +18,14 @@ export default class PrivateKey extends Key {
   private readonly _passPhrase: string;
 
   /**
-  Public key extracted from private key *
+   * Public key extracted from private key
    */
   private _publicKey?: PublicKey;
+
+  /**
+   * Parsed RSA private key cached instance
+   */
+  private _parsedPrivateKey?: forge.pki.rsa.PrivateKey;
 
   /**
    * Private key constructor
@@ -100,27 +105,31 @@ export default class PrivateKey extends Key {
   }
 
   public belongsToPEMCertificate(certificate: string): boolean {
-    const pubKey = forge.pki.publicKeyFromPem(this.publicKeyContents()); // Or certificate
+    const pubKey = forge.pki.publicKeyFromPem(this.publicKeyContents());
     const x = forge.pki.certificateFromPem(certificate);
-    const certPubKey = x.publicKey;
+    const certPubKey = x.publicKey as forge.pki.rsa.PublicKey;
 
-    return JSON.stringify(certPubKey) === JSON.stringify(pubKey);
+    return certPubKey.n.compareTo(pubKey.n) === 0 && certPubKey.e.compareTo(pubKey.e) === 0;
   }
 
   public callOnPrivateKey<T>(callableFunction: (prv: forge.pki.rsa.PrivateKey) => T): T {
-    let privateKey: forge.pki.rsa.PrivateKey | undefined;
-    try {
-      privateKey = forge.pki.decryptRsaPrivateKey(this._pem, this._passPhrase);
-    } catch (error) {
-      throw new Error(`Cannot open private key: ${(error as Error).message}`);
+    if (!this._parsedPrivateKey) {
+      let privateKey: forge.pki.rsa.PrivateKey | undefined;
+      try {
+        privateKey = forge.pki.decryptRsaPrivateKey(this._pem, this._passPhrase);
+      } catch (error) {
+        throw new Error(`Cannot open private key: ${(error as Error).message}`);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Its necesary because forge not break on error.
+      if (!privateKey) {
+        throw new Error('Cannot open private key: invalid key or password');
+      }
+
+      this._parsedPrivateKey = privateKey;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Its necesary because forge not break on error.
-    if (!privateKey) {
-      throw new Error('Cannot open private key: invalid key or password');
-    }
-
-    return callableFunction(privateKey);
+    return callableFunction(this._parsedPrivateKey);
   }
 
   public changePassPhrase(newPassPhrase: string): PrivateKey {

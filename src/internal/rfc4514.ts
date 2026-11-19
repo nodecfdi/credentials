@@ -24,38 +24,39 @@ export default class Rfc4514 {
     let subject = targetSubject;
     let prefix = '';
     let suffix = '';
-    const stringReplace = (
-      search: string[] | RegExp[],
-      replace: string[],
-      target: string,
-    ): string => {
-      let fixedTarget = target;
-      for (const [index, from] of search.entries()) {
-        // eslint-disable-next-line unicorn/no-unsafe-string-replacement
-        fixedTarget = fixedTarget.replace(from, replace[index]);
-      }
-
-      return fixedTarget;
-    };
 
     const firstChar = subject.slice(0, 1);
     if (Rfc4514.LeadChars.includes(firstChar)) {
-      prefix = stringReplace(Rfc4514.LeadChars, Rfc4514.LeadReplacements, firstChar);
+      prefix = this.stringReplace(Rfc4514.LeadChars, Rfc4514.LeadReplacements, firstChar);
       subject = subject.slice(1);
     }
 
     const lastChar = subject.slice(-1);
     if (Rfc4514.TrailChars.includes(lastChar)) {
-      suffix = stringReplace(Rfc4514.TrailChars, Rfc4514.TrailReplacements, lastChar);
+      suffix = this.stringReplace(Rfc4514.TrailChars, Rfc4514.TrailReplacements, lastChar);
       subject = subject.slice(0, -1);
     }
 
-    return `${prefix}${stringReplace(Rfc4514.InnerChars, Rfc4514.InnerReplacements, subject)}${suffix}`;
+    return `${prefix}${this.stringReplace(Rfc4514.InnerChars, Rfc4514.InnerReplacements, subject)}${suffix}`;
   }
 
   public escapeRecord(values: Record<string, string>): string {
     return Object.entries(values)
       .map(([name, value]): string => `${this.escape(name)}=${this.escape(value)}`)
       .join(',');
+  }
+
+  private stringReplace(
+    search: readonly (string | RegExp)[],
+    replace: readonly string[],
+    target: string,
+  ): string {
+    let fixedTarget = target;
+    for (const [index, from] of search.entries()) {
+      // eslint-disable-next-line unicorn/no-unsafe-string-replacement
+      fixedTarget = fixedTarget.replace(from, replace[index]);
+    }
+
+    return fixedTarget;
   }
 }

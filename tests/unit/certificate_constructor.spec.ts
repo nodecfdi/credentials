@@ -17,6 +17,13 @@ describe('certificate constructor', () => {
     expect(certificate.serialNumber().bytes()).toBe('30001000000300023685');
   });
 
+  test('constructor with der base64 content', () => {
+    const contents = utilities.fileContents('FIEL_AAA010101AAA/certificate_plain.pem').trim();
+    const certificate = new Certificate(contents);
+
+    expect(certificate.serialNumber().bytes()).toBe('30001000000300023685');
+  });
+
   test('constructor with empty content', () => {
     const t = (): Certificate => new Certificate('');
 

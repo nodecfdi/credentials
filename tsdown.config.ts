@@ -31,6 +31,7 @@ export default defineConfig([
     unbundle: false,
     deps: {
       alwaysBundle: ['node-forge', '@nodecfdi/base-converter'],
+      onlyBundle: ['node-forge', '@nodecfdi/base-converter'],
     },
     outputOptions: {
       globals: {

@@ -25,13 +25,11 @@ export default class PfxExporter {
 
   private getPfxFromCredential(passPhrase: string, algorithm?: AlgorithmPfx): forge.asn1.Asn1 {
     try {
-      const privateKey = forge.pki.decryptRsaPrivateKey(
-        this._credential.privateKey().pem(),
-        this._credential.privateKey().passPhrase(),
-      );
-      const certificate = forge.pki.certificateFromPem(this._credential.certificate().pem());
+      return this._credential.privateKey().callOnPrivateKey((privateKey) => {
+        const certificate = forge.pki.certificateFromPem(this._credential.certificate().pem());
 
-      return forge.pkcs12.toPkcs12Asn1(privateKey, [certificate], passPhrase, { algorithm });
+        return forge.pkcs12.toPkcs12Asn1(privateKey, [certificate], passPhrase, { algorithm });
+      });
     } catch {
       throw new Error(
         `Cannot export credential with certificate ${this._credential.certificate().serialNumber().bytes()}`,

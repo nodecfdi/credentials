@@ -83,8 +83,9 @@ describe('pfx exporter', () => {
     const certificate = openCertificateFile(utilities.filePath('CSD01_AAA010101AAA/certificate.cer'));
     const privateKey = mock<PrivateKey>();
     privateKey.belongsTo.mockReturnValue(true);
-    privateKey.pem.mockReturnValue('bar');
-    privateKey.passPhrase.mockReturnValue('baz');
+    privateKey.callOnPrivateKey.mockImplementation(() => {
+      throw new Error('Cannot open private key');
+    });
     const malformedCredential = new Credential(certificate, privateKey);
     const pfxExporter = new PfxExporter(malformedCredential);
 
@@ -97,8 +98,9 @@ describe('pfx exporter', () => {
     const certificate = openCertificateFile(utilities.filePath('CSD01_AAA010101AAA/certificate.cer'));
     const privateKey = mock<PrivateKey>();
     privateKey.belongsTo.mockReturnValue(true);
-    privateKey.pem.mockReturnValue('bar');
-    privateKey.passPhrase.mockReturnValue('baz');
+    privateKey.callOnPrivateKey.mockImplementation(() => {
+      throw new Error('Cannot open private key');
+    });
     const malformedCredential = new Credential(certificate, privateKey);
     const pfxExporter = new PfxExporter(malformedCredential);
 

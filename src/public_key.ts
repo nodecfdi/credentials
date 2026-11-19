@@ -4,9 +4,13 @@ import Key from './internal/key';
 import { KeyType } from './internal/key_type';
 
 export default class PublicKey extends Key {
+  private readonly _parsedPublicKey: forge.pki.rsa.PublicKey;
+
   public constructor(source: string) {
+    let parsedKey!: forge.pki.rsa.PublicKey;
     const dataObject: Record<string, unknown> = PublicKey.callOnPublicKeyWithContents(
       (publicKey): Record<string, unknown> => {
+        parsedKey = publicKey;
         const pem = forge.pki.publicKeyToPem(publicKey);
         const data: Record<string, unknown> = {};
         data.bits = publicKey.n.bitLength();
@@ -19,6 +23,7 @@ export default class PublicKey extends Key {
       source,
     );
     super(dataObject);
+    this._parsedPublicKey = parsedKey;
   }
 
   /**
@@ -47,7 +52,7 @@ export default class PublicKey extends Key {
    * @param callableFunction - Function to call and inject content
    */
   public callOnPublicKey<T>(callableFunction: (pbk: forge.pki.rsa.PublicKey) => T): T {
-    return PublicKey.callOnPublicKeyWithContents(callableFunction, this.publicKeyContents());
+    return callableFunction(this._parsedPublicKey);
   }
 
   /**

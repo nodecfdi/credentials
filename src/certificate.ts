@@ -68,13 +68,11 @@ export default class Certificate extends DataArray {
       issuer: parsed.issuer,
       extensions: parsed.extensions,
       validity: parsed.validity,
+      hash: parsed.issuer.hash,
+      signatureTypeLN: parsed.signature,
     };
-    this._rfc = forge.util.decodeUtf8(
-      (this.subjectData({ type: '2.5.4.45' })?.value as string).split(' ', 1)[0],
-    );
+    this._rfc = (this.subjectData({ type: '2.5.4.45' })?.value as string).split(' ', 1)[0];
     this._legalName = this.subjectData({ type: '2.5.4.41' })?.value as string;
-    this._dataArray.hash = parsed.issuer.hash;
-    this._dataArray.signatureTypeLN = parsed.signature;
   }
 
   public pem(): string {
@@ -82,11 +80,11 @@ export default class Certificate extends DataArray {
   }
 
   public pemAsOneLine(): string {
-    const normaliceEnds = this.pem().replaceAll('\r\n', '\n');
-    const allLines = normaliceEnds.split(/\n/);
-    const filterLines = allLines.filter((s) => /^(?:(?!-).)*$/.test(s));
-
-    return filterLines.join('');
+    return this.pem()
+      .replaceAll('\r\n', '\n')
+      .split('\n')
+      .filter((line) => !line.startsWith('-'))
+      .join('');
   }
 
   public parsed(): Record<string, unknown> {
@@ -106,9 +104,7 @@ export default class Certificate extends DataArray {
   }
 
   public name(): string {
-    return forge.util.decodeUtf8(
-      `/CN=${(this.subjectData({ shortName: 'CN' })?.value as string | undefined) ?? ''}`,
-    );
+    return `/CN=${(this.subjectData({ shortName: 'CN' })?.value as string | undefined) ?? ''}`;
   }
 
   public subject(): forge.pki.Certificate['subject'] {
@@ -171,7 +167,7 @@ export default class Certificate extends DataArray {
   }
 
   public extensions(): Record<string, unknown>[] {
-    return this._dataArray.ext as Record<string, unknown>[];
+    return this._dataArray.extensions as Record<string, unknown>[];
   }
 
   public publicKey(): PublicKey {
@@ -191,17 +187,18 @@ export default class Certificate extends DataArray {
 
   public validOn(datetime?: DateTime): boolean {
     const dateTime = datetime ?? DateTime.now();
+    const millis = dateTime.toMillis();
 
     return (
-      dateTime.toMillis() >= this.validFromDateTime().toMillis()
-      && dateTime.toMillis() <= this.validToDateTime().toMillis()
+      millis >= this.validFrom().getTime()
+      && millis <= this.validTo().getTime()
     );
   }
 
   public issuerAsRfc4514(): string {
     const issuer: Record<string, string> = {};
     const rawIssuer = this.issuer();
-    for (const line of Object.values(rawIssuer.attributes)) {
+    for (const line of rawIssuer.attributes) {
       /* istanbul ignore if: on certs not pass but library check for undefined -- @preserve */
       if (!line.shortName && !line.type) {
         continue;
@@ -221,7 +218,7 @@ export default class Certificate extends DataArray {
 
     if (decimal !== '') {
       // In some cases openssl report serialNumberHex on serialNumber
-      if (decimal.slice(0, 2).toLowerCase() === '0x'.toLowerCase()) {
+      if (decimal.slice(0, 2).toLowerCase() === '0x') {
         return SerialNumber.createFromHexadecimal(decimal.slice(2));
       }
 

@@ -19,7 +19,7 @@ export default class SerialNumber {
       throw new Error('The hexadecimal string is empty');
     }
 
-    if ('0x'.toLowerCase() === hexadecimal.slice(0, 2).toLowerCase()) {
+    if (hexadecimal.slice(0, 2).toLowerCase() === '0x') {
       hexadecimal = hexadecimal.slice(2);
     }
 
