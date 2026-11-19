@@ -115,11 +115,14 @@ export function assertMutuallyExclusive(
   names: readonly string[],
 ): void {
   const present = names.filter((name) => values[name] !== undefined);
-  if (present.length > 1) {
-    throw new CliUsageError(
-      `Las opciones ${present.map((name) => `--${name}`).join(' y ')} no pueden usarse al mismo tiempo.`,
-    );
+  if (present.length <= 1) {
+    return;
   }
+
+  const formatted = present.map((name) => `--${name}`).join(' y ');
+  throw new CliUsageError(
+    `Las opciones ${formatted} no pueden usarse al mismo tiempo.`,
+  );
 }
 
 /**

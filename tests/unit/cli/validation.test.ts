@@ -168,7 +168,7 @@ describe('cli argument validation', () => {
     ]);
     expect(sign.code).toBe(0);
     expect(existsSync(signatureFile)).toBeTruthy();
-    expect(readFileSync(signatureFile).length).toBe(256);
+    expect(readFileSync(signatureFile)).toHaveLength(256);
 
     const verify = await invokeCli([
       'verify',

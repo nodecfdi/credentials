@@ -31,6 +31,41 @@ const OPTIONS = {
   ...HELP_OPTIONS,
 } as const;
 
+function loadBinarySignature(
+  signature: string | undefined,
+  signatureFile: string | undefined,
+  encoding: (typeof ENCODINGS)[number],
+): string {
+  if (signature !== undefined) {
+    if (encoding === 'binary') {
+      throw new CliUsageError('--encoding binary requiere --signature-file <ruta> (no se acepta binario como argumento).');
+    }
+
+    return decodeSignature(signature, encoding);
+  }
+
+  if (signatureFile === undefined) {
+    throw new CliUsageError('Debes especificar --signature <firma> o --signature-file <ruta>.');
+  }
+
+  const raw = readFileLimited(signatureFile, MAX_INPUT_BYTES, 'el archivo de firma');
+
+  return encoding === 'binary' ? raw.toString('binary') : decodeSignature(raw.toString('utf8'), encoding);
+}
+
+function loadVerifyPublicKey(
+  values: { 'cer'?: string; 'pfx'?: string; 'public-key'?: string; 'password'?: string; 'password-file'?: string },
+  io: CliIO,
+): PublicKey {
+  if (values['public-key'] === undefined) {
+    return loadCertificate(values, io).publicKey();
+  }
+
+  assertNotAllowed(values, ['password', 'password-file'], 'solo aplica con --pfx');
+
+  return openPublicKeyFile(values['public-key']);
+}
+
 export async function runVerifyCommand(argv: string[], io: CliIO): Promise<number> {
   const values = parseCommandArgs(argv, OPTIONS);
 
@@ -43,34 +78,11 @@ export async function runVerifyCommand(argv: string[], io: CliIO): Promise<numbe
   assertMutuallyExclusive(values, ['cer', 'public-key', 'pfx']);
   assertMutuallyExclusive(values, ['signature', 'signature-file']);
 
-  if (values.signature === undefined && values['signature-file'] === undefined) {
-    throw new CliUsageError('Debes especificar --signature <firma> o --signature-file <ruta>.');
-  }
-
   const algorithm = parseChoice('algorithm', values.algorithm, ALGORITHMS) ?? 'sha256';
   const encoding = parseChoice('encoding', values.encoding, ENCODINGS) ?? 'base64';
-
-  if (encoding === 'binary' && values.signature !== undefined) {
-    throw new CliUsageError('--encoding binary requiere --signature-file <ruta> (no se acepta binario como argumento).');
-  }
-
-  let binarySignature: string;
-  if (values.signature === undefined) {
-    const raw = readFileLimited(values['signature-file']!, MAX_INPUT_BYTES, 'el archivo de firma');
-    binarySignature = encoding === 'binary' ? raw.toString('binary') : decodeSignature(raw.toString('utf8'), encoding);
-  } else {
-    binarySignature = decodeSignature(values.signature, encoding as 'base64' | 'hex');
-  }
-
+  const binarySignature = loadBinarySignature(values.signature, values['signature-file'], encoding);
   const input = await loadInputData(values, io);
-
-  let publicKey: PublicKey;
-  if (values['public-key'] === undefined) {
-    publicKey = loadCertificate(values, io).publicKey();
-  } else {
-    assertNotAllowed(values, ['password', 'password-file'], 'solo aplica con --pfx');
-    publicKey = openPublicKeyFile(values['public-key']);
-  }
+  const publicKey = loadVerifyPublicKey(values, io);
 
   let isValid: boolean;
   try {
