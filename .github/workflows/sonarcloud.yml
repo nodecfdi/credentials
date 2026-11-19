@@ -1,0 +1,58 @@
+name: sonarcloud
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  tests-coverage:
+    uses: nodecfdi/.github/.github/workflows/test_coverage.yml@main
+
+  sonarcloud-secrets:
+    name: SonarCloud check secrets are present
+    runs-on: ubuntu-latest
+    outputs:
+      github: ${{ steps.check-secrets.outputs.github }}
+      sonar: ${{ steps.check-secrets.outputs.sonar }}
+    steps:
+      - name: Check secrets are present
+        id: check-secrets
+        run: |
+          if [ -n "${{ secrets.GITHUB_TOKEN }}" ]; then
+            echo "github=yes" >> $GITHUB_OUTPUT
+          else
+            echo "github=no" >> $GITHUB_OUTPUT
+            echo "::warning ::GITHUB_TOKEN non set"
+          fi
+          if [ -n "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "sonar=yes" >> $GITHUB_OUTPUT
+          else
+            echo "sonar=no" >> $GITHUB_OUTPUT
+            echo "::warning ::SONAR_TOKEN non set"
+          fi
+
+  sonarcloud:
+    name: SonarCloud Scan and Report
+    needs: [tests-coverage, sonarcloud-secrets]
+    if: ${{ needs.sonarcloud-secrets.outputs.github == 'yes' && needs.sonarcloud-secrets.outputs.sonar == 'yes' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Obtain code coverage
+        uses: actions/download-artifact@v8
+        with:
+          name: code-coverage
+          path: coverage
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@59202af334b4ba7b5db01b701b8e79f8b3bef0f4 # v8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
