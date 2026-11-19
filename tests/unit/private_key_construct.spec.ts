@@ -35,25 +35,23 @@ describe('private key construct', () => {
     expect(t).toThrow('Cannot open private key');
   });
 
-  test('construct with empty content', () => {
-    const t = (): PrivateKey => new PrivateKey('', '');
+  test.each([
+    ['empty content', '', 'Private key is empty'],
+    [
+      'invalid content',
+      'invalid content',
+      'Cannot open private key: Too few bytes to read ASN.1 value.',
+    ],
+    [
+      'invalid but base64 content',
+      'INVALID+CONTENT',
+      'Cannot open private key: Too few bytes to read ASN.1 value.',
+    ],
+  ])('construct with %s', (_name, content, expectedMessage) => {
+    const t = (): PrivateKey => new PrivateKey(content, '');
 
     expect(t).toThrow(Error);
-    expect(t).toThrow('Private key is empty');
-  });
-
-  test('construct with invalid content', () => {
-    const t = (): PrivateKey => new PrivateKey('invalid content', '');
-
-    expect(t).toThrow(Error);
-    expect(t).toThrow('Cannot open private key: Too few bytes to read ASN.1 value.');
-  });
-
-  test('construct with invalid but base64 content', () => {
-    const t = (): PrivateKey => new PrivateKey('INVALID+CONTENT', '');
-
-    expect(t).toThrow(Error);
-    expect(t).toThrow('Cannot open private key: Too few bytes to read ASN.1 value.');
+    expect(t).toThrow(expectedMessage);
   });
 
   test('construct with pkcs8Encrypted', () => {

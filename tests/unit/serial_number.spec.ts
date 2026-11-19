@@ -19,25 +19,15 @@ describe('serial number', () => {
     expect(serial.bytesArePrintable()).toBeTruthy();
   });
 
-  test('create hexadecimal empty', () => {
-    const t = (): SerialNumber => SerialNumber.createFromHexadecimal('');
+  test.each([
+    ['empty', '', 'is empty'],
+    ['invalid chars', '0x001122x3', 'contains invalid characters'],
+    ['double prefix', '0x0xFF', 'contains invalid characters'],
+  ])('create hexadecimal %s', (_name, value, expectedMessage) => {
+    const t = (): SerialNumber => SerialNumber.createFromHexadecimal(value);
 
     expect(t).toThrow(Error);
-    expect(t).toThrow('is empty');
-  });
-
-  test('create hexadecimal invalid chars', () => {
-    const t = (): SerialNumber => SerialNumber.createFromHexadecimal('0x001122x3');
-
-    expect(t).toThrow(Error);
-    expect(t).toThrow('contains invalid characters');
-  });
-
-  test('create hexadecimal double prefix', () => {
-    const t = (): SerialNumber => SerialNumber.createFromHexadecimal('0x0xFF');
-
-    expect(t).toThrow(Error);
-    expect(t).toThrow('contains invalid characters');
+    expect(t).toThrow(expectedMessage);
   });
 
   test('create from decimal', () => {
