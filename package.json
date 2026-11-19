@@ -140,5 +140,11 @@
         "pnpm run changelog"
       ]
     }
+  },
+  "nodecfdi": {
+    "title": "Credentials",
+    "icon": "i-tabler-certificate",
+    "category": "sat",
+    "featured": true
   }
 }

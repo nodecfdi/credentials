@@ -33,6 +33,53 @@ como el SAT los entrega.
 
 Esta librería ha sido inspirada por la versión para php https://github.com/phpcfdi/credentials
 
+## Inicio rápido
+
+Instala el paquete junto con su dependencia par `luxon`:
+
+```bash
+# pnpm
+pnpm add @nodecfdi/credentials luxon
+
+# npm
+npm install @nodecfdi/credentials luxon
+
+# yarn
+yarn add @nodecfdi/credentials luxon
+
+# bun
+bun add @nodecfdi/credentials luxon
+```
+
+Abre un certificado (`.cer`) y llave privada (`.key`) directamente como los entrega el SAT para consultar datos, firmar y verificar:
+
+```ts
+import { Buffer } from 'node:buffer';
+import { openCredentialFiles } from '@nodecfdi/credentials/node';
+
+// En Node.js puedes abrir archivos locales directamente
+const credential = openCredentialFiles(
+  'ruta/al/certificado.cer',
+  'ruta/a/la/llave_privada.key',
+  'contraseña-de-la-llave',
+);
+
+console.log(credential.rfc()); // AAA010101AAA
+console.log(credential.legalName()); // ACCEM SERVICIOS EMPRESARIALES SC
+console.log(credential.isCsd()); // true (o credential.isFiel())
+
+// Firmar una cadena original (devuelve firma en cadena binaria)
+const cadenaOriginal = '||4.0|A|1|2026-01-01T12:00:00|...||';
+const signatureBinary = credential.sign(cadenaOriginal);
+const selloBase64 = Buffer.from(signatureBinary, 'binary').toString('base64');
+
+// Verificar la firma con el certificado
+const isValid = credential.verify(cadenaOriginal, signatureBinary);
+console.log(isValid); // true
+```
+
+En navegadores o cuando ya tienes el contenido en memoria, utiliza `Credential.create(certContents, keyContents, passPhrase)` importado desde `@nodecfdi/credentials`.
+
 ## Uso por línea de comandos (CLI)
 
 Al instalar el paquete se incluye el ejecutable `nc-credentials` (o puedes ejecutarlo con `npx nc-credentials`):
