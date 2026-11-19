@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { openCertificateFile } from '../../src/node';
-import { utilities } from '../test_utilities.js';
+import { utilities } from '../../test_helpers/test_utilities.js';
 
 describe('certificate open file', () => {
   test('open file with pem contents', () => {

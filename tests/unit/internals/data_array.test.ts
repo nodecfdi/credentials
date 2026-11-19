@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import { beforeEach, describe, expect, test } from 'vitest';
-import DataArraySpecimen from './data_array_specimen.js';
+import DataArraySpecimen from '../../../test_helpers/data_array_specimen.js';
 
 describe('data array', () => {
   let specimen: DataArraySpecimen;

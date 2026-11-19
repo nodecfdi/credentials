@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import Credential from '../../src/credential';
 import { openCertificateFile, openCredentialFiles, openPrivateKeyFile } from '../../src/node';
-import { utilities } from '../test_utilities.js';
+import { utilities } from '../../test_helpers/test_utilities.js';
 
 describe('credential', () => {
   test('create with matching values', () => {

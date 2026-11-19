@@ -1,7 +1,7 @@
 import { EOL } from 'node:os';
 import { describe, expect, test } from 'vitest';
 import PemExtractor from '../../src/pem_extractor';
-import { utilities } from '../test_utilities.js';
+import { utilities } from '../../test_helpers/test_utilities.js';
 
 describe('pem extractor', () => {
   test('extractor with empty content', () => {

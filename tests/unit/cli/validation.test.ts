@@ -2,8 +2,8 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync 
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
-import { utilities } from '../../test_utilities';
-import { invokeCli } from './cli_test_helper';
+import { invokeCli } from '../../../test_helpers/cli_test_helper';
+import { utilities } from '../../../test_helpers/test_utilities';
 
 describe('cli argument validation', () => {
   const csdCer = utilities.filePath('CSD01_AAA010101AAA/certificate.cer');

@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import Credential from '../../../src/credential';
 import { readPfxFile } from '../../../src/node';
 import PfxReader from '../../../src/pfx/pfx_reader';
-import { utilities } from '../../test_utilities.js';
+import { utilities } from '../../../test_helpers/test_utilities.js';
 
 describe('pfx reader', () => {
   const obtainKnownCredential = (): Credential =>

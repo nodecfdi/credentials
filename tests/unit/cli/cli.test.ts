@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { invokeCli } from './cli_test_helper';
+import { invokeCli } from '../../../test_helpers/cli_test_helper';
 
 describe('cli root', () => {
   test.each([

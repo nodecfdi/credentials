@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { openPrivateKeyFile } from '../../src/node';
 import PrivateKey from '../../src/private_key';
-import { utilities } from '../test_utilities.js';
+import { utilities } from '../../test_helpers/test_utilities.js';
 
 describe('private key construct', () => {
   test('construct with valid content', () => {

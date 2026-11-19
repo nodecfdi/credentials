@@ -1,5 +1,5 @@
 import type { DateTime } from 'luxon';
-import DataArray from '../../../src/internal/data_array';
+import DataArray from '../src/internal/data_array';
 
 export default class DataArraySpecimen extends DataArray {
   public constructor(dataArray: Record<string, unknown>) {

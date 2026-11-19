@@ -2,7 +2,7 @@ import { EOL } from 'node:os';
 import { describe, expect, test } from 'vitest';
 import { openPrivateKeyFile, openPublicKeyFile } from '../../src/node';
 import PublicKey from '../../src/public_key';
-import { utilities } from '../test_utilities.js';
+import { utilities } from '../../test_helpers/test_utilities.js';
 
 describe('public key', () => {
   test('create public key from certificate', () => {

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { KeyType } from '../../../src/internal/key_type';
-import KeySpecimen from './key_specimen.js';
+import KeySpecimen from '../../../test_helpers/key_specimen.js';
 
 describe('key', () => {
   test('accessors using fake key data', () => {

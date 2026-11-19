@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
 import { localFileOpen } from '../../../src/node/local_file_open';
-import { utilities } from '../../test_utilities.js';
+import { utilities } from '../../../test_helpers/test_utilities.js';
 
 describe('local file open', () => {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));

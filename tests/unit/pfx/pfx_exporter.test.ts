@@ -7,7 +7,7 @@ import Credential from '../../../src/credential';
 import { exportPfxToFile, openCertificateFile, openCredentialFiles } from '../../../src/node';
 import PfxExporter from '../../../src/pfx/pfx_exporter';
 import PfxReader from '../../../src/pfx/pfx_reader';
-import { utilities } from '../../test_utilities.js';
+import { utilities } from '../../../test_helpers/test_utilities.js';
 
 describe('pfx exporter', () => {
   let credentialPassprase: string;

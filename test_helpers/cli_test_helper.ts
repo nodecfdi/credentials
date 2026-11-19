@@ -1,6 +1,6 @@
-import type { CliIO } from '../../../src/cli/types';
+import type { CliIO } from '../src/cli/types';
 import { Buffer } from 'node:buffer';
-import { runCli } from '../../../src/cli';
+import { runCli } from '../src/cli';
 
 export interface CliRunResult {
   code: number;
