@@ -33,10 +33,6 @@ como el SAT los entrega.
 
 Esta librería ha sido inspirada por la versión para php https://github.com/phpcfdi/credentials
 
-## Documentación
-
-La documentación está disponible en el sitio web [NodeCfdi](https://nodecfdi.com/librarys/credentials/getting-started)
-
 ## Uso por línea de comandos (CLI)
 
 Al instalar el paquete se incluye el ejecutable `nc-credentials` (o puedes ejecutarlo con `npx nc-credentials`):
@@ -70,11 +66,13 @@ Notas de seguridad y validación:
 - Los datos se firman byte a byte (texto en UTF-8); `--encoding binary` requiere `--output` al firmar y `--signature-file` al verificar.
 - Códigos de salida: `0` éxito, `1` error de ejecución o firma inválida, `2` argumentos inválidos.
 
+## Documentación
+
+La documentación está disponible en el sitio web [NodeCfdi](https://nodecfdi.com/packages/credentials/getting-started)
+
 ## Soporte
 
 Puedes obtener soporte abriendo un ticket en Github.
-
-Adicionalmente, esta librería pertenece a la comunidad [OcelotlStudio](https://ocelotlstudio.com), así que puedes usar los mismos canales de comunicación para obtener ayuda de algún miembro de la comunidad.
 
 ## Compatibilidad
 
@@ -89,7 +87,7 @@ Las contribuciones con bienvenidas. Por favor lee [CONTRIBUTING][] para más det
 
 ## Copyright and License
 
-The `@nodecfdi/credentials` library is copyright © [NodeCfdi](https://github.com/nodecfdi) - [OcelotlStudio](https://ocelotlstudio.com) and licensed for use under the MIT License (MIT). Please see [LICENSE][] for more information.
+The `@nodecfdi/credentials` library is copyright © [NodeCfdi](https://github.com/nodecfdi) and licensed for use under the MIT License (MIT). Please see [LICENSE][] for more information.
 
 [contributing]: https://github.com/nodecfdi/.github/blob/main/docs/CONTRIBUTING.md
 [changelog]: https://github.com/nodecfdi/credentials/blob/main/CHANGELOG.md
@@ -97,7 +95,7 @@ The `@nodecfdi/credentials` library is copyright © [NodeCfdi](https://github.co
 [node-version]: https://www.npmjs.com/package/@nodecfdi/credentials
 [discord]: https://discord.gg/AsqX8fkW2k
 [release]: https://www.npmjs.com/package/@nodecfdi/credentials
-[license]: https://github.com/nodecfdi/credentials/blob/main/LICENSE.md
+[license]: https://github.com/nodecfdi/credentials/blob/main/LICENSE
 [build]: https://github.com/nodecfdi/credentials/actions/workflows/build.yml?query=branch:main
 [reliability]: https://sonarcloud.io/component_measures?id=nodecfdi_credentials&metric=Reliability
 [maintainability]: https://sonarcloud.io/component_measures?id=nodecfdi_credentials&metric=Maintainability
