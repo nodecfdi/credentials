@@ -1,7 +1,7 @@
 {
   "name": "@nodecfdi/credentials",
   "type": "module",
-  "version": "3.2.0",
+  "version": "4.0.0",
   "packageManager": "pnpm@12.21.0",
   "description": "Librería para usar eFirma (fiel) y CSD (sellos) para el SAT",
   "browserslist": [
